@@ -14,10 +14,4 @@
 	<bean name="/bar" class="com.github.xdptdr.Bar" />
 	<bean name="/baz" class="com.github.xdptdr.Baz" />
 
-	<bean name="beanNameUrlHandlerMapping"
-		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
-	<bean name="defaultAnnotationHandlerMapping"
-		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
-
-
 </beans>
