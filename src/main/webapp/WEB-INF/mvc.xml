@@ -10,8 +10,5 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="/foo" class="com.github.xdptdr.Foo" />
-	<bean name="/bar" class="com.github.xdptdr.Bar" />
-	<bean name="/baz" class="com.github.xdptdr.Baz" />
 
 </beans>
