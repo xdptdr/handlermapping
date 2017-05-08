@@ -16,4 +16,9 @@ public class HelloController {
 	public String helloGroovy() {
 		return "helloGroovy.tpl";
 	}
+	
+	@RequestMapping(value = "/helloJasper", method = RequestMethod.GET)
+	public String helloJasper() {
+		return "helloJasper";
+	}
 }

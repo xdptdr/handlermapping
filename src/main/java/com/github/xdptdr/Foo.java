@@ -24,13 +24,16 @@ public class Foo {
 		
 		GroovyMarkupViewResolver.class.getName();
 		
+		JasperReportsViewResolver.class.getName();
+
+		JasperReportsViewResolver.class.newInstance().setViewClass(viewClass);
+		
 		ViewResolver.class.getName();
 		ResourceBundleViewResolver.class.getName();
 		UrlBasedViewResolver.class.getName();
 		VelocityViewResolver.class.getName();
 		VelocityLayoutViewResolver.class.getName();
 		InternalResourceViewResolver.class.getName();
-		JasperReportsViewResolver.class.getName();
 		ScriptTemplateViewResolver.class.getName();
 		TilesViewResolver.class.getName();
 		org.springframework.web.servlet.view.tiles3.TilesViewResolver.class.getName();

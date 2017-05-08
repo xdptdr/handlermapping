@@ -23,5 +23,14 @@
 
 	<bean name="groovyMarkupConfigurer"
 		class="org.springframework.web.servlet.view.groovy.GroovyMarkupConfigurer" />
-		
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basename" value="views" />
+	</bean>
+
+	<bean name="JasperReportsViewResolver"
+		class="org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver">
+		<property name="viewClass"></property>
+	</bean>
 </beans>
