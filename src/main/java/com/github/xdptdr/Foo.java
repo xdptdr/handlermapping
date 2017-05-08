@@ -26,6 +26,7 @@ public class Foo {
 		
 		JasperReportsViewResolver.class.getName();
 
+		XsltViewResolver.class.getName();
 		
 		ViewResolver.class.getName();
 		ResourceBundleViewResolver.class.getName();
@@ -36,7 +37,7 @@ public class Foo {
 		ScriptTemplateViewResolver.class.getName();
 		TilesViewResolver.class.getName();
 		org.springframework.web.servlet.view.tiles3.TilesViewResolver.class.getName();
-		XsltViewResolver.class.getName();
+		
 		XmlViewResolver.class.getName();
 		BeanNameViewResolver.class.getName();
 		ContentNegotiatingViewResolver.class.getName();
