@@ -26,7 +26,6 @@ public class Foo {
 		
 		JasperReportsViewResolver.class.getName();
 
-		JasperReportsViewResolver.class.newInstance().setViewClass(viewClass);
 		
 		ViewResolver.class.getName();
 		ResourceBundleViewResolver.class.getName();

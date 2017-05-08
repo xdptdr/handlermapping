@@ -31,6 +31,10 @@
 
 	<bean name="JasperReportsViewResolver"
 		class="org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver">
-		<property name="viewClass"></property>
+		<property name="suffix" value=".jrxml" />
+		<property name="viewNames" value="hellojasper" />
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView" />
+		<property name="order" value="0" />
 	</bean>
 </beans>
