@@ -10,10 +10,6 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="xsltViewResolver"
-		class="org.springframework.web.servlet.view.xslt.XsltViewResolver">
-		<property name="order" value="1" />
-		<property name="sourceKey" value="xml" />
-	</bean>
+	<bean name="sampleViewResolver" class="com.github.xdptdr.view.SampleViewResolver" />
 
 </beans>
