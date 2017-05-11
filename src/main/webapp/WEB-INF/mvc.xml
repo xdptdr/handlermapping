@@ -10,6 +10,13 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="sampleViewResolver" class="com.github.xdptdr.view.SampleViewResolver" />
+	<bean name="resourceBundleViewResolver"
+		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basenames">
+			<list>
+				<value>bibloup</value>
+			</list>
+		</property>
+	</bean>
 
 </beans>
