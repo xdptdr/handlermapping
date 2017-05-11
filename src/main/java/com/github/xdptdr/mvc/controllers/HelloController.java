@@ -1,8 +1,5 @@
 package com.github.xdptdr.mvc.controllers;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,26 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.github.xdptdr.jasper.JasperPerson;
-
 @Controller
 public class HelloController {
-
-	@RequestMapping(value = "/hellojasper", method = RequestMethod.GET)
-	public ModelAndView hellojasper() {
-		ModelAndView mav = new ModelAndView("hellojasper");
-
-		Collection<JasperPerson> data = Arrays.asList(new JasperPerson[] {
-
-				new JasperPerson("foo", "fiFou"),
-
-				new JasperPerson("bar", "fiBar")
-
-		});
-
-		mav.getModel().put("jasperData", data);
-		return mav;
-	}
 
 	@RequestMapping(value = "/helloxslt", method = RequestMethod.GET)
 	public ModelAndView helloxslt() throws ParserConfigurationException {

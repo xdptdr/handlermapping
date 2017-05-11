@@ -7,14 +7,10 @@ import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 import org.springframework.web.servlet.view.ViewResolverComposite;
 import org.springframework.web.servlet.view.XmlViewResolver;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver;
 import org.springframework.web.servlet.view.script.ScriptTemplateViewResolver;
 
 public class Foo {
 	public void foo() {
-
-
-		JasperReportsViewResolver.class.getName();
 
 		ViewResolver.class.getName();
 		ResourceBundleViewResolver.class.getName();
