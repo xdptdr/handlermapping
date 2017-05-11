@@ -13,17 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 import com.github.xdptdr.jasper.JasperPerson;
 
 @Controller
 public class HelloController {
-
-	@RequestMapping(value = "/helloFreemarker", method = RequestMethod.GET)
-	public String helloFreemarker() {
-		return "helloFreemarker";
-	}
 
 	@RequestMapping(value = "/helloGroovy", method = RequestMethod.GET)
 	public String helloGroovy() {

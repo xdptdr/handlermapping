@@ -15,8 +15,6 @@ import org.springframework.web.servlet.view.script.ScriptTemplateViewResolver;
 public class Foo {
 	public void foo() {
 
-		FreeMarkerViewResolver.class.getName();
-
 		GroovyMarkupViewResolver.class.getName();
 
 		JasperReportsViewResolver.class.getName();
