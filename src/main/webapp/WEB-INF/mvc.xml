@@ -26,10 +26,6 @@
 		<property name="order" value="0" />
 	</bean>
 
-	<bean name="xsltViewResolver"
-		class="org.springframework.web.servlet.view.xslt.XsltViewResolver">
-		<property name="order" value="1" />
-		<property name="sourceKey" value="xml" />
-	</bean>
+
 
 </beans>
