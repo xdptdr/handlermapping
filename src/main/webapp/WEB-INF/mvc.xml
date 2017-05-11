@@ -10,6 +10,10 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="sampleViewResolver" class="com.github.xdptdr.view.SampleViewResolver" />
+	<bean name="internalResourceViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="foo/" />
+		<property name="suffix" value="/bar" />
+	</bean>
 
 </beans>
