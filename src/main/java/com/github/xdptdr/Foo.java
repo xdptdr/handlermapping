@@ -2,7 +2,6 @@ package com.github.xdptdr;
 
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 import org.springframework.web.servlet.view.ViewResolverComposite;
 import org.springframework.web.servlet.view.XmlViewResolver;
 import org.springframework.web.servlet.view.script.ScriptTemplateViewResolver;
@@ -10,7 +9,6 @@ import org.springframework.web.servlet.view.script.ScriptTemplateViewResolver;
 public class Foo {
 	public void foo() {
 
-		ResourceBundleViewResolver.class.getName();
 		InternalResourceViewResolver.class.getName();
 		ScriptTemplateViewResolver.class.getName();
 
