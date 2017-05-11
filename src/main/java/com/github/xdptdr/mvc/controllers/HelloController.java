@@ -19,11 +19,6 @@ import com.github.xdptdr.jasper.JasperPerson;
 @Controller
 public class HelloController {
 
-	@RequestMapping(value = "/helloGroovy", method = RequestMethod.GET)
-	public String helloGroovy() {
-		return "helloGroovy.tpl";
-	}
-
 	@RequestMapping(value = "/hellojasper", method = RequestMethod.GET)
 	public ModelAndView hellojasper() {
 		ModelAndView mav = new ModelAndView("hellojasper");
