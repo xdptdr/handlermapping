@@ -10,6 +10,9 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="sampleViewResolver" class="com.github.xdptdr.view.SampleViewResolver" />
+	<bean name="helloBeanNameView" class="com.github.xdptdr.view.HelloBeanNameView" />
+
+	<bean name="beanNameViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver" />
 
 </beans>

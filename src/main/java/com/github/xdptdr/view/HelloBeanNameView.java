@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.View;
 
-public class DummyView implements View {
+public class HelloBeanNameView implements View {
 
 	@Override
 	public String getContentType() {
