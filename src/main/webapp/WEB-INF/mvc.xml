@@ -10,6 +10,14 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="sampleViewResolver" class="com.github.xdptdr.view.SampleViewResolver" />
+	<bean name="viewResolverComposite"
+		class="org.springframework.web.servlet.view.ViewResolverComposite">
+		<property name="viewResolvers">
+			<list>
+				<bean name="dummyViewResolver1" class="com.github.xdptdr.view.DummyViewResolver1" />
+				<bean name="dummyViewResolver2" class="com.github.xdptdr.view.DummyViewResolver2" />
+			</list>
+		</property>
+	</bean>
 
 </beans>
