@@ -8,8 +8,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HelloController {
 
-	@RequestMapping(value = "/helloResourceBundle", method = RequestMethod.GET)
-	public ModelAndView helloResourceBundle()  {
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	public ModelAndView hello() {
 		ModelAndView mav = new ModelAndView("a");
 		return mav;
 	}
