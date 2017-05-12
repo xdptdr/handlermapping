@@ -10,8 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HelloController {
 
-	@RequestMapping(value = "/helloBeanNameView", method = RequestMethod.GET)
-	public ModelAndView helloBeanNameView() throws ParserConfigurationException {
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	public ModelAndView hello() throws ParserConfigurationException {
 		ModelAndView mav = new ModelAndView("helloBeanNameView");
 		return mav;
 	}
