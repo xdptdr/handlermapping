@@ -7,14 +7,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HelloController {
 
-	@RequestMapping(value = "/helloTiles", method = RequestMethod.GET)
-	public String helloTiles() {
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	public String hello() {
 		return "base";
 	}
 
-	
-
-	
-
-	
 }
