@@ -10,6 +10,15 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
+<<<<<<< HEAD
+=======
+
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basename" value="views" />
+	</bean>
+>>>>>>> branch 'JasperReportsViewResolver' of https://github.com/xdptdr/manybranches.git
 
 	<bean name="JasperReportsViewResolver"
 		class="org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver">
@@ -20,5 +29,9 @@
 		<property name="order" value="0" />
 	</bean>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> branch 'JasperReportsViewResolver' of https://github.com/xdptdr/manybranches.git
 
 </beans>

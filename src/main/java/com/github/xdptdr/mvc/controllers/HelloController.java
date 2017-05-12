@@ -13,8 +13,13 @@ import com.github.xdptdr.jasper.JasperPerson;
 @Controller
 public class HelloController {
 
+<<<<<<< HEAD
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public ModelAndView hello() {
+=======
+	@RequestMapping(value = "/hellojasper", method = RequestMethod.GET)
+	public ModelAndView hellojasper() {
+>>>>>>> branch 'JasperReportsViewResolver' of https://github.com/xdptdr/manybranches.git
 		ModelAndView mav = new ModelAndView("hellojasper");
 
 		Collection<JasperPerson> data = Arrays.asList(new JasperPerson[] {
@@ -29,5 +34,8 @@ public class HelloController {
 		return mav;
 	}
 
+<<<<<<< HEAD
 	
+=======
+>>>>>>> branch 'JasperReportsViewResolver' of https://github.com/xdptdr/manybranches.git
 }
