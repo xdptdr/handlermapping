@@ -14,8 +14,8 @@ import org.w3c.dom.Element;
 @Controller
 public class HelloController {
 
-	@RequestMapping(value = "/helloxslt", method = RequestMethod.GET)
-	public ModelAndView helloxslt() throws ParserConfigurationException {
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	public ModelAndView hello() throws ParserConfigurationException {
 		ModelAndView mav = new ModelAndView("helloxslt");
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
