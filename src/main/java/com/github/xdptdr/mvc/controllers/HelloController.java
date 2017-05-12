@@ -10,13 +10,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HelloController {
 
-	@RequestMapping(value = "/helloInternal", method = RequestMethod.GET)
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public ModelAndView helloInternal() {
-		ModelAndView mav = new ModelAndView("helloInternal");
+		ModelAndView mav = new ModelAndView("hello");
 		return mav;
 	}
 
-	@RequestMapping(value = "/foo/helloInternal/bar", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(value = "/foo/hello/bar", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
 	public String fooHelloInternalBar() {
 		return "Hello from internal";
