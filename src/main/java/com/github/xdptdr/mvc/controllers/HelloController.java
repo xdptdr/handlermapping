@@ -8,21 +8,21 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HelloController {
 
-	@RequestMapping(value = "/hellourl", method = RequestMethod.GET)
-	public ModelAndView hellourl() {
-		ModelAndView mav = new ModelAndView("hellourl");
+	@RequestMapping(value = "/hello", method = RequestMethod.GET)
+	public ModelAndView hello() {
+		ModelAndView mav = new ModelAndView("hello");
 		return mav;
 	}
-	
-	@RequestMapping(value = "/hellourlRedirect", method = RequestMethod.GET)
-	public ModelAndView hellourlRedirect() {
-		ModelAndView mav = new ModelAndView("redirect:hellourl");
+
+	@RequestMapping(value = "/helloRedirect", method = RequestMethod.GET)
+	public ModelAndView helloRedirect() {
+		ModelAndView mav = new ModelAndView("redirect:hello");
 		return mav;
 	}
-	
-	@RequestMapping(value = "/hellourlForward", method = RequestMethod.GET)
-	public ModelAndView hellourlForward() {
-		ModelAndView mav = new ModelAndView("forward:hellourl");
+
+	@RequestMapping(value = "/helloForward", method = RequestMethod.GET)
+	public ModelAndView helloForward() {
+		ModelAndView mav = new ModelAndView("forward:hello");
 		return mav;
 	}
 }
