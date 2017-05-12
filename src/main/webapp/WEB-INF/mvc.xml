@@ -10,6 +10,15 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="sampleViewResolver" class="com.github.xdptdr.view.SampleViewResolver" />
+	<bean name="scriptTemplateViewResolver"
+		class="org.springframework.web.servlet.view.script.ScriptTemplateViewResolver" />
+
+	<bean name="scriptTemplateConfigurer"
+		class="org.springframework.web.servlet.view.script.ScriptTemplateConfigurer">
+		<property name="engine">
+			<bean name="dummyScriptEngine" class="com.github.xdptdr.script.DummyScriptEngine" />
+		</property>
+		<property name="renderFunction" value="render" />
+	</bean>
 
 </beans>
