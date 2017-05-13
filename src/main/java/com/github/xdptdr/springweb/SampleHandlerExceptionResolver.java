@@ -17,7 +17,6 @@ public class SampleHandlerExceptionResolver implements HandlerExceptionResolver 
 	}
 	
 	public void todo() {
-		SimpleMappingExceptionResolver.class.getName();
 		HandlerExceptionResolverComposite.class.getName();
 	}
 
