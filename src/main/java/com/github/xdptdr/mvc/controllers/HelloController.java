@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.annotation.SampleResponseStatusException;
 
 @Controller
 public class HelloController {
@@ -15,7 +16,7 @@ public class HelloController {
 	}
 	
 	@RequestMapping(value = "/helloException", method = RequestMethod.GET)
-	public ModelAndView helloException() {
-		throw new NullPointerException();
+	public ModelAndView helloException() throws SampleResponseStatusException {
+		throw new SampleResponseStatusException();
 	}
 }
