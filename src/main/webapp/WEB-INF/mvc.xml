@@ -10,8 +10,10 @@
 
 	<context:component-scan base-package="com.github.xdptdr.mvc" />
 
-	<bean name="sampleViewResolver" class="com.github.xdptdr.springweb.SampleViewResolver" />
+	<bean name="" class="com.github.xdptdr.springweb.SampleViewResolver" />
 	<bean name=""
-		class="com.github.xdptdr.springweb.SampleHandlerExceptionResolver" />
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="exception" />
+	</bean>
 
 </beans>
