@@ -13,4 +13,9 @@ public class HelloController {
 		ModelAndView mav = new ModelAndView("hello");
 		return mav;
 	}
+	
+	@RequestMapping(value = "/helloException", method = RequestMethod.GET)
+	public ModelAndView helloException() {
+		throw new NullPointerException();
+	}
 }

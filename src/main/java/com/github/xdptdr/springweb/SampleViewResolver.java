@@ -1,4 +1,4 @@
-package com.github.xdptdr.view;
+package com.github.xdptdr.springweb;
 
 import java.util.Locale;
 
@@ -9,7 +9,9 @@ public class SampleViewResolver implements ViewResolver {
 
 	@Override
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
-		return new DummyView();
+		return new DummyView("exception".equals(viewName));
 	}
+
+
 
 }

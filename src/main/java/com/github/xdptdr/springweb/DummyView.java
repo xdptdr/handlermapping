@@ -1,4 +1,4 @@
-package com.github.xdptdr.view;
+package com.github.xdptdr.springweb;
 
 import java.util.Map;
 
@@ -9,6 +9,12 @@ import org.springframework.web.servlet.View;
 
 public class DummyView implements View {
 
+	private boolean isException;
+
+	public DummyView(boolean isException) {
+		this.isException = isException;
+	}
+
 	@Override
 	public String getContentType() {
 		return "text/plain";
@@ -18,6 +24,9 @@ public class DummyView implements View {
 	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		response.getWriter().println("Hello from " + this.getClass().getName());
+		if (isException) {
+			response.getWriter().println("An exception occured");
+		}
 
 	}
 
