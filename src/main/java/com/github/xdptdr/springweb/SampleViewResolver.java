@@ -9,7 +9,7 @@ public class SampleViewResolver implements ViewResolver {
 
 	@Override
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
-		return new DummyView("exception".equals(viewName));
+		return new DummyView(viewName);
 	}
 
 

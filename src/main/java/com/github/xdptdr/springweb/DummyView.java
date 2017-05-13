@@ -9,10 +9,10 @@ import org.springframework.web.servlet.View;
 
 public class DummyView implements View {
 
-	private boolean isException;
+	private String viewName;
 
-	public DummyView(boolean isException) {
-		this.isException = isException;
+	public DummyView(String viewName) {
+		this.viewName= viewName;
 	}
 
 	@Override
@@ -24,8 +24,8 @@ public class DummyView implements View {
 	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		response.getWriter().println("Hello from " + this.getClass().getName());
-		if (isException) {
-			response.getWriter().println("An exception occured");
+		if(viewName.startsWith("exception")) {
+			response.getWriter().println("An exception occured : "+viewName);
 		}
 
 	}

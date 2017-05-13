@@ -5,18 +5,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerExceptionResolverComposite;
 
-public class SampleHandlerExceptionResolver implements HandlerExceptionResolver {
+public class SampleViewResolver1 implements HandlerExceptionResolver {
 
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
-		return new ModelAndView("exception");
-	}
-	
-	public void todo() {
-		HandlerExceptionResolverComposite.class.getName();
+		if (ex instanceof NullPointerException) {
+			return new ModelAndView("exception1");
+		}
+		return null;
 	}
 
 }
