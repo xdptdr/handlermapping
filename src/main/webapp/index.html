@@ -1,73 +1,300 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- Styles -->
 <style>
-#chartdiv {
-  width: 100%;
-  height: 500px;
-}
-</style>
-
-<!-- Resources -->
-<script src="./ammap/ammap.js"></script>
-<script src="./ammap/maps/js/usaLow.js"></script>
-<script src="./ammap/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="./ammap/plugins/export/export.css" type="text/css" media="all" />
-<script src="./ammap/themes/light.js"></script>
-
-<!-- Chart code -->
-<script>
-var map = AmCharts.makeChart( "chartdiv", {
-  "type": "map",
-"theme": "light",
-
-  "panEventsEnabled": true,
-  //"backgroundColor": "#666666",
-  //"backgroundAlpha": 1,
-  "dataProvider": {
-    "map": "usaLow",
-    "getAreasFromMap": true
-  },
-  "areasSettings": {
-    "autoZoom": false,
-    "color": "#CDCDCD",
-    "colorSolid": "#5EB7DE",
-    "selectedColor": "#5EB7DE",
-    "outlineColor": "#666666",
-    "rollOverColor": "#88CAE7",
-    "rollOverOutlineColor": "#FFFFFF",
-    "selectable": true
-  },
-  "listeners": [ {
-    "event": "clickMapObject",
-    "method": function( event ) {
-      // deselect the area by assigning all of the dataProvider as selected object
-      map.selectedObject = map.dataProvider;
-
-      // toggle showAsSelected
-      event.mapObject.showAsSelected = !event.mapObject.showAsSelected;
-
-      // bring it to an appropriate color
-      map.returnInitialColor( event.mapObject );
-
-      // let's build a list of currently selected states
-      var states = [];
-      for ( var i in map.dataProvider.areas ) {
-        var area = map.dataProvider.areas[ i ];
-        if ( area.showAsSelected ) {
-          states.push( area.title );
-        }
-      }
-    }
-  } ],
-  "export": {
-    "enabled": true
-  }
-} );
-</script>
+       #map {
+        width: 80%;
+        height: 80%;
+        margin:auto;
+        display:inline-block;
+        vertical-align:middle;
+       }
+    </style>
 </head>
-<body>
-<div id="chartdiv"></div>
-</body>
+<body><div style="text-align:center;position:absolute;left:0px;right:0px;top:0px;bottom:0px;vertical-align:middle;)">
+	<div style="display:inline-block;width:0px;height:100%;visibility:hidden;vertical-align:middle;"></div>
+    <div id="map"></div>
+</div></body>
+    <script>
+
+      function initMap() {
+    	  
+    	    function CustomMarker(latlng, map, args) {
+    	    	this.latlng = latlng;	
+    	    	this.args = args;	
+    	    	this.setMap(map);	
+    	    }
+
+    	    CustomMarker.prototype = new google.maps.OverlayView();
+
+    	    CustomMarker.prototype.draw = function() {
+    	    	
+    	    	var self = this;
+    	    	
+    	    	var div = this.div;
+    	    	
+    	    	if (!div) {
+    	    	
+    	    		div = this.div = document.createElement('div');
+    	    		
+    	    		div.className = 'marker';
+    	    		
+    	    		div.style.position = 'absolute';
+    	    		div.style.cursor = 'normal';
+    	    		div.style.background = 'blue';
+    	    		div.style.display='inline-block';
+    	    		div.style.color='white';
+    	    		div.style.borderRadius='3px';
+    	    		div.style.padding='3px';
+    	    		div.style.fontWeight='bold';
+    	    		div.style.opacity=.5
+    	    		
+    	    		if (self.args.text) {
+    	    			div.appendChild(document.createTextNode(self.args.text));
+    	    		}
+    	    		
+    	    		var panes = this.getPanes();
+    	    		panes.overlayImage.appendChild(div);
+    	    	}
+    	    	
+    	    	var point = this.getProjection().fromLatLngToDivPixel(this.latlng);
+    	    	
+    	    	if (point) {
+    	    		div.style.left = point.x + 'px';
+    	    		div.style.top = point.y  + 'px';
+    	    	}
+    	    };
+
+    	    CustomMarker.prototype.remove = function() {
+    	    	if (this.div) {
+    	    		this.div.parentNode.removeChild(this.div);
+    	    		this.div = null;
+    	    	}	
+    	    };
+
+    	    CustomMarker.prototype.getPosition = function() {
+    	    	return this.latlng;	
+    	    };
+    	  
+   	    var paris = {lat:48.857257, lng:2.348585};
+   	    
+   	    var corporations = [
+   	    	{lat:48.852747, lng:2.278291, name:"Radio France"},
+   	    	{lat:37.387825, lng:-121.963796, name:"Intel"},
+   	    	{lat:37.530844, lng:-122.264373, name:"Oracle"},
+   	    	{lat:41.108397, lng:-73.720465, name:"IBM"},
+   	    	{lat:37.422290, lng:-122.084058, name:"Google & Alphabet"},
+   	    	{lat:47.622847, lng:-122.336575, name:"Amazon"},
+   	    	{lat:47.639562, lng:-122.128372, name:"Microsoft"},
+   	    	{lat:37.387065, lng:-121.999314, name:"AMD"},
+   	    	{lat:40.750342, lng:-73.972678, name:"Pfizer"},
+   	    	{lat:42.329197, lng:-83.039480, name:"General Motors"},
+   	    	{lat:48.827501, lng:2.238789, name:"Carrefour"},
+   	    	{lat:51.013827, lng:6.983059, name:"Bayer"},
+   	    	{lat:38.670445, lng:-90.399503, name:"Monsanto"},
+   	    	{lat:43.617969, lng:-84.200056, name:"Dow Chemical"},
+   	    	{lat:37.414769, lng:-122.146363, name:"HP"},
+   	    	{lat:37.332289, lng:-122.029538, name:"Apple"},
+   	    	{lat:37.394919, lng:-122.150570, name:"Tesla"},
+   	    	{lat:42.393076, lng:-71.258601, name:"Boston Dynamics"},
+   	    	{lat:41.887961, lng:-87.638690, name:"Boeing"},
+   	    	{lat:43.654836, lng:1.355318, name:"Airbus"},
+   	    	{lat:48.873299, lng:2.312944, name:"Sanofi"},
+   	    	{lat:36.365834, lng:-94.218120, name:"Walmart"},
+   	    	{lat:40.689658, lng:-89.597845, name:"Caterpillar"},
+   	    	{lat:37.758571, lng:-121.959659, name:"Chevron"},
+   	    	{lat:37.408565, lng:-121.954175, name:"Cisco Systems"},
+   	    	{lat:37.496695, lng:127.026903, name:"Samsung"},
+   	    	{lat:26.204163, lng:-80.153974, name:"Citrix"},
+   	    	{lat:33.769852, lng:-84.397296, name:"Coca cola"},
+   	    	{lat:40.757115, lng:-73.974741, name:"Colgate-Palmolive"},
+   	    	{lat:52.344922, lng:4.916836, name:"Philips"},
+   	    	{lat:44.950909, lng:-92.995397, name:"3M"},
+   	    	{lat:42.302241, lng:-87.891571, name:"Abbott Laboratories & AbbVie"},
+   	    	{lat:53.343870, lng:-6.239017, name:"Accenture"},
+   	    	{lat:34.019813, lng:-118.452400, name:"Activision Blizzard"},
+   	    	{lat:33.786588, lng:-84.383651, name:"Acuity Brands"},
+   	    	{lat:37.330991, lng:-121.894142, name:"Adobe Systems"},
+   	    	{lat:37.317693, lng:-79.959216, name:"Advance Auto Parts"},
+   	    	{lat:38.879936, lng:-77.112643, name:"AES"},
+   	    	{lat:41.767221, lng:-72.689481, name:"Aetna"},
+   	    	{lat:26.706822, lng:-80.049640, name:"Affiliated Managers Group"},
+   	    	{lat:32.467507, lng:-84.963823, name:"AFLAC"},
+   	    	{lat:37.325104, lng:-121.998863, name:"Agilent Technologies"},
+   	    	{lat:40.551474, lng:-75.598415, name:"Air Products & Chemicals"},
+   	    	{lat:42.364522, lng:-71.089204, name:"Akamai Technologies"},
+   	    	{lat:47.428959, lng:-122.294156, name:"Alaska Air"},
+   	    	{lat:35.154363, lng:-80.837880, name:"Albemarle"},
+   	    	{lat:34.146126, lng:-118.141984, name:"Alexandria Real Estate Equities"},
+   	    	{lat:53.404795, lng:-6.220233, name:"Allergan"},
+   	    	{lat:43.150846, lng:-89.295801, name:"Alliant Energy"},
+   	    	{lat:41.304280, lng:-72.931778, name:"Alexion Pharmaceuticals"},
+   	    	{lat:53.334632, lng:-6.257471, name:"Allegion"},
+   	    	{lat:33.081047, lng:-96.823565, name:"Alliance Data Systems"},
+   	    	{lat:42.101115, lng:-87.871060, name:"Allstate Corp"},
+   	    	{lat:37.603772, lng:-77.517619, name:"Altria"},
+   	    	{lat:38.622685, lng:-90.209579, name:"Ameren"},
+   	    	{lat:32.825256, lng:-97.050496, name:"American Airlines"},
+   	    	{lat:39.965036, lng:-83.006288, name:"American Electric Power"},
+   	    	{lat:40.713724, lng:-74.015047, name:"American Express"},
+   	    	{lat:40.706567, lng:-74.005174, name:"American International Group"},
+   	    	{lat:42.346740, lng:-71.079752, name:"American Tower Corporation"},
+   	    	{lat:39.845097, lng:-74.973532, name:"American Water Works Company"},
+   	    	{lat:44.975191, lng:-93.268927, name:"Ameriprise Financial"},
+   	    	{lat:40.068923, lng:-75.468359, name:"AmerisourceBergen"},
+   	    	{lat:40.062089, lng:-75.463509, name:"AMETEK"},
+   	    	{lat:34.192418, lng:-118.919450, name:"Amgen"},
+   	    	{lat:41.460134, lng:-72.833310, name:"Amphenol"},
+   	    	{lat:30.161009, lng:-95.452423, name:"Anadarko Petroleum"},
+   	    	{lat:42.210798, lng:-71.180314, name:"Analog Devices"},
+   	    	{lat:39.769266, lng:-86.158663, name:"Anthem"},
+   	    	{lat:51.513955, lng:-0.082516, name:"Aon"},
+   	    	{lat:29.744938, lng:-95.461492, name:"Apache Corporation"},
+   	    	{lat:39.633406, lng:-104.898167, name:"Apartment Investment & Management"},
+   	    	{lat:37.377871, lng:-121.978800, name:"Applied Materials"},
+   	    	{lat:41.886582, lng:-87.630661, name:"Archer Daniels Midland"},
+   	    	{lat:40.759807, lng:-73.972729, name:"Arconic"},
+   	    	{lat:42.052413, lng:-88.015517, name:"Arthur J. Gallagher & Co."},
+   	    	{lat:40.708018, lng:-74.008431, name:"Assurant"},
+   	    	{lat:32.779775, lng:-96.798908, name:"AT&T"},
+   	    	{lat:38.005516, lng:-122.530173, name:"Autodesk"},
+   	    	{lat:40.815769, lng:-74.310072, name:"Automatic Data Processing	"},
+   	    	{lat:26.120201, lng:-80.144219, name:"AutoNation"},
+   	    	{lat:35.142238, lng:-90.056136, name:"AutoZone"},
+   	    	{lat:38.878765, lng:-77.111102, name:"AvalonBay Communities"},
+   	    	{lat:34.157305, lng:-118.256453, name:"Avery Dennison"},
+   			{lat:29.968614, lng:-95.365196, name:"Baker Hughes"},
+   	    	{lat:39.912021, lng:-105.099689, name:"Ball Corporation"},
+   	    	{lat:35.227815, lng:-80.842410, name:"Bank of America"},
+   	    	{lat:40.711569, lng:-74.015159, name:"The Bank of New York Mellon"},
+   	    	{lat:40.697636, lng:-74.411126, name:"C. R. Bard"},
+   	    	{lat:42.159530, lng:-87.879811, name:"Baxter International"},
+   	    	{lat:36.095899, lng:-80.245171, name:"BB&T"},
+   	    	{lat:41.017255, lng:-74.210713, name:"Becton Dickinson"},
+   	    	{lat:40.697801, lng:-74.304762, name:"Bed Bath & Beyond"},
+   	    	{lat:41.257453, lng:-95.965496, name:"Berkshire Hathaway"},
+   	    	{lat:44.864771, lng:-93.305238, name:"Best Buy"},
+   	    	{lat:42.366266, lng:-71.085345, name:"Biogen"},
+   	    	{lat:40.759305, lng:-73.973636, name:"BlackRock"},
+   	    	{lat:39.097935, lng:-94.582515, name:"H&R Block"},
+   	    	{lat:42.645845, lng:-83.209881, name:"BorgWarner"},
+   	    	{lat:42.347445, lng:-71.081915, name:"Boston Properties"},
+   	    	{lat:42.361321, lng:-71.561194, name:"Boston Scientific"},
+   	    	{lat:40.758154, lng:-73.972116, name:"Bristol-Myers Squibb"},
+   	    	{lat:1.440458, lng:103.840345, name:"Broadcom Limited"},
+   	    	{lat:38.245225, lng:-85.783703, name:"Brown-Forman"},
+   	    	{lat:44.821060, lng:-93.460818, name:"C. H. Robinson"},
+   	    	{lat:40.760443, lng:-73.974527, name:"CA Technologies"},
+   	    	{lat:29.778054, lng:-95.542667, name:"Cabot Oil & Gas"},
+   	    	{lat:39.940531, lng:-75.108412, name:"Campbell Soup Company"},
+   	    	{lat:38.926204, lng:-77.212170, name:"Capital One"},
+   	    	{lat:40.109513, lng:-83.121090, name:"Cardinal Health"},
+   	    	{lat:41.876703, lng:-87.632196, name:"CBOE Holdings"},
+   	    	{lat:37.639970, lng:-77.669638, name:"CarMax"},
+   	    	{lat:25.807121, lng:-80.335529, name:"Carnival Corporation"},
+   	    	{lat:34.051801, lng:-118.253466, name:"CBRE Group"},
+   	    	{lat:40.761383, lng:-73.978741, name:"CBS Corporation"},
+   	    	{lat:40.709238, lng:-74.345291, name:"Celgene"},
+   	    	{lat:38.649696, lng:-90.334491, name:"Centene Corporation"},
+   	    	{lat:29.757415, lng:-95.368064, name:"CenterPoint Energy"},
+   	    	{lat:32.589866, lng:-92.066939, name:"CenturyLink"},
+   	    	{lat:39.150137, lng:-94.545838, name:"Cerner"},
+   	    	{lat:42.162492, lng:-87.880420, name:"CF Industries"},
+   	    	{lat:37.790842, lng:-122.392856, name:"Charles Schwab Corporation"},
+   	    	{lat:38.609886, lng:-90.450302, name:"Charter Communications"},
+   	    	{lat:35.534936, lng:-97.528945, name:"Chesapeake Energy"},
+   	    	{lat:39.750822, lng:-105.003143, name:"Chipotle Mexican Grill"},
+   	    	{lat:47.369644, lng:8.536059, name:"Chubb Limited"},
+   	    	{lat:40.287143, lng:-74.787092, name:"Church & Dwight"},
+   	    	{lat:41.813110, lng:-72.746953, name:"Cigna"},
+   	    	{lat:39.743872, lng:-104.985520, name:"Cimarex Energy"},
+   	    	{lat:39.308195, lng:-84.520325, name:"Cincinnati Financial"},
+   	    	{lat:39.339233, lng:-84.284303, name:"Cintas"},
+   	    	{lat:40.720935, lng:-74.011178, name:"Citigroup"},
+   	    	{lat:41.827685, lng:-71.410720, name:"Citizens Financial Group"},
+   	    	{lat:37.803750, lng:-122.272356, name:"Clorox"},
+   	    	{lat:41.881397, lng:-87.637656, name:"CME Group"},
+   	    	{lat:42.247030, lng:-84.402571, name:"CMS Energy"},
+   	    	{lat:40.752752, lng:-74.001039, name:"Coach, Inc."},
+   	    	{lat:40.873206, lng:-74.007035, name:"Cognizant"},
+   	    	{lat:39.952563, lng:-75.166443, name:"Comcast"},
+   	    	{lat:32.781908, lng:-96.796882, name:"Comerica"},
+   	    	{lat:41.888767, lng:-87.635416, name:"Conagra Brands"},
+   	    	{lat:32.000127, lng:-102.080975, name:"Concho Resources"},
+   	    	{lat:29.788510, lng:-95.613420, name:"ConocoPhillips"},
+   	    	{lat:40.734293, lng:-73.987861, name:"Consolidated Edison"},
+   	    	{lat:43.028681, lng:-77.434801, name:"Constellation Brands"},
+   	    	{lat:37.697913, lng:-121.923226, name:"The Cooper Companies"},
+   	    	{lat:42.145685, lng:-77.055929, name:"Corning Inc."},
+   	    	{lat:47.551557, lng:-122.052804, name:"Costco"},
+   	    	{lat:40.748782, lng:-73.985763, name:"Coty, Inc."},
+   	    	{lat:29.754974, lng:-95.483143, name:"Crown Castle International"},
+   	    	{lat:38.860606, lng:-77.214221, name:"CSRA"},
+   	    	{lat:30.324836, lng:-81.664122, name:"CSX Corporation"},
+   	    	{lat:39.204001, lng:-85.922932, name:"Cummins"},
+   	    	{lat:41.990592, lng:-71.477612, name:"CVS Health"},
+   	    	{lat:32.756299, lng:-97.330690, name:"D. R. Horton"},
+   	    	{lat:38.901932, lng:-77.049344, name:"Danaher Corporation"},
+   	    	{lat:28.417817, lng:-81.424681, name:"Darden Restaurants"},
+   	    	{lat:39.753852, lng:-105.004120, name:"DaVita"},
+   	    	{lat:41.476558, lng:-90.425553, name:"John Deere"},
+   	    	{lat:51.359998, lng:0.581812, name:"Delphi Automotive"},
+   	    	{lat:33.656628, lng:-84.423209, name:"Delta Air Lines"},
+   	    	{lat:39.963159, lng:-76.734227, name:"Dentsply Sirona"},
+   	    	{lat:35.467204, lng:-97.517680, name:"Devon Energy"},
+   	    	{lat:37.795192, lng:-122.397876, name:"Digital Realty"},
+   	    	{lat:42.156985, lng:-87.890056, name:"Discover Financial"},
+   	    	{lat:38.995732, lng:-77.028310, name:"Discovery Communications"},
+   	    	{lat:39.545855, lng:-104.856230, name:"Dish Network"},
+   	    	{lat:36.309627, lng:-86.699807, name:"Dollar General"},
+   	    	{lat:36.770177, lng:-76.240719, name:"Dollar Tree"},
+   	    	{lat:37.534512, lng:-77.452021, name:"Dominion Energy"},
+   	    	{lat:41.833521, lng:-88.007601, name:"Dover Corporation"},
+   	    	{lat:33.078081, lng:-96.806018, name:"Dr Pepper Snapple Group"},
+   	    	{lat:42.333634, lng:-83.057338, name:"DTE Energy"},
+   	    	{lat:39.755682, lng:-75.605150, name:"DuPont"},
+   	    	{lat:35.224403, lng:-80.848774, name:"Duke Energy"},
+   	    	{lat:38.923668, lng:-77.220788, name:"DXC Technology"},
+   	    	{lat:40.760618, lng:-73.980777, name:"E-Trade"},
+   	    	{lat:36.535422, lng:-82.550533, name:"Eastman Chemical Company"},
+   	    	{lat:53.332869, lng:-6.241088, name:"Eaton Corporation"},
+   	    	{lat:37.295444, lng:-121.926101, name:"eBay"},
+   	    	{lat:44.946323, lng:-93.094391, name:"Ecolab"},
+   	    	{lat:34.054163, lng:-118.080738, name:"Edison International"},
+   	    	{lat:33.698570, lng:-117.851641, name:"Edwards Lifesciences"},
+   	    	{lat:37.523570, lng:-122.254036, name:"Electronic Arts"},
+   	    	{lat:38.731846, lng:-90.279013, name:"Emerson Electric"},
+   	    	{lat:29.949198, lng:-90.076842, name:"Entergy"},
+   	    	{lat:36.096138, lng:-86.821638, name:"Envision Healthcare"},
+   	    	{lat:29.758988, lng:-95.370768, name:"EOG Resources"},
+   	    	{lat:40.442740, lng:-80.000945, name:"EQT"},
+   	    	{lat:33.796690, lng:-84.388534, name:"Equifax"},
+   	    	{lat:37.527475, lng:-122.261081, name:"Equinix"},
+   	    	{lat:41.885368, lng:-87.639649, name:"Equity Residential"},
+   	    	{lat:37.544948, lng:-122.290528, name:"Essex Property Trust"},
+   	    	{lat:40.763814, lng:-73.972375, name:"Estée Lauder Companies"},
+   	    	{lat:41.881796, lng:-87.630234, name:"Exelon"},
+   	    	{lat:47.613606, lng:-122.197014, name:"Expedia, Inc."},
+   	    	{lat:47.606077, lng:-122.334726, name:"Expeditors International"},
+   	    	{lat:38.718925, lng:-90.310426, name:"Express Scripts"},
+   	    	{lat:40.633747, lng:-111.813040, name:"Extra Space Storage"},
+   	    	{lat:32.890123, lng:-96.950209, name:"ExxonMobil"},
+
+
+   	    ];
+   	    
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: paris,
+          mapTypeId: 'satellite'
+        });
+        
+        corporations.forEach(function(corporation){
+        	new CustomMarker(new google.maps.LatLng(corporation.lat,corporation.lng), map, {text: corporation.name});
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6yMzKeNVRLSKhaX7kR7-heaYnMtPVw_c&callback=initMap&v=3.exp">
+    </script>
 </html>
