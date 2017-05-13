@@ -7,8 +7,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerExceptionResolverComposite;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
-import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 public class SampleHandlerExceptionResolver implements HandlerExceptionResolver {
 
@@ -19,7 +17,6 @@ public class SampleHandlerExceptionResolver implements HandlerExceptionResolver 
 	}
 	
 	public void todo() {
-		ResponseStatusExceptionResolver.class.getName();
 		SimpleMappingExceptionResolver.class.getName();
 		HandlerExceptionResolverComposite.class.getName();
 	}
