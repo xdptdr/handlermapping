@@ -1,0 +1,76 @@
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;">
+    <!ENTITY bull "&#8226;">
+    <!ENTITY copy "&#169;">
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	</f:facet>
+
+	<title>PrimeFaces ShowCase</title>
+	<ui:insert name="head" />
+
+</h:head>
+
+<h:body>
+	<div class="PC">
+		<div id="CONTENTSIDE">
+			<div id="CONTENTSIDEindent">
+				<div class="content-container">
+					<div class="ContentSideSections">
+						<div class="Content100 overHidden TextShadow">
+							<span
+								class="fontSize30 TextShadow orange regularFont marginBottom20 dispBlock">Some buttons</span>
+						</div>
+					</div>
+
+					<div class="ContentSideSections Implementation">
+						<dl>
+							<dt>With text :</dt>
+							<dd>
+								<p:button outcome="index" value="Bookmark" icon="ui-icon-star"
+									style="margin-right:20px;">
+									<f:param name="productId" value="With text" />
+								</p:button>
+							</dd>
+							<dt>With text and icon :</dt>
+							<dd>
+								<p:button outcome="index" value="With Icon" icon="ui-icon-star"
+									style="margin-right:20px;">
+									<f:param name="productId" value="With icon" />
+								</p:button>
+							</dd>
+							<dt>With icon :</dt>
+							<dd>
+								<p:button outcome="index" icon="ui-icon-star"
+									style="margin-right:20px;" title="Icon Only">
+									<f:param name="productId" value="Icon only" />
+								</p:button>
+							</dd>
+							<dt>Disabled :</dt>
+							<dd>
+								<p:button outcome="index" value="Bookmark" icon="ui-icon-star"
+									disabled="true" style="margin-right:20px;">
+									<f:param name="productId" value="Disabled" />
+								</p:button>
+							</dd>
+						</dl>
+						#{param['productId']}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</h:body>
+</html>
