@@ -152,5 +152,7 @@ public class JCAServlet extends HttpServlet {
 		javax.resource.spi.LocalTransaction ltSPI = new MyLocalTransactionSPI();
 		
 		// 6.4
+		
+		
 	}
 }
