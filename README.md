@@ -1,6 +1,12 @@
 # manybranches (JMS)
 
+## Focus
+
 * <http://docs.oracle.com/javaee/1.3/jms/tutorial/>
+
+* <https://jcp.org/en/jsr/detail?id=322> : JCA 1.6
+
+## Other links
 
 * <https://www.javatpoint.com/jms-tutorial>
 * <https://www.jmdoudoux.fr/java/dej/chap-jms.htm>
@@ -14,8 +20,7 @@
 * <https://examples.javacodegeeks.com/enterprise-java/jms/java-jms-helloworld-on-jboss-example/>
 * <http://activemq.apache.org/>
 * <http://hornetq.jboss.org/>
-* <https://en.wikipedia.org/wiki/Java_EE_Connector_Architecture>
-* <https://jcp.org/en/jsr/detail?id=322> : JCA 1.6
+
 * <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/jms.html>
 * <https://en.wikipedia.org/wiki/Enterprise_service_bus> ESB
 * <https://en.wikipedia.org/wiki/Service-oriented_architecture> SOA
