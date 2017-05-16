@@ -1,4 +1,4 @@
-package com.github.xdptdr;
+package com.github.xdptdr.hornetq;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;

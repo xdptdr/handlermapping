@@ -31,5 +31,5 @@
 * <https://en.wikipedia.org/wiki/Business_Process_Execution_Language> BPEL
 * <https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol> AMQP
 * <https://en.wikipedia.org/wiki/Streaming_Text_Oriented_Messaging_Protocol> STOMP
-
+* <https://en.wikipedia.org/wiki/Enterprise_JavaBeans> EJB
  
