@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.github.xdptdr</groupId>
+		<artifactId>manybranches-pom</artifactId>
+		<version>1.0</version>
+	</parent>
+	<artifactId>manybranches-rar</artifactId>
+	<packaging>jar</packaging>
+	<name>manybranches-rar</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<!-- <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-arquillian-embedded-byteman</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-arquillian-embedded</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-as</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-codegenerator</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-common-api</artifactId> 
+			<version>1.2.7.Final</version> </dependency> -->
+		<dependency>
+			<groupId>org.jboss.ironjacamar</groupId>
+			<artifactId>ironjacamar-common-impl</artifactId>
+			<version>1.2.7.Final</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-common-spi</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-core-api</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-core-impl</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-depchain</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-deployers-common</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-deployers-fungal</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-embedded</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-jdbc</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-spec-api</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-test-eis</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-validator-ant</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-validator-cli</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>ironjacamar-validator-maven</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>ironjacamar-validator</artifactId> <version>1.2.7.Final</version> 
+			</dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> <artifactId>jdbc-local</artifactId> 
+			<version>1.2.7.Final</version> </dependency> <dependency> <groupId>org.jboss.ironjacamar</groupId> 
+			<artifactId>jdbc-xa</artifactId> <version>1.2.7.Final</version> </dependency> -->
+
+
+	</dependencies>
+	<!-- <repositories>
+		<repository>
+			<id>jboss</id>
+			<name>jboss</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+		</repository>
+	</repositories> -->
+</project>
