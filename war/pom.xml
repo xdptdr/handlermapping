@@ -139,5 +139,31 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>deploy-resource-adapter</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.wildfly.plugins</groupId>
+						<artifactId>wildfly-maven-plugin</artifactId>
+						<version>1.1.0.Final</version>
+						<executions>
+							<execution>
+								<id>deploy-resource-adapter</id>
+								<phase>initialize</phase>
+								<configuration>
+									<groupId>com.github.xdptdr</groupId>
+									<artifactId>manybranches-rar</artifactId>
+									<name>splout.rar</name>
+								</configuration>
+								<goals>
+									<goal>deploy-artifact</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>

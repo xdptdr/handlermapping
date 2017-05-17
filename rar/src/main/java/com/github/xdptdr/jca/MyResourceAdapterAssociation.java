@@ -4,6 +4,8 @@ import javax.resource.ResourceException;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
 
+import com.github.xdptdr.splout.MyResourceAdapter;
+
 public class MyResourceAdapterAssociation implements ResourceAdapterAssociation {
 
 	private ResourceAdapter resourceAdapter = new MyResourceAdapter();

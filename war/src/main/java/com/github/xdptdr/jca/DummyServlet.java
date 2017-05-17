@@ -85,6 +85,9 @@ import javax.transaction.xa.Xid;
 import org.ietf.jgss.GSSCredential;
 import org.omg.CORBA.portable.Streamable;
 
+import com.github.xdptdr.splout.MyManagedConnectionFactory;
+import com.github.xdptdr.splout.MyResourceAdapter;
+
 public class DummyServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -127,7 +130,7 @@ public class DummyServlet extends HttpServlet {
 
 		Connector.class.getName();
 
-		MyConnectorAnnotatedClass con = new MyConnectorAnnotatedClass();
+		MyResourceAdapter con = new MyResourceAdapter();
 
 		ManagedConnectionFactory mcf = new MyManagedConnectionFactory();
 
@@ -615,21 +618,21 @@ public class DummyServlet extends HttpServlet {
 
 		// resourceadapter-class
 
-		new Boolean(new MyConnectorAnnotatedClass() instanceof ResourceAdapter);
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).description();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).displayName();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).smallIcon();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).largeIcon();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).vendorName();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).eisType();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).version();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).licenseDescription();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).licenseRequired();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).authMechanisms();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).reauthenticationSupport();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).securityPermissions();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).transactionSupport();
-		MyConnectorAnnotatedClass.class.getAnnotation(Connector.class).requiredWorkContexts();
+		new Boolean(new MyResourceAdapter() instanceof ResourceAdapter);
+		MyResourceAdapter.class.getAnnotation(Connector.class).description();
+		MyResourceAdapter.class.getAnnotation(Connector.class).displayName();
+		MyResourceAdapter.class.getAnnotation(Connector.class).smallIcon();
+		MyResourceAdapter.class.getAnnotation(Connector.class).largeIcon();
+		MyResourceAdapter.class.getAnnotation(Connector.class).vendorName();
+		MyResourceAdapter.class.getAnnotation(Connector.class).eisType();
+		MyResourceAdapter.class.getAnnotation(Connector.class).version();
+		MyResourceAdapter.class.getAnnotation(Connector.class).licenseDescription();
+		MyResourceAdapter.class.getAnnotation(Connector.class).licenseRequired();
+		MyResourceAdapter.class.getAnnotation(Connector.class).authMechanisms();
+		MyResourceAdapter.class.getAnnotation(Connector.class).reauthenticationSupport();
+		MyResourceAdapter.class.getAnnotation(Connector.class).securityPermissions();
+		MyResourceAdapter.class.getAnnotation(Connector.class).transactionSupport();
+		MyResourceAdapter.class.getAnnotation(Connector.class).requiredWorkContexts();
 
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).type();
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).description();

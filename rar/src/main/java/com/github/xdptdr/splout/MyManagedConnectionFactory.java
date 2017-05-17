@@ -1,4 +1,4 @@
-package com.github.xdptdr.jca;
+package com.github.xdptdr.splout;
 
 import java.io.PrintWriter;
 import java.util.Set;
@@ -9,6 +9,8 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.security.auth.Subject;
+
+import com.github.xdptdr.jca.MyManagedConnection;
 
 public class MyManagedConnectionFactory implements ManagedConnectionFactory {
 
