@@ -1,13 +1,22 @@
 package com.github.xdptdr.splout;
 
+import java.io.Serializable;
+
 import javax.resource.ResourceException;
+import javax.resource.spi.Activation;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.InvalidPropertyException;
 import javax.resource.spi.ResourceAdapter;
 
-public class MyActivationSpec implements ActivationSpec {
+@Activation(messageListeners = { SploutMessageListener.class })
+public class SploutActivationSpec implements ActivationSpec, Serializable {
 
-	private ResourceAdapter resourceAdapter = null;
+	private static final long serialVersionUID = 1L;
+
+	private ResourceAdapter resourceAdapter;
+
+	public SploutActivationSpec() {
+	}
 
 	@Override
 	public ResourceAdapter getResourceAdapter() {

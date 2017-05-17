@@ -74,4 +74,9 @@ public class MyManagedConnection implements ManagedConnection {
 		return logWriter;
 	}
 
+	public boolean isDestroyed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

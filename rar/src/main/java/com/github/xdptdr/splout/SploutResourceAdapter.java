@@ -1,5 +1,7 @@
 package com.github.xdptdr.splout;
 
+import java.io.Serializable;
+
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.BootstrapContext;
@@ -8,80 +10,73 @@ import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkManager;
+import javax.resource.spi.work.WorkRejectedException;
 import javax.transaction.xa.XAResource;
 
-import com.github.xdptdr.jca.MyXAResource;
-
 @Connector
-public class MyResourceAdapter implements ResourceAdapter {
+public class SploutResourceAdapter implements ResourceAdapter, Serializable {
 
-	private XAResource xaResource = new MyXAResource();
+	private static final long serialVersionUID = 1L;
 
 	private String server;
 	private String port;
 
+	private transient WorkManager workManager;
+
+	private Work pollingThread;
+
+	public SploutResourceAdapter() {
+	}
+
 	@Override
 	public void start(BootstrapContext ctx) throws ResourceAdapterInternalException {
-		WorkManager wm = ctx.getWorkManager();
-		for (int i = 0; i < 10; ++i) {
-			Work work = new MyWork();
-			try {
-				wm.startWork(work);
-			} catch (WorkException ex) {
-				ex.printStackTrace();
-			}
+
+		try {
+			workManager = ctx.getWorkManager();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new ResourceAdapterInternalException(ex);
+		}
+
+		try {
+			pollingThread = new PollingSploutWork(workManager);
+			workManager.scheduleWork(pollingThread);
+		} catch (WorkRejectedException ex) {
+			throw new ResourceAdapterInternalException(ex);
+		} catch (Exception ex) {
+			throw new ResourceAdapterInternalException(ex);
 		}
 	}
 
 	@Override
 	public void stop() {
+		try {
+			((PollingSploutWork) pollingThread).stopPolling();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
 	public void endpointActivation(MessageEndpointFactory endpointFactory, ActivationSpec spec)
 			throws ResourceException {
+		try {
+			EndpointConsumer ec = new EndpointConsumer(endpointFactory, (SploutActivationSpec) spec);
+			((PollingSploutWork) pollingThread).addEndpointConsumer(endpointFactory, ec);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
 	public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec spec) {
+		((PollingSploutWork) pollingThread).removeEndpointConsumer(endpointFactory);
 	}
 
 	@Override
 	public XAResource[] getXAResources(ActivationSpec[] specs) throws ResourceException {
-		return new XAResource[] { xaResource };
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((port == null) ? 0 : port.hashCode());
-		result = prime * result + ((server == null) ? 0 : server.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		MyResourceAdapter other = (MyResourceAdapter) obj;
-		if (port == null) {
-			if (other.port != null)
-				return false;
-		} else if (!port.equals(other.port))
-			return false;
-		if (server == null) {
-			if (other.server != null)
-				return false;
-		} else if (!server.equals(other.server))
-			return false;
-		return true;
+		return null;
 	}
 
 	public String getServer() {

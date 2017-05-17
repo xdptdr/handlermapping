@@ -7,11 +7,13 @@ import javax.resource.cci.Interaction;
 import javax.resource.cci.LocalTransaction;
 import javax.resource.cci.ResultSetInfo;
 
+import com.github.xdptdr.splout.SploutConnectionMetaData;
+
 public class MyConnection implements Connection {
 
 	private Interaction interaction = new MyInteraction();
 	private LocalTransaction localTransaction = new MyLocalTransactionCCI();
-	private ConnectionMetaData connectionMetaData = new MyConnectionMetaData();
+	private ConnectionMetaData connectionMetaData = new SploutConnectionMetaData(null);
 	private ResultSetInfo resultSetInfo = new MyResultSetInfo();
 
 	@Override
@@ -31,7 +33,7 @@ public class MyConnection implements Connection {
 
 	@Override
 	public ResultSetInfo getResultSetInfo() throws ResourceException {
-		return resultSetInfo ;
+		return resultSetInfo;
 	}
 
 	@Override

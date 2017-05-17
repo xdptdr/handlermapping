@@ -85,10 +85,11 @@ import javax.transaction.xa.Xid;
 import org.ietf.jgss.GSSCredential;
 import org.omg.CORBA.portable.Streamable;
 
-import com.github.xdptdr.splout.MyActivationSpec;
 import com.github.xdptdr.splout.MyManagedConnectionFactory;
-import com.github.xdptdr.splout.MyResourceAdapter;
 import com.github.xdptdr.splout.MyWork;
+import com.github.xdptdr.splout.SploutActivationSpec;
+import com.github.xdptdr.splout.SploutConnectionManager;
+import com.github.xdptdr.splout.SploutResourceAdapter;
 
 public class DummyServlet extends HttpServlet {
 
@@ -124,7 +125,7 @@ public class DummyServlet extends HttpServlet {
 		BootstrapContext bc = new MyBootstrapContext();
 		WorkManager wm = bc.getWorkManager();
 
-		ResourceAdapter ra = new MyResourceAdapter();
+		ResourceAdapter ra = new SploutResourceAdapter();
 		ra.start(bc);
 		ra.stop();
 
@@ -132,11 +133,11 @@ public class DummyServlet extends HttpServlet {
 
 		Connector.class.getName();
 
-		MyResourceAdapter con = new MyResourceAdapter();
+		SploutResourceAdapter con = new SploutResourceAdapter();
 
 		ManagedConnectionFactory mcf = new MyManagedConnectionFactory();
 
-		ActivationSpec as = new MyActivationSpec();
+		ActivationSpec as = new SploutActivationSpec();
 
 		// 5.3.2
 
@@ -209,7 +210,7 @@ public class DummyServlet extends HttpServlet {
 		ConnectionFactory cf = new MyConnectionFactory();
 		Connection c = new MyConnection();
 
-		ConnectionManager cm = new MyConnectionManager();
+		ConnectionManager cm = new SploutConnectionManager();
 
 		ConnectionEventListener cel = new MyConnectionEventListener();
 
@@ -620,21 +621,21 @@ public class DummyServlet extends HttpServlet {
 
 		// resourceadapter-class
 
-		new Boolean(new MyResourceAdapter() instanceof ResourceAdapter);
-		MyResourceAdapter.class.getAnnotation(Connector.class).description();
-		MyResourceAdapter.class.getAnnotation(Connector.class).displayName();
-		MyResourceAdapter.class.getAnnotation(Connector.class).smallIcon();
-		MyResourceAdapter.class.getAnnotation(Connector.class).largeIcon();
-		MyResourceAdapter.class.getAnnotation(Connector.class).vendorName();
-		MyResourceAdapter.class.getAnnotation(Connector.class).eisType();
-		MyResourceAdapter.class.getAnnotation(Connector.class).version();
-		MyResourceAdapter.class.getAnnotation(Connector.class).licenseDescription();
-		MyResourceAdapter.class.getAnnotation(Connector.class).licenseRequired();
-		MyResourceAdapter.class.getAnnotation(Connector.class).authMechanisms();
-		MyResourceAdapter.class.getAnnotation(Connector.class).reauthenticationSupport();
-		MyResourceAdapter.class.getAnnotation(Connector.class).securityPermissions();
-		MyResourceAdapter.class.getAnnotation(Connector.class).transactionSupport();
-		MyResourceAdapter.class.getAnnotation(Connector.class).requiredWorkContexts();
+		new Boolean(new SploutResourceAdapter() instanceof ResourceAdapter);
+		SploutResourceAdapter.class.getAnnotation(Connector.class).description();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).displayName();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).smallIcon();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).largeIcon();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).vendorName();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).eisType();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).version();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).licenseDescription();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).licenseRequired();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).authMechanisms();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).reauthenticationSupport();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).securityPermissions();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).transactionSupport();
+		SploutResourceAdapter.class.getAnnotation(Connector.class).requiredWorkContexts();
 
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).type();
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).description();

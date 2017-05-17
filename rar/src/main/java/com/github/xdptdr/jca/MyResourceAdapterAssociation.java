@@ -4,11 +4,11 @@ import javax.resource.ResourceException;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
 
-import com.github.xdptdr.splout.MyResourceAdapter;
+import com.github.xdptdr.splout.SploutResourceAdapter;
 
 public class MyResourceAdapterAssociation implements ResourceAdapterAssociation {
 
-	private ResourceAdapter resourceAdapter = new MyResourceAdapter();
+	private ResourceAdapter resourceAdapter = new SploutResourceAdapter();
 
 	@Override
 	public ResourceAdapter getResourceAdapter() {
