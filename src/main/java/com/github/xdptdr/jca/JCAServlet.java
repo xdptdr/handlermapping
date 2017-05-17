@@ -711,19 +711,19 @@ public class JCAServlet extends HttpServlet {
 		Class.class.getAnnotation(AdministeredObjectDefinition.class).className();
 		Class.class.getAnnotation(AdministeredObjectDefinition.class).interfaceName();
 		Class.class.getAnnotation(AdministeredObjectDefinition.class).properties();
-		
+
 		// 18.9.4
-		
+
 		Class.class.getAnnotation(AdministeredObjectDefinitions.class).value();
-		
+
 		// 19.4.1
-		
+
 		MessageEndpointFactory.class.getName();
 		ActivationSpec.class.getName();
 		ManagedConnection.class.getName();
-		
+
 		// 19.4.2
-		
+
 		ResourceAdapter.class.getName();
 		ManagedConnectionFactory.class.getName();
 		ConnectionRequestInfo.class.getName();
@@ -731,12 +731,16 @@ public class JCAServlet extends HttpServlet {
 		GSSCredential.class.getName();
 		PasswordCredential.class.getName();
 		Record.class.getName();
-		
-		// 20
-		
-		
-		
-		
 
+		// 20
+
+		// Resource Adapter Archive : *.rar
+		
+		// Deployment descriptor : META-INF/ra.xml
+		
+		// 20.4
+		
+	
+		
 	}
 }
