@@ -1,4 +1,4 @@
-package com.github.xdptdr.jca;
+package com.github.xdptdr.splout;
 
 import javax.resource.spi.work.Work;
 

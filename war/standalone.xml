@@ -366,7 +366,7 @@
 					<connection-definitions>
 						<connection-definition
 							class-name="com.github.xdptdr.splout.MyManagedConnectionFactory"
-							jndi-name="java:/eis/SploutConnectionFactory" pool-name="SploutConnectionFactory">
+							jndi-name="java:jboss/datasource/SploutConnectionFactory" >
 							<config-property name="Name">Splout Inc
 							</config-property>
 							<security>

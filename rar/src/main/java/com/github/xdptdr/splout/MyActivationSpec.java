@@ -1,19 +1,16 @@
-package com.github.xdptdr.jca;
+package com.github.xdptdr.splout;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.InvalidPropertyException;
 import javax.resource.spi.ResourceAdapter;
 
-import com.github.xdptdr.splout.MyResourceAdapter;
-
 public class MyActivationSpec implements ActivationSpec {
 
-	private ResourceAdapter resourceAdapter = new MyResourceAdapter();
+	private ResourceAdapter resourceAdapter = null;
 
 	@Override
 	public ResourceAdapter getResourceAdapter() {
-
 		return resourceAdapter;
 	}
 

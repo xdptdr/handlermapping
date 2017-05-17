@@ -33,7 +33,7 @@ public class JCAServlet extends HttpServlet {
 
 	public void doStuff(HttpServletRequest req, HttpServletResponse resp) throws NamingException, IOException {
 		Context context = new InitialContext();
-		ManagedConnectionFactory mcf = (ManagedConnectionFactory) context.lookup("java:comp/env/eis/SploutConnectionFactory");
+		Object mcf =  context.lookup("java:/TransactionManager");
 		if (mcf != null) {
 			resp.getWriter().println(mcf.getClass().getName());
 		} else {

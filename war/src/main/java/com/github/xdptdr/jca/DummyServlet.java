@@ -85,8 +85,10 @@ import javax.transaction.xa.Xid;
 import org.ietf.jgss.GSSCredential;
 import org.omg.CORBA.portable.Streamable;
 
+import com.github.xdptdr.splout.MyActivationSpec;
 import com.github.xdptdr.splout.MyManagedConnectionFactory;
 import com.github.xdptdr.splout.MyResourceAdapter;
+import com.github.xdptdr.splout.MyWork;
 
 public class DummyServlet extends HttpServlet {
 

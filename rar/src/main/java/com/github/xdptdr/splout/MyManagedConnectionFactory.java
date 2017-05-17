@@ -8,11 +8,13 @@ import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
+import javax.resource.spi.ResourceAdapter;
+import javax.resource.spi.ResourceAdapterAssociation;
 import javax.security.auth.Subject;
 
 import com.github.xdptdr.jca.MyManagedConnection;
 
-public class MyManagedConnectionFactory implements ManagedConnectionFactory {
+public class MyManagedConnectionFactory implements ManagedConnectionFactory, ResourceAdapterAssociation {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,6 +23,8 @@ public class MyManagedConnectionFactory implements ManagedConnectionFactory {
 	private ManagedConnection managedConnection = new MyManagedConnection();
 
 	private PrintWriter logWriter;
+
+	private ResourceAdapter resourceAdapter;
 
 	@Override
 	public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException {
@@ -54,6 +58,17 @@ public class MyManagedConnectionFactory implements ManagedConnectionFactory {
 	@Override
 	public PrintWriter getLogWriter() throws ResourceException {
 		return logWriter;
+	}
+
+	@Override
+	public ResourceAdapter getResourceAdapter() {
+		return resourceAdapter;
+	}
+
+	@Override
+	public void setResourceAdapter(ResourceAdapter ra) throws ResourceException {
+		resourceAdapter = ra;
+
 	}
 
 }

@@ -7,6 +7,9 @@ import javax.resource.spi.Connector;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
+import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkException;
+import javax.resource.spi.work.WorkManager;
 import javax.transaction.xa.XAResource;
 
 import com.github.xdptdr.jca.MyXAResource;
@@ -21,6 +24,15 @@ public class MyResourceAdapter implements ResourceAdapter {
 
 	@Override
 	public void start(BootstrapContext ctx) throws ResourceAdapterInternalException {
+		WorkManager wm = ctx.getWorkManager();
+		for (int i = 0; i < 10; ++i) {
+			Work work = new MyWork();
+			try {
+				wm.startWork(work);
+			} catch (WorkException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	@Override

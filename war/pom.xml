@@ -165,5 +165,34 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>activate-resource-adapter</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.wildfly.plugins</groupId>
+						<artifactId>wildfly-maven-plugin</artifactId>
+						<version>1.1.0.Final</version>
+						<executions>
+							<execution>
+								<id>activate-resource-adapter</id>
+								<phase>initialize</phase>
+								<configuration>
+									<batch>true</batch>
+									<fail-on-error>true</fail-on-error>
+									<commands>
+										<command>/subsystem=resource-adapters/resource-adapter=splout.rar/connection-definitions=cfName:add(class-name=com.github.xdptdr.splout.MyManagedConnectionFactory,jndi-name=java:jboss/datasource/SploutConnectionFactory)</command>
+										<command>/subsystem=resource-adapters/resource-adapter=splout.rar:activate</command>
+									</commands>
+								</configuration>
+								<goals>
+									<goal>execute-commands</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>
