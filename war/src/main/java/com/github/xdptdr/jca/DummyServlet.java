@@ -86,7 +86,7 @@ import org.ietf.jgss.GSSCredential;
 import org.omg.CORBA.portable.Streamable;
 
 import com.github.xdptdr.bouip.BouipConnection;
-import com.github.xdptdr.bouip.BouipResourceAdapter;
+import com.github.xdptdr.bouip.FSWResourceAdapter;
 import com.github.xdptdr.splout.MyManagedConnectionFactory;
 import com.github.xdptdr.splout.MyWork;
 import com.github.xdptdr.splout.SploutActivationSpec;
@@ -127,7 +127,7 @@ public class DummyServlet extends HttpServlet {
 		BootstrapContext bc = new MyBootstrapContext();
 		WorkManager wm = bc.getWorkManager();
 
-		ResourceAdapter ra = new BouipResourceAdapter();
+		ResourceAdapter ra = new FSWResourceAdapter();
 		ra.start(bc);
 		ra.stop();
 
@@ -135,7 +135,7 @@ public class DummyServlet extends HttpServlet {
 
 		Connector.class.getName();
 
-		BouipResourceAdapter con = new BouipResourceAdapter();
+		FSWResourceAdapter con = new FSWResourceAdapter();
 
 		ManagedConnectionFactory mcf = new MyManagedConnectionFactory();
 
@@ -623,21 +623,21 @@ public class DummyServlet extends HttpServlet {
 
 		// resourceadapter-class
 
-		new Boolean(new BouipResourceAdapter() instanceof ResourceAdapter);
-		BouipResourceAdapter.class.getAnnotation(Connector.class).description();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).displayName();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).smallIcon();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).largeIcon();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).vendorName();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).eisType();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).version();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).licenseDescription();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).licenseRequired();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).authMechanisms();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).reauthenticationSupport();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).securityPermissions();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).transactionSupport();
-		BouipResourceAdapter.class.getAnnotation(Connector.class).requiredWorkContexts();
+		new Boolean(new FSWResourceAdapter() instanceof ResourceAdapter);
+		FSWResourceAdapter.class.getAnnotation(Connector.class).description();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).displayName();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).smallIcon();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).largeIcon();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).vendorName();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).eisType();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).version();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).licenseDescription();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).licenseRequired();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).authMechanisms();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).reauthenticationSupport();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).securityPermissions();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).transactionSupport();
+		FSWResourceAdapter.class.getAnnotation(Connector.class).requiredWorkContexts();
 
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).type();
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).description();
