@@ -1,0 +1,197 @@
+package com.github.xdptdr;
+
+import javax.resource.AdministeredObjectDefinition;
+import javax.resource.AdministeredObjectDefinitions;
+import javax.resource.ConnectionFactoryDefinition;
+import javax.resource.ConnectionFactoryDefinitions;
+import javax.resource.NotSupportedException;
+import javax.resource.Referenceable;
+import javax.resource.ResourceException;
+import javax.resource.cci.Connection;
+import javax.resource.cci.ConnectionFactory;
+import javax.resource.cci.ConnectionMetaData;
+import javax.resource.cci.ConnectionSpec;
+import javax.resource.cci.IndexedRecord;
+import javax.resource.cci.Interaction;
+import javax.resource.cci.InteractionSpec;
+import javax.resource.cci.LocalTransaction;
+import javax.resource.cci.MappedRecord;
+import javax.resource.cci.MessageListener;
+import javax.resource.cci.Record;
+import javax.resource.cci.RecordFactory;
+import javax.resource.cci.ResourceAdapterMetaData;
+import javax.resource.cci.ResourceWarning;
+import javax.resource.cci.ResultSet;
+import javax.resource.cci.ResultSetInfo;
+import javax.resource.cci.Streamable;
+import javax.resource.spi.Activation;
+import javax.resource.spi.ActivationSpec;
+import javax.resource.spi.AdministeredObject;
+import javax.resource.spi.ApplicationServerInternalException;
+import javax.resource.spi.AuthenticationMechanism;
+import javax.resource.spi.BootstrapContext;
+import javax.resource.spi.CommException;
+import javax.resource.spi.ConfigProperty;
+import javax.resource.spi.ConnectionDefinition;
+import javax.resource.spi.ConnectionDefinitions;
+import javax.resource.spi.ConnectionEvent;
+import javax.resource.spi.ConnectionEventListener;
+import javax.resource.spi.ConnectionManager;
+import javax.resource.spi.ConnectionRequestInfo;
+import javax.resource.spi.Connector;
+import javax.resource.spi.DissociatableManagedConnection;
+import javax.resource.spi.EISSystemException;
+import javax.resource.spi.IllegalStateException;
+import javax.resource.spi.InvalidPropertyException;
+import javax.resource.spi.LazyAssociatableConnectionManager;
+import javax.resource.spi.LazyEnlistableConnectionManager;
+import javax.resource.spi.LazyEnlistableManagedConnection;
+import javax.resource.spi.LocalTransactionException;
+import javax.resource.spi.ManagedConnection;
+import javax.resource.spi.ManagedConnectionFactory;
+import javax.resource.spi.ManagedConnectionMetaData;
+import javax.resource.spi.ResourceAdapter;
+import javax.resource.spi.ResourceAdapterAssociation;
+import javax.resource.spi.ResourceAdapterInternalException;
+import javax.resource.spi.ResourceAllocationException;
+import javax.resource.spi.RetryableException;
+import javax.resource.spi.RetryableUnavailableException;
+import javax.resource.spi.SecurityException;
+import javax.resource.spi.SecurityPermission;
+import javax.resource.spi.SharingViolationException;
+import javax.resource.spi.TransactionSupport;
+import javax.resource.spi.UnavailableException;
+import javax.resource.spi.ValidatingManagedConnectionFactory;
+import javax.resource.spi.XATerminator;
+import javax.resource.spi.endpoint.MessageEndpoint;
+import javax.resource.spi.endpoint.MessageEndpointFactory;
+import javax.resource.spi.security.GenericCredential;
+import javax.resource.spi.security.PasswordCredential;
+import javax.resource.spi.work.DistributableWork;
+import javax.resource.spi.work.DistributableWorkManager;
+import javax.resource.spi.work.ExecutionContext;
+import javax.resource.spi.work.HintsContext;
+import javax.resource.spi.work.RetryableWorkRejectedException;
+import javax.resource.spi.work.SecurityContext;
+import javax.resource.spi.work.TransactionContext;
+import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkAdapter;
+import javax.resource.spi.work.WorkCompletedException;
+import javax.resource.spi.work.WorkContext;
+import javax.resource.spi.work.WorkContextErrorCodes;
+import javax.resource.spi.work.WorkContextLifecycleListener;
+import javax.resource.spi.work.WorkContextProvider;
+import javax.resource.spi.work.WorkEvent;
+import javax.resource.spi.work.WorkException;
+import javax.resource.spi.work.WorkListener;
+import javax.resource.spi.work.WorkManager;
+import javax.resource.spi.work.WorkRejectedException;
+
+@SuppressWarnings("deprecation")
+public class Foo {
+	public void foo() {
+		
+		// javax.resource
+		new Blop(AdministeredObjectDefinition.class).api(SPECS.JSR322);
+		new Blop(AdministeredObjectDefinitions.class).api(SPECS.JSR322);
+		new Blop(ConnectionFactoryDefinition.class).api(SPECS.JSR322);
+		new Blop(ConnectionFactoryDefinitions.class).api(SPECS.JSR322);
+		new Blop(NotSupportedException.class).api(SPECS.JSR322);
+		new Blop(Referenceable.class).api(SPECS.JSR322);
+		new Blop(ResourceException.class).api(SPECS.JSR322);
+		
+		// javax.resource.cci
+		new Blop(Connection.class).api(SPECS.JSR322);
+		new Blop(ConnectionFactory.class).api(SPECS.JSR322);
+		new Blop(ConnectionMetaData.class).api(SPECS.JSR322);
+		new Blop(ConnectionSpec.class).api(SPECS.JSR322);
+		new Blop(IndexedRecord.class).api(SPECS.JSR322);
+		new Blop(Interaction.class).api(SPECS.JSR322);
+		new Blop(InteractionSpec.class).api(SPECS.JSR322);
+		new Blop(LocalTransaction.class).api(SPECS.JSR322);
+		new Blop(MappedRecord.class).api(SPECS.JSR322);
+		new Blop(MessageListener.class).api(SPECS.JSR322);
+		new Blop(Record.class).api(SPECS.JSR322);
+		new Blop(RecordFactory.class).api(SPECS.JSR322);
+		new Blop(ResourceAdapterMetaData.class).api(SPECS.JSR322);
+		new Blop(ResourceWarning.class).api(SPECS.JSR322);
+		new Blop(ResultSet.class).api(SPECS.JSR322);
+		new Blop(ResultSetInfo.class).api(SPECS.JSR322);
+		new Blop(Streamable.class).api(SPECS.JSR322);
+		
+		// javax.resource.spi
+		new Blop(Activation.class).api(SPECS.JSR322);
+		new Blop(ActivationSpec.class).api(SPECS.JSR322);
+		new Blop(AdministeredObject.class).api(SPECS.JSR322);
+		new Blop(ApplicationServerInternalException.class).api(SPECS.JSR322);
+		new Blop(AuthenticationMechanism.class).api(SPECS.JSR322);
+		new Blop(AuthenticationMechanism.CredentialInterface.class).api(SPECS.JSR322);
+		new Blop(BootstrapContext.class).api(SPECS.JSR322);
+		new Blop(CommException.class).api(SPECS.JSR322);
+		new Blop(ConfigProperty.class).api(SPECS.JSR322);
+		new Blop(ConnectionDefinition.class).api(SPECS.JSR322);
+		new Blop(ConnectionDefinitions.class).api(SPECS.JSR322);
+		new Blop(ConnectionEvent.class).api(SPECS.JSR322);
+		new Blop(ConnectionEventListener.class).api(SPECS.JSR322);
+		new Blop(ConnectionManager.class).api(SPECS.JSR322);
+		new Blop(ConnectionRequestInfo.class).api(SPECS.JSR322);
+		new Blop(Connector.class).api(SPECS.JSR322);
+		new Blop(DissociatableManagedConnection.class).api(SPECS.JSR322);
+		new Blop(EISSystemException.class).api(SPECS.JSR322);
+		new Blop(IllegalStateException.class).api(SPECS.JSR322);
+		new Blop(InvalidPropertyException.class).api(SPECS.JSR322);
+		new Blop(LazyAssociatableConnectionManager.class).api(SPECS.JSR322);
+		new Blop(LazyEnlistableConnectionManager.class).api(SPECS.JSR322);
+		new Blop(LazyEnlistableManagedConnection.class).api(SPECS.JSR322);
+		new Blop(javax.resource.spi.LocalTransaction.class).api(SPECS.JSR322);
+		new Blop(LocalTransactionException.class).api(SPECS.JSR322);
+		new Blop(ManagedConnection.class).api(SPECS.JSR322);
+		new Blop(ManagedConnectionFactory.class).api(SPECS.JSR322);
+		new Blop(ManagedConnectionMetaData.class).api(SPECS.JSR322);
+		new Blop(ResourceAdapter.class).api(SPECS.JSR322);
+		new Blop(ResourceAdapterAssociation.class).api(SPECS.JSR322);
+		new Blop(ResourceAdapterInternalException.class).api(SPECS.JSR322);
+		new Blop(ResourceAllocationException.class).api(SPECS.JSR322);
+		new Blop(RetryableException.class).api(SPECS.JSR322);
+		new Blop(RetryableUnavailableException.class).api(SPECS.JSR322);
+		new Blop(SecurityException.class).api(SPECS.JSR322);
+		new Blop(SecurityPermission.class).api(SPECS.JSR322);
+		new Blop(SharingViolationException.class).api(SPECS.JSR322);
+		new Blop(TransactionSupport.class).api(SPECS.JSR322);
+		new Blop(TransactionSupport.TransactionSupportLevel.class).api(SPECS.JSR322);
+		new Blop(UnavailableException.class).api(SPECS.JSR322);
+		new Blop(ValidatingManagedConnectionFactory.class).api(SPECS.JSR322);
+		new Blop(XATerminator.class).api(SPECS.UNKNOWN);
+//		
+		// javax.resource.spi.endpoint
+		new Blop(MessageEndpoint.class).api(SPECS.JSR322);
+		new Blop(MessageEndpointFactory.class).api(SPECS.JSR322);
+		
+		// javax.resource.spi.security
+		new Blop(GenericCredential.class).api(SPECS.JSR322);
+		new Blop(PasswordCredential.class).api(SPECS.JSR322);
+		
+		// javax.resource.spi.work
+		new Blop(DistributableWork.class).api(SPECS.JSR322);
+		new Blop(DistributableWorkManager.class).api(SPECS.JSR322);
+		new Blop(ExecutionContext.class).api(SPECS.JSR322);
+		new Blop(HintsContext.class).api(SPECS.JSR322);
+		new Blop(RetryableWorkRejectedException.class).api(SPECS.JSR322);
+		new Blop(SecurityContext.class).api(SPECS.JSR322);
+		new Blop(TransactionContext.class).api(SPECS.JSR322);
+		new Blop(Work.class).api(SPECS.JSR322);
+		new Blop(WorkAdapter.class).api(SPECS.JSR322);
+		new Blop(WorkCompletedException.class).api(SPECS.JSR322);
+		new Blop(WorkContext.class).api(SPECS.JSR322);
+		new Blop(WorkContextErrorCodes.class).api(SPECS.JSR322);
+		new Blop(WorkContextLifecycleListener.class).api(SPECS.JSR322);
+		new Blop(WorkContextProvider.class).api(SPECS.JSR322);
+		new Blop(WorkEvent.class).api(SPECS.JSR322);
+		new Blop(WorkException.class).api(SPECS.JSR322);
+		new Blop(WorkListener.class).api(SPECS.JSR322);
+		new Blop(WorkManager.class).api(SPECS.JSR322);
+		new Blop(WorkRejectedException.class).api(SPECS.JSR322);
+		
+
+	}
+}
