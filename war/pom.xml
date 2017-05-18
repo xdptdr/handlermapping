@@ -181,7 +181,10 @@
 									<batch>true</batch>
 									<fail-on-error>true</fail-on-error>
 									<commands>
+										<!-- <command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:add(archive=tigrou.rar, 
+											transaction-support=XATransaction</command> -->
 										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:activate</command>
+										<!-- <command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:read-resource(recursive=true)</command> -->
 									</commands>
 								</configuration>
 								<goals>
