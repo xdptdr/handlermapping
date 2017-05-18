@@ -1,4 +1,4 @@
-package com.github.xdptdr.jca;
+package com.github.xdptdr.bouip;
 
 import java.io.PrintWriter;
 
@@ -11,7 +11,11 @@ import javax.resource.spi.ManagedConnectionMetaData;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
-public class MyManagedConnection implements ManagedConnection {
+import com.github.xdptdr.jca.MyLocalTransactionSPI;
+import com.github.xdptdr.jca.MyManagedConnectionMetaData;
+import com.github.xdptdr.jca.MyXAResource;
+
+public class BouipManagedConnection implements ManagedConnection {
 
 	private Object connection = new Object();
 	private XAResource xaResource = new MyXAResource();

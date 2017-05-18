@@ -3,16 +3,16 @@ package com.github.xdptdr.splout;
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionMetaData;
 
-import com.github.xdptdr.jca.MyManagedConnection;
+import com.github.xdptdr.bouip.BouipManagedConnection;
 
 public class SploutConnectionMetaData implements ConnectionMetaData {
 
 	private String eisProductName = "eisProductName";
 	private String eisProductVersion = "eisProductVersion";
 	private String userName = "userName";
-	private MyManagedConnection mc;
+	private BouipManagedConnection mc;
 
-	public SploutConnectionMetaData(MyManagedConnection mc) {
+	public SploutConnectionMetaData(BouipManagedConnection mc) {
 		this.mc = mc;
 	}
 

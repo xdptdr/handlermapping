@@ -12,7 +12,7 @@ import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
 import javax.security.auth.Subject;
 
-import com.github.xdptdr.jca.MyManagedConnection;
+import com.github.xdptdr.bouip.BouipManagedConnection;
 
 public class MyManagedConnectionFactory implements ManagedConnectionFactory, ResourceAdapterAssociation {
 
@@ -20,7 +20,7 @@ public class MyManagedConnectionFactory implements ManagedConnectionFactory, Res
 
 	private Object connectionFactory = new Object();
 
-	private ManagedConnection managedConnection = new MyManagedConnection();
+	private ManagedConnection managedConnection = new BouipManagedConnection();
 
 	private PrintWriter logWriter;
 

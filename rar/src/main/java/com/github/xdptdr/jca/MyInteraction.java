@@ -7,9 +7,11 @@ import javax.resource.cci.InteractionSpec;
 import javax.resource.cci.Record;
 import javax.resource.cci.ResourceWarning;
 
+import com.github.xdptdr.bouip.BouipConnection;
+
 public class MyInteraction implements Interaction {
 
-	private Connection connection = new MyConnection();
+	private Connection connection = new BouipConnection();
 	private Record record = new MyRecord();
 	private ResourceWarning resourceWarning = new ResourceWarning();
 

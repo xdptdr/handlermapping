@@ -85,11 +85,13 @@ import javax.transaction.xa.Xid;
 import org.ietf.jgss.GSSCredential;
 import org.omg.CORBA.portable.Streamable;
 
+import com.github.xdptdr.bouip.BouipConnection;
+import com.github.xdptdr.bouip.BouipResourceAdapter;
 import com.github.xdptdr.splout.MyManagedConnectionFactory;
 import com.github.xdptdr.splout.MyWork;
 import com.github.xdptdr.splout.SploutActivationSpec;
 import com.github.xdptdr.splout.SploutConnectionManager;
-import com.github.xdptdr.splout.SploutResourceAdapter;
+import com.github.xdptdr.splout.SploutConnectionRequestInfo;
 
 public class DummyServlet extends HttpServlet {
 
@@ -125,7 +127,7 @@ public class DummyServlet extends HttpServlet {
 		BootstrapContext bc = new MyBootstrapContext();
 		WorkManager wm = bc.getWorkManager();
 
-		ResourceAdapter ra = new SploutResourceAdapter();
+		ResourceAdapter ra = new BouipResourceAdapter();
 		ra.start(bc);
 		ra.stop();
 
@@ -133,7 +135,7 @@ public class DummyServlet extends HttpServlet {
 
 		Connector.class.getName();
 
-		SploutResourceAdapter con = new SploutResourceAdapter();
+		BouipResourceAdapter con = new BouipResourceAdapter();
 
 		ManagedConnectionFactory mcf = new MyManagedConnectionFactory();
 
@@ -208,7 +210,7 @@ public class DummyServlet extends HttpServlet {
 		// 6.3.1
 
 		ConnectionFactory cf = new MyConnectionFactory();
-		Connection c = new MyConnection();
+		Connection c = new BouipConnection();
 
 		ConnectionManager cm = new SploutConnectionManager();
 
@@ -264,7 +266,7 @@ public class DummyServlet extends HttpServlet {
 
 		// 6.5.1.1
 
-		ConnectionRequestInfo cri = new MyConnectionRequestInfo();
+		ConnectionRequestInfo cri = new SploutConnectionRequestInfo();
 		cm.allocateConnection(mcf, cri);
 
 		// 6.5.1.3
@@ -621,21 +623,21 @@ public class DummyServlet extends HttpServlet {
 
 		// resourceadapter-class
 
-		new Boolean(new SploutResourceAdapter() instanceof ResourceAdapter);
-		SploutResourceAdapter.class.getAnnotation(Connector.class).description();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).displayName();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).smallIcon();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).largeIcon();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).vendorName();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).eisType();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).version();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).licenseDescription();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).licenseRequired();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).authMechanisms();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).reauthenticationSupport();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).securityPermissions();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).transactionSupport();
-		SploutResourceAdapter.class.getAnnotation(Connector.class).requiredWorkContexts();
+		new Boolean(new BouipResourceAdapter() instanceof ResourceAdapter);
+		BouipResourceAdapter.class.getAnnotation(Connector.class).description();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).displayName();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).smallIcon();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).largeIcon();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).vendorName();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).eisType();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).version();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).licenseDescription();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).licenseRequired();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).authMechanisms();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).reauthenticationSupport();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).securityPermissions();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).transactionSupport();
+		BouipResourceAdapter.class.getAnnotation(Connector.class).requiredWorkContexts();
 
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).type();
 		MyConfigPropertyAnnotatedClass.class.getAnnotation(ConfigProperty.class).description();

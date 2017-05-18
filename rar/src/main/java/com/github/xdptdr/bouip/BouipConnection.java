@@ -1,4 +1,4 @@
-package com.github.xdptdr.jca;
+package com.github.xdptdr.bouip;
 
 import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
@@ -7,38 +7,52 @@ import javax.resource.cci.Interaction;
 import javax.resource.cci.LocalTransaction;
 import javax.resource.cci.ResultSetInfo;
 
-import com.github.xdptdr.splout.SploutConnectionMetaData;
+public class BouipConnection implements Connection {
 
-public class MyConnection implements Connection {
+	public BouipConnection() {
+	}
 
-	private Interaction interaction = new MyInteraction();
-	private LocalTransaction localTransaction = new MyLocalTransactionCCI();
-	private ConnectionMetaData connectionMetaData = new SploutConnectionMetaData(null);
-	private ResultSetInfo resultSetInfo = new MyResultSetInfo();
+	public BouipConnection(BouipManagedConnection managedConnection) {
+	}
 
 	@Override
 	public Interaction createInteraction() throws ResourceException {
-		return interaction;
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public LocalTransaction getLocalTransaction() throws ResourceException {
-		return localTransaction;
+		return null;
 	}
 
 	@Override
 	public ConnectionMetaData getMetaData() throws ResourceException {
-		return connectionMetaData;
+		return new ConnectionMetaData() {
+			@Override
+			public String getEISProductName() {
+				return "My Connector Platform";
+			}
+
+			@Override
+			public String getEISProductVersion() {
+				return "1.0";
+			}
+
+			@Override
+			public String getUserName() {
+				return "myUser";
+			}
+		};
 	}
 
 	@Override
 	public ResultSetInfo getResultSetInfo() throws ResourceException {
-		return resultSetInfo;
+		return null;
 	}
 
 	@Override
 	public void close() throws ResourceException {
-
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 }

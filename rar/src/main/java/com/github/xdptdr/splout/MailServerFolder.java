@@ -1,5 +1,6 @@
 package com.github.xdptdr.splout;
 
+
 public class MailServerFolder {
 
 
