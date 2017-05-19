@@ -204,8 +204,8 @@
 									<fail-on-error>true</fail-on-error>
 									<commands>
 										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:add(archive=tigrou.rar,
-											transaction-support=XATransaction)</command>
-										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar/connection-definitions=cfName:add(class-name=com.github.xdptdr.tigrou.TigrouManagedConnectionFactory,jndi-name=java:/eis/TigrouConnectionFactory)</command>
+											transaction-support=NoTransaction)</command>
+										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar/connection-definitions=cfName:add(class-name=com.github.xdptdr.tigrou.TigrouManagedConnectionFactory,jndi-name=java:/eis/MyEIS)</command>
 										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:activate</command>
 										<!-- <command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:read-resource(recursive=true)</command> -->
 									</commands>

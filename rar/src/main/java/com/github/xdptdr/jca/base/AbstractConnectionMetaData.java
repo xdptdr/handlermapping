@@ -1,23 +1,18 @@
-package com.github.xdptdr.tigrou;
+package com.github.xdptdr.jca.base;
 
 import javax.resource.ResourceException;
-import javax.resource.spi.ManagedConnectionMetaData;
+import javax.resource.cci.ConnectionMetaData;
 
-public class TigrouManagedConnectionMetaData implements ManagedConnectionMetaData {
+public abstract class AbstractConnectionMetaData implements ConnectionMetaData {
 
 	@Override
 	public String getEISProductName() throws ResourceException {
-		return "tigrou";
+		return null;
 	}
 
 	@Override
 	public String getEISProductVersion() throws ResourceException {
-		return "1.0";
-	}
-
-	@Override
-	public int getMaxConnections() throws ResourceException {
-		return 1;
+		return null;
 	}
 
 	@Override
