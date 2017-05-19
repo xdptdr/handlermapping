@@ -6,11 +6,16 @@ import java.io.PrintWriter;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.resource.ResourceException;
+import javax.resource.cci.ConnectionFactory;
+import javax.resource.cci.ConnectionSpec;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.github.xdptdr.tigrou.TigrouConnectionSpec;
 
 @WebServlet("/jcaservlet")
 public class JCAServlet extends HttpServlet {
@@ -25,18 +30,16 @@ public class JCAServlet extends HttpServlet {
 		try {
 			doStuff(req, resp);
 			pw.println("Done.");
-		} catch (NamingException e) {
+		} catch (NamingException | ResourceException e) {
 			e.printStackTrace(pw);
 		}
 	}
 
-	public void doStuff(HttpServletRequest req, HttpServletResponse resp) throws NamingException, IOException {
+	public void doStuff(HttpServletRequest req, HttpServletResponse resp) throws NamingException, IOException, ResourceException {
+
 		Context context = new InitialContext();
-		Object mcf =  context.lookup("java:/TransactionManager");
-		if (mcf != null) {
-			resp.getWriter().println(mcf.getClass().getName());
-		} else {
-			resp.getWriter().println("mcf is null");
-		}
+		ConnectionFactory mcf = (ConnectionFactory) context.lookup("java:/eis/TigrouConnectionFactory");
+		ConnectionSpec properties = new TigrouConnectionSpec();
+		mcf.getConnection(properties);
 	}
 }
