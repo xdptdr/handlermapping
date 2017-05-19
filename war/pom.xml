@@ -51,7 +51,14 @@
 
 		<dependency>
 			<groupId> org.jboss.ironjacamar</groupId>
-			<artifactId>ironjacamar-validator	</artifactId>
+			<artifactId>ironjacamar-validator</artifactId>
+			<version>1.3.4.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId> org.jboss.ironjacamar</groupId>
+			<artifactId>ironjacamar-deployers-common</artifactId>
 			<version>1.3.4.Final</version>
 			<scope>provided</scope>
 		</dependency>
@@ -82,7 +89,9 @@
 								</goals>
 								<configuration>
 									<server-config>../../../../../standalone.xml</server-config>
-									<javaOpts><string>-agentlib:jdwp=transport=dt_socket,server=y,address=localhost:8000,suspend=n</string></javaOpts>
+									<javaOpts>
+										<string>-agentlib:jdwp=transport=dt_socket,server=y,address=localhost:8000,suspend=n</string>
+									</javaOpts>
 								</configuration>
 							</execution>
 						</executions>
@@ -196,7 +205,7 @@
 									<commands>
 										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:add(archive=tigrou.rar,
 											transaction-support=XATransaction)</command>
-										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar/connection-definitions=cfName:add(class-name==com.github.xdptdr.tigrou.TigrouManagedConnectionFactory,jndi-name=java:/eis/TigrouConnectionFactory)</command>
+										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar/connection-definitions=cfName:add(class-name=com.github.xdptdr.tigrou.TigrouManagedConnectionFactory,jndi-name=java:/eis/TigrouConnectionFactory)</command>
 										<command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:activate</command>
 										<!-- <command>/subsystem=resource-adapters/resource-adapter=tigrou.rar:read-resource(recursive=true)</command> -->
 									</commands>
