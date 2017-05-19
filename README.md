@@ -7,4 +7,4 @@
 
 | Scenario                         | Branch name   | Section  |
 | -------------------------------- | ------------- | -------- |
-| Integrated Purchase Order System | JCA.IPOS      | 4.2      |
+| Managed Application Scenario     | JCA.MAS       | 6.4.1    |
