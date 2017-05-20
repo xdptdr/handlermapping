@@ -1,5 +1,16 @@
 package com.github.xdptdr.jee7;
 
+import javax.resource.ResourceException;
+import javax.resource.spi.ActivationSpec;
+import javax.resource.spi.BootstrapContext;
+import javax.resource.spi.ConfigProperty;
+import javax.resource.spi.Connector;
+import javax.resource.spi.ManagedConnectionFactory;
+import javax.resource.spi.ResourceAdapter;
+import javax.resource.spi.ResourceAdapterAssociation;
+import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkManager;
+
 public class Reading {
 
 	public static enum RS {
@@ -12,7 +23,14 @@ public class Reading {
 
 	private String section;
 
-	public void reading() {
+	public void reading() throws ResourceException {
+
+		BootstrapContext boostrapContext = i(BootstrapContext.class);
+		WorkManager workManager = i(WorkManager.class);
+		ManagedConnectionFactory managedConnectionFactory = i(ManagedConnectionFactory.class);
+		ActivationSpec activationSpec = i(ActivationSpec.class);
+		Work work = i(Work.class);
+		ResourceAdapter resourceAdapter = i(ResourceAdapter.class);
 
 		section("1.4", RS.COMPLETED, WIITC.UNDECIDED);
 
@@ -21,50 +39,225 @@ public class Reading {
 		 * JCA.
 		 */
 
-		section("2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.4", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.5", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.6", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.7", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.8", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.1.9", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.2.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.2.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("2.3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("3.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("3.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("3.3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("3.4", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("3.5", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.4", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.5", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.6", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.7", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.1.8", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("4.3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3.1", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3.2", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3.3", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3.4", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3.5", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3.6", RS.UNTOUCHED, WIITC.UNDECIDED);
-		section("5.3.7", RS.UNTOUCHED, WIITC.UNDECIDED);
+		section("2.2.1", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/*
+		 * JCA reduces the scope of the integration problem from m*n to m+n
+		 */
+
+		section("5", RS.COMPLETED, WIITC.UNDECIDED);
+		section("5.3", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/* application server implements BootstrapContext and WorkManager */
+
+		section("5.3.1", RS.COMPLETED, WIITC.DEFINITELY);
+
+		/*
+		 * implementation class name of the resource adapter is specified in the
+		 * resource adapter deployment descriptor or trough the Connector
+		 * annotation
+		 */
+
+		Connector.class.isAnnotation();
+
+		/* a resource adapter must be a JavaBean */
+
+		/* the resource adapter bean is created during deployment */
+
+		/* bootstrapping a resource adapter involves calling its start method */
+
+		resourceAdapter.start(boostrapContext);
+
+		/*
+		 * resource adapters are singleton beans, but may be replicated when
+		 * using several jvms
+		 */
+
+		/*
+		 * resource adapters must implement the equals method so that the
+		 * container may distinguish between multiple instances of a resource
+		 * adapter configured differently (my interpretation)
+		 */
+
+		resourceAdapter.equals(resourceAdapter);
+
+		/*
+		 * the BootstrapContext contains references to application servers
+		 * facilities, such as the WorkManager
+		 */
+
+		boostrapContext.getWorkManager();
+		boostrapContext.getTransactionSynchronizationRegistry();
+		boostrapContext.getXATerminator();
+
+		/*
+		 * within the start method, a resource adapter may use the work manager,
+		 * but should avoid using doWork
+		 */
+
+		/* the call to start should be fast */
+
+		{ // within start
+			workManager = boostrapContext.getWorkManager();
+			workManager.doWork(work); // avoid
+			workManager.scheduleWork(work); // prefer
+			workManager.startWork(work); // prefer
+		}
+
+		/*
+		 * a resource adapter may hold references to a ManagedConnectionFactory,
+		 * an ActivationSpec, or other private objects
+		 */
+
+		/* ManagedConnectionFactory provides outbound connectivity */
+
+		/* ActivationSpec provides inbound connectivity */
+
+		/*
+		 * A ResourceAdapter may hold references to several
+		 * ManagedConnectionFactory and several ActivationSpec
+		 */
+
+		section("5.3.2", RS.COMPLETED, WIITC.DEFINITELY);
+
+		/* ManagedConnectionFactory represents outbound connectivity */
+
+		/*
+		 * implementing ResourceAdapterAssociation allows a
+		 * ManagedConnectionFactory instance to be linked to its ResourceAdapter
+		 */
+
+		{
+			resourceAdapter = i(ResourceAdapter.class);
+			managedConnectionFactory = i(ManagedConnectionFactory.class);
+			((ResourceAdapterAssociation) managedConnectionFactory).setResourceAdapter(resourceAdapter);
+		}
+
+		/*
+		 * setResourceAdapter must be called only once, the association must not
+		 * change after
+		 */
+
+		section("5.3.3", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/* ActivationSpec represents outbound connectivity */
+
+		{
+			resourceAdapter = i(ResourceAdapter.class);
+			activationSpec = i(ActivationSpec.class);
+			activationSpec.setResourceAdapter(resourceAdapter);
+
+		}
+
+		section("5.3.4", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/*
+		 * a resource adapter may shutdown because the it is being undeployed or
+		 * because the application server is being shutdown
+		 */
+
+		section("5.3.4.1", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/* phase 1 includes deactivating all messages endpoints */
+
+		/*
+		 * there may be a delay because some applications may still be using the
+		 * resource adapter at the time shutdown is requested
+		 */
+
+		section("5.3.4.2", RS.COMPLETED, WIITC.UNDECIDED);
+
+		// phase 2 includes stopping the resource adapter
+		{
+			resourceAdapter.stop();
+		}
+
+		// exceptions during stopping are logged at best
+
+		section("5.3.5", RS.COMPLETED, WIITC.UNDECIDED);
+
+		{
+			resourceAdapter = i(ResourceAdapter.class);
+			resourceAdapter.start(boostrapContext);
+			// ...
+			resourceAdapter.stop();
+		}
+
+		section("5.3.6", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/*
+		 * resource adapter specific objects should register them with the
+		 * resource adapter
+		 */
+
+		{
+			resourceAdapter = i(ResourceAdapter.class);
+
+			managedConnectionFactory = i(ManagedConnectionFactory.class);
+			((ResourceAdapterAssociation) managedConnectionFactory).setResourceAdapter(resourceAdapter);
+
+			activationSpec = i(ActivationSpec.class);
+			activationSpec.setResourceAdapter(resourceAdapter);
+
+		}
+
+		/*
+		 * the resource adapter threads should periodically poll the resource
+		 * adapter state, and use bounded blocking I/O
+		 */
+
+		section("5.3.7", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/* the resource adapter instance is created during deployment */
+
+		/*
+		 * ManagedConnectionFactory and ActivationSpec can be instantiated any
+		 * time during the lifetime of the resource adapter
+		 */
+
+		section("5.3.7.3", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/*
+		 * if a resource adapter and a managed connection factory both define
+		 * the bean property P
+		 * 
+		 * and if P is defined on the resource adapter's configuration
+		 * 
+		 * then the managed connection factory will inherit the value specified
+		 * on the resource adapter specification
+		 */
+
+		section("5.3.7.4", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/* above also applies to instances of ActivationSpec */
+
+		section("5.3.7.5", RS.COMPLETED, WIITC.UNDECIDED);
+
+		/*
+		 * since resource adapters, managed connection factories and activation
+		 * specifications are java beans, they can use the Bean Validation
+		 * annotations
+		 */
+
+		section("5.3.7.6", RS.COMPLETED, WIITC.UNDECIDED);
+		
+		/* dynamic configuration properties : use config-property-supports-dynamicupdates in XML or the following: */
+		
+		i(ConfigProperty.class).supportsDynamicUpdates();
+		
+		/* JavaBean Validation should be performed each time a dynamic resource property is modified */
+		
+		/* application servers are not required to support dynamic resource adapter configuration */
+		
+		/* confidential properties can be indicated with config-property-confidential in XML or the follownig: */
+		
+		i(ConfigProperty.class).confidential();
+		
+		
+		section("5.3.7.7", RS.COMPLETED, WIITC.UNDECIDED);
+		
+		
+
 		section("5.3.8", RS.UNTOUCHED, WIITC.UNDECIDED);
 		section("5.3.9", RS.UNTOUCHED, WIITC.UNDECIDED);
 		section("6", RS.UNTOUCHED, WIITC.UNDECIDED);
@@ -560,6 +753,14 @@ public class Reading {
 		section("24.I", RS.UNTOUCHED, WIITC.UNDECIDED);
 		section("24.I.1", RS.UNTOUCHED, WIITC.UNDECIDED);
 
+	}
+
+	private <T> T i(Class<T> clazz) {
+		try {
+			return clazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public String getSection() {
