@@ -1,15 +1,39 @@
 package com.github.xdptdr.jee7;
 
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Set;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.resource.ResourceException;
+import javax.resource.cci.Connection;
+import javax.resource.cci.ConnectionFactory;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.ConfigProperty;
+import javax.resource.spi.ConnectionEvent;
+import javax.resource.spi.ConnectionEventListener;
+import javax.resource.spi.ConnectionManager;
+import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.Connector;
+import javax.resource.spi.LocalTransaction;
+import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
+import javax.resource.spi.ManagedConnectionMetaData;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
+import javax.resource.spi.ValidatingManagedConnectionFactory;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkManager;
+import javax.security.auth.Subject;
+import javax.sql.DataSource;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.xa.XAException;
+import javax.transaction.xa.XAResource;
+import javax.transaction.xa.Xid;
 
 public class Reading {
 
@@ -17,17 +41,44 @@ public class Reading {
 		UNTOUCHED, STARTED, COMPLETED
 	}
 
-
 	private String section;
+	private BootstrapContext boostrapContext;
+	private WorkManager workManager;
+	private ManagedConnectionFactory managedConnectionFactory;
+	private ActivationSpec activationSpec;
+	private Work work;
+	private ResourceAdapter resourceAdapter;
+	@SuppressWarnings("unused")
+	private LocalTransaction localTransaction;
+	private XAResource xaResource;
+	private int recoverFlags;
+	@SuppressWarnings("unused")
+	private Xid[] xids;
+	private DataSource dataSource;
+	@SuppressWarnings("unused")
+	private java.sql.Connection connectionSQL;
+	@SuppressWarnings("rawtypes")
+	private Set connectionSet;
+	private Subject subject;
+	private ConnectionFactory connectionFactory;
+	private String jndiName;
+	private Connection connection;
+	private ConnectionManager connectionManager;
+	private ConnectionRequestInfo connectionRequestInfo;
+	private ManagedConnection managedConnection;
+	private ConnectionEventListener connectionEventListener;
+	private ManagedConnectionMetaData managedConnectionMetaData;
+	private ConnectionEvent connectionEvent;
+	private PrintWriter printWriter;
+	private Xid xid;
+	private int startFlags;
+	private int endFlags;
+	private boolean phaseCommitProtocol;
+	private TransactionManager transactionManager;
+	private Transaction transaction;
 
-	public void reading() throws ResourceException {
-
-		BootstrapContext boostrapContext = i(BootstrapContext.class);
-		WorkManager workManager = i(WorkManager.class);
-		ManagedConnectionFactory managedConnectionFactory = i(ManagedConnectionFactory.class);
-		ActivationSpec activationSpec = i(ActivationSpec.class);
-		Work work = i(Work.class);
-		ResourceAdapter resourceAdapter = i(ResourceAdapter.class);
+	@SuppressWarnings("unused")
+	public void reading() throws ResourceException, NamingException, SQLException, XAException {
 
 		section("1.4", RS.COMPLETED);
 
@@ -125,8 +176,7 @@ public class Reading {
 		 */
 
 		{
-			resourceAdapter = i(ResourceAdapter.class);
-			managedConnectionFactory = i(ManagedConnectionFactory.class);
+
 			((ResourceAdapterAssociation) managedConnectionFactory).setResourceAdapter(resourceAdapter);
 		}
 
@@ -140,8 +190,7 @@ public class Reading {
 		/* ActivationSpec represents outbound connectivity */
 
 		{
-			resourceAdapter = i(ResourceAdapter.class);
-			activationSpec = i(ActivationSpec.class);
+
 			activationSpec.setResourceAdapter(resourceAdapter);
 
 		}
@@ -174,7 +223,6 @@ public class Reading {
 		section("5.3.5", RS.COMPLETED);
 
 		{
-			resourceAdapter = i(ResourceAdapter.class);
 			resourceAdapter.start(boostrapContext);
 			// ...
 			resourceAdapter.stop();
@@ -188,12 +236,7 @@ public class Reading {
 		 */
 
 		{
-			resourceAdapter = i(ResourceAdapter.class);
-
-			managedConnectionFactory = i(ManagedConnectionFactory.class);
 			((ResourceAdapterAssociation) managedConnectionFactory).setResourceAdapter(resourceAdapter);
-
-			activationSpec = i(ActivationSpec.class);
 			activationSpec.setResourceAdapter(resourceAdapter);
 
 		}
@@ -243,7 +286,7 @@ public class Reading {
 		 * config-property-supports-dynamicupdates in XML or the following:
 		 */
 
-		i(ConfigProperty.class).supportsDynamicUpdates();
+		constructANewInstanceOf(ConfigProperty.class).supportsDynamicUpdates();
 
 		/*
 		 * JavaBean Validation should be performed each time a dynamic resource
@@ -260,7 +303,7 @@ public class Reading {
 		 * config-property-confidential in XML or the follownig:
 		 */
 
-		i(ConfigProperty.class).confidential();
+		constructANewInstanceOf(ConfigProperty.class).confidential();
 
 		section("5.3.7.7", RS.COMPLETED);
 
@@ -268,75 +311,614 @@ public class Reading {
 
 		/* lifecycle management may also be used in a non-managed environment */
 
-		
-		
+		section("6", RS.STARTED);
+		section("6.1", RS.COMPLETED);
+		section("6.2", RS.COMPLETED);
+		section("6.3", RS.COMPLETED);
+		section("6.3.1", RS.COMPLETED);
 
-		section("6", RS.UNTOUCHED);
-		section("6.1", RS.UNTOUCHED);
-		section("6.2", RS.UNTOUCHED);
-		section("6.3", RS.UNTOUCHED);
-		section("6.3.1", RS.UNTOUCHED);
-		section("6.4", RS.UNTOUCHED);
-		section("6.4.1", RS.UNTOUCHED);
-		section("6.4.2", RS.UNTOUCHED);
-		section("6.4.3", RS.UNTOUCHED);
-		section("6.5", RS.UNTOUCHED);
-		section("6.5.1", RS.UNTOUCHED);
-		section("6.5.1.1", RS.UNTOUCHED);
-		section("6.5.1.2", RS.UNTOUCHED);
-		section("6.5.1.3", RS.UNTOUCHED);
-		section("6.5.2", RS.UNTOUCHED);
-		section("6.5.2.1", RS.UNTOUCHED);
-		section("6.5.2.2", RS.UNTOUCHED);
-		section("6.5.3", RS.UNTOUCHED);
-		section("6.5.3.1", RS.UNTOUCHED);
-		section("6.5.3.2", RS.UNTOUCHED);
-		section("6.5.3.3", RS.UNTOUCHED);
-		section("6.5.3.4", RS.UNTOUCHED);
-		section("6.5.3.5", RS.UNTOUCHED);
-		section("6.5.4", RS.UNTOUCHED);
-		section("6.5.4.1", RS.UNTOUCHED);
-		section("6.5.4.2", RS.UNTOUCHED);
-		section("6.5.4.3", RS.UNTOUCHED);
-		section("6.5.4.4", RS.UNTOUCHED);
-		section("6.5.4.5", RS.UNTOUCHED);
-		section("6.5.5", RS.UNTOUCHED);
-		section("6.5.5.1", RS.UNTOUCHED);
-		section("6.5.5.2", RS.UNTOUCHED);
-		section("6.5.6", RS.UNTOUCHED);
-		section("6.5.6.1", RS.UNTOUCHED);
-		section("6.5.7", RS.UNTOUCHED);
-		section("6.6", RS.UNTOUCHED);
-		section("6.6.1", RS.UNTOUCHED);
-		section("6.6.2", RS.UNTOUCHED);
-		section("6.7", RS.UNTOUCHED);
-		section("6.8", RS.UNTOUCHED);
-		section("6.8.1", RS.UNTOUCHED);
-		section("6.8.2", RS.UNTOUCHED);
-		section("6.8.3", RS.UNTOUCHED);
-		section("6.8.3.1", RS.UNTOUCHED);
-		section("6.8.3.2", RS.UNTOUCHED);
-		section("6.9", RS.UNTOUCHED);
-		section("6.9.1", RS.UNTOUCHED);
-		section("6.9.2", RS.UNTOUCHED);
-		section("6.10", RS.UNTOUCHED);
-		section("6.10.1", RS.UNTOUCHED);
-		section("6.10.2", RS.UNTOUCHED);
-		section("7", RS.UNTOUCHED);
-		section("7.1", RS.UNTOUCHED);
-		section("7.2", RS.UNTOUCHED);
-		section("7.2.1", RS.UNTOUCHED);
-		section("7.2.2", RS.UNTOUCHED);
-		section("7.3", RS.UNTOUCHED);
-		section("7.3.1", RS.UNTOUCHED);
-		section("7.3.2", RS.UNTOUCHED);
-		section("7.3.2.1", RS.UNTOUCHED);
-		section("7.3.3", RS.UNTOUCHED);
-		section("7.4", RS.UNTOUCHED);
-		section("7.4.1", RS.UNTOUCHED);
-		section("7.5", RS.UNTOUCHED);
-		section("7.6", RS.UNTOUCHED);
-		section("7.6.1", RS.UNTOUCHED);
+		toReadAgain();
+
+		section("6.4", RS.COMPLETED);
+
+		section("6.4.1", RS.COMPLETED);
+		/*
+		 * The following information are necessary to describe an EJB connection
+		 * factory reference in the deployment descriptor
+		 */
+
+		// res-ref-name : JNDI name
+		// res-type : javax.resource.cci.ConnectionFactory
+		// res-auth : one of : Application, Container
+
+		{ // during deployment
+			resourceAdapter = constructANewInstanceOf(ResourceAdapter.class);
+		}
+
+		{ // within application
+			Context context = new InitialContext();
+			connectionFactory = (ConnectionFactory) context.lookup(jndiName);
+		}
+
+		{ // what the application server do to binds the jndi name
+			connection = connectionFactory.getConnection();
+		}
+
+		{// the application uses the connection
+			connection.getMetaData();
+			// etc..
+			connection.close();
+		}
+
+		section("6.4.2", RS.COMPLETED);
+
+		/* not many details here */
+
+		section("6.4.3", RS.COMPLETED);
+
+		/* connection handles are lightweight object */
+
+		/*
+		 * creation of connection handles does not necessarily imply creation of
+		 * underlying physical connection
+		 */
+
+		/* ManagedConnection represents the underlying physical connection */
+
+		/* caching connection handles has no benefit */
+
+		{ // recommend pattern :
+			try {
+				connection = connectionFactory.getConnection();
+			} finally {
+				if (connection != null) {
+					connection.close();
+				}
+			}
+		}
+
+		section("6.5", RS.COMPLETED);
+		section("6.5.1", RS.COMPLETED);
+
+		{ // connection factory is used to get connections
+			connection = connectionFactory.getConnection();
+		}
+
+		/* resource adapters are not required to use CCI, but are advised to */
+
+		{
+			// a resource adapter may use DataSource or javax.sql.Connection
+			// instead, or anything else
+
+			java.sql.Connection connectionSQL = dataSource.getConnection();
+		}
+
+		section("6.5.1.1", RS.COMPLETED);
+
+		/*
+		 * in JDBC, the implementation of DataSource is provided by the
+		 * application server
+		 */
+
+		/*
+		 * in JCA, it would have been required to be provided by the resource
+		 * adapter (a JDBC driver in this case)
+		 */
+
+		/*
+		 * the connection factory should delegate the getConnection method to
+		 * the connectionManager
+		 */
+
+		{ // i.e., calling this:
+			connectionFactory.getConnection();
+			// should imply this call
+			connectionManager.allocateConnection(managedConnectionFactory, connectionRequestInfo);
+		}
+
+		section("6.5.1.2", RS.COMPLETED);
+
+		// ConnectionRequestInfo is extended to contain resource
+		// adapter-specific properties
+
+		/*
+		 * all connections properties should be preconfigured so that the
+		 * application components do not have to request specific parameters for
+		 * getting the connection
+		 */
+
+		section("6.5.1.3", RS.COMPLETED);
+
+		/*
+		 * a resource adapter is allowed to expect null in lieu of a
+		 * ConnectionRequestInfo
+		 */
+
+		connectionManager.allocateConnection(managedConnectionFactory, null);
+
+		/*
+		 * implementations of ConnectionFactory must implements Serializable and
+		 * Referenceable to be stored in JNDI
+		 */
+
+		/*
+		 * an implementation of Connection must use an instance of
+		 * ManagedConnection as the underlying physical connection
+		 */
+
+		section("6.5.2", RS.COMPLETED);
+
+		section("6.5.2.1", RS.COMPLETED);
+
+		{ // called by an implementation of ConnectionFactory
+			connectionManager.allocateConnection(managedConnectionFactory, connectionRequestInfo);
+		}
+
+		section("6.5.2.2", RS.COMPLETED);
+
+		/* an implementation of ConnectionManager is required */
+
+		{ // called when a new connection is required
+			managedConnection = managedConnectionFactory.createManagedConnection(subject, connectionRequestInfo);
+		}
+
+		{ // called to try retrieving an existing connection
+			managedConnection = managedConnectionFactory.matchManagedConnections(connectionSet, subject,
+					connectionRequestInfo);
+		}
+
+		/* implementations of ConnectionManager must implements Serializable */
+
+		/* an implementation of ConnectionManager is required */
+
+		toReadAgain();
+
+		section("6.5.3", RS.COMPLETED);
+
+		section("6.5.3.1", RS.COMPLETED);
+
+		{ // should create a connection factory instance initialized with the
+			// managed connection factory
+
+			// this return the default connection factory instance which must be
+			// used only in non managed context
+			managedConnectionFactory.createConnectionFactory();
+		}
+
+		{ // creates naw physical connection
+			managedConnectionFactory.createManagedConnection(subject, connectionRequestInfo);
+		}
+
+		{ // called by the application server for connection pooling
+
+			// may throw NotSupportedException to notify the application server
+			// that connection pooling is not available
+			managedConnectionFactory.matchManagedConnections(connectionSet, subject, connectionRequestInfo);
+
+		}
+
+		section("6.5.3.2", RS.COMPLETED);
+
+		// an implementation of ManagedConnectionFactory is required
+
+		// ManagedConnectionFactory implementations must overried equals and
+		// hashCode
+
+		section("6.5.3.3", RS.COMPLETED);
+
+		//
+
+		section("6.5.3.4", RS.COMPLETED);
+
+		/*
+		 * A ManagedConnectionFactory may implement
+		 * ValidatingManagedConnectionFactory if it supports invalid connection
+		 * detection
+		 */
+		{
+			@SuppressWarnings("rawtypes")
+			Set invalidConnections = ((ValidatingManagedConnectionFactory) managedConnectionFactory)
+					.getInvalidConnections(connectionSet);
+		}
+
+		section("6.5.3.5", RS.COMPLETED);
+
+		{
+			// for the purpose of transactionality, this must be supported,
+			// since the application server may not have all the information
+			// required at the time of transaction recovery
+			managedConnection = managedConnectionFactory.createManagedConnection(subject, null);
+			xaResource = managedConnection.getXAResource();
+			xids = xaResource.recover(recoverFlags);
+
+		}
+
+		section("6.5.4", RS.COMPLETED);
+
+		/* ManagedConnection represent a physical connection to the EIS */
+
+		/*
+		 * JCA allows several ManagedConnection to be multiplexed over the same
+		 * real physical connection
+		 */
+
+		/*
+		 * in a managed environment, an application server pools managed
+		 * connection
+		 */
+
+		{ // ManagedConnection defines the following methods for
+			// transactionality
+			xaResource = managedConnection.getXAResource();
+			localTransaction = managedConnection.getLocalTransaction();
+		}
+
+		section("6.5.4.1", RS.COMPLETED);
+
+		{ // creates a new connection handle
+
+			// this may be used for re-authentication
+			connection = (Connection) managedConnection.getConnection(subject, connectionRequestInfo);
+		}
+
+		{
+			managedConnection.addConnectionEventListener(connectionEventListener);
+		}
+
+		{ // better synchronize on the listeners to avoid threading issues
+			managedConnection.removeConnectionEventListener(connectionEventListener);
+		}
+
+		{
+			managedConnectionMetaData = managedConnection.getMetaData();
+		}
+
+		section("6.5.4.2", RS.COMPLETED);
+
+		{ // both handles are valid until closes
+			Object c1 = managedConnection.getConnection(subject, connectionRequestInfo);
+			Object c2 = managedConnection.getConnection(subject, connectionRequestInfo);
+		}
+
+		/* ManagedConnection instances should be thread safe */
+
+		/*
+		 * there should be at most one active connection per ManagedConnection
+		 * instances
+		 */
+
+		toReadAgain();
+
+		section("6.5.4.3", RS.COMPLETED);
+
+		{// connectionSet is provided by the application server ; it should
+			// contains only managed connections instances that have no
+			// connection handle
+			managedConnection = managedConnectionFactory.matchManagedConnections(connectionSet, subject,
+					connectionRequestInfo);
+		}
+
+		/*
+		 * A connection request can lead to the creation of additional
+		 * connection handles for a ManagedConnection instance that already has
+		 * one or more existing connection handles. In this case, the
+		 * application server should take the responsibility of checking whether
+		 * or not the chosen ManagedConnection instance can service such a
+		 * request. Refer to Section 7.9, “Connection Sharing” on page 7-32 for
+		 * details.
+		 * 
+		 */
+
+		toReadAgain();
+
+		section("6.5.4.4", RS.COMPLETED);
+		{ // called to recycle the managed connection in the pool
+			managedConnection.cleanup();
+		}
+
+		/*
+		 * cleanup must invalidate all connectio handles created with the
+		 * managed connection
+		 */
+
+		/*
+		 * cleanup should prepare a managed connection for availability in the
+		 * pool
+		 */
+
+		/*
+		 * cleanup should not cause the resource adapter to close the physical
+		 * pipe
+		 */
+
+		{ // called to really remove the managed connection
+			managedConnection.destroy();
+		}
+		section("6.5.4.5", RS.COMPLETED);
+
+		/* An implementation of ManagedConnection is required */
+
+		section("6.5.5", RS.COMPLETED);
+
+		section("6.5.5.1", RS.COMPLETED);
+
+		managedConnectionMetaData.getEISProductName();
+		managedConnectionMetaData.getEISProductVersion();
+		managedConnectionMetaData.getUserName();
+
+		{ // max number of concurrent connections that the EIS support
+			managedConnectionMetaData.getMaxConnections();
+		}
+
+		section("6.5.5.2", RS.COMPLETED);
+
+		/* an implementation of managedConnectionMetaData is required */
+
+		section("6.5.6", RS.COMPLETED);
+		section("6.5.6.1", RS.COMPLETED);
+
+		connectionEventListener.localTransactionStarted(connectionEvent);
+		connectionEventListener.localTransactionCommitted(connectionEvent);
+		connectionEventListener.localTransactionRolledback(connectionEvent);
+
+		{ // causes the application server to destroy the corresponding managed
+			// connection
+			connectionEventListener.connectionErrorOccurred(connectionEvent);
+		}
+
+		{ // upon connectionClosed, the application server decides whether to
+			// put the connection back in the pool or not
+			connectionEventListener.connectionClosed(connectionEvent);
+		}
+
+		/* event processing may be asynchronous */
+
+		section("6.5.7", RS.COMPLETED);
+
+		{ // managed connection which generated the event
+			Object source = connectionEvent.getSource();
+		}
+
+		{ // connection handle associated with the managed connection ; required
+			// for CONNECTION_CLOSED
+			Object handle = connectionEvent.getConnectionHandle();
+		}
+
+		new Integer(ConnectionEvent.LOCAL_TRANSACTION_STARTED);
+		new Integer(ConnectionEvent.LOCAL_TRANSACTION_COMMITTED);
+		new Integer(ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK);
+		new Integer(ConnectionEvent.CONNECTION_ERROR_OCCURRED);
+		new Integer(ConnectionEvent.CONNECTION_CLOSED);
+
+		section("6.6", RS.COMPLETED);
+
+		section("6.6.1", RS.COMPLETED);
+
+		managedConnectionFactory.setLogWriter(printWriter);
+		printWriter = managedConnectionFactory.getLogWriter();
+
+		section("6.6.2", RS.COMPLETED);
+
+		managedConnection.setLogWriter(printWriter);
+		printWriter = managedConnection.getLogWriter();
+
+		/*
+		 * logwriter may be null while the connection is made available in the
+		 * pool
+		 */
+
+		section("6.7", RS.COMPLETED);
+
+		{ // instanciation happens in this order
+
+			// application component
+			connection = connectionFactory.getConnection();
+
+			// connection factory ask the managed connection factory
+			connection = (Connection) connectionManager.allocateConnection(managedConnectionFactory,
+					connectionRequestInfo);
+
+			// application server can decide to a create a new managed
+			// connection
+			managedConnection = managedConnectionFactory.createManagedConnection(subject, connectionRequestInfo);
+
+			// the managed connection does create the new connection
+			connection = (Connection) managedConnection.getConnection(subject, connectionRequestInfo);
+
+		}
+
+		section("6.8", RS.COMPLETED);
+		section("6.8.1", RS.COMPLETED);
+
+		{
+			connection = connectionFactory.getConnection();
+			connection = (Connection) connectionManager.allocateConnection(managedConnectionFactory,
+					connectionRequestInfo);
+			managedConnectionFactory.createManagedConnection(subject, connectionRequestInfo);
+			managedConnection.addConnectionEventListener(connectionEventListener);
+			xaResource = managedConnection.getXAResource();
+			// enlist resource ?
+			xaResource.start(xid, startFlags);
+			managedConnection.getConnection(subject, connectionRequestInfo);
+
+		}
+
+		section("6.8.2", RS.COMPLETED);
+
+		{
+			// within application server
+			connection = connectionFactory.getConnection();
+
+			// within connection factory
+
+			connection = (Connection) connectionManager.allocateConnection(managedConnectionFactory,
+					connectionRequestInfo);
+
+			// within application server
+			managedConnection = managedConnectionFactory.matchManagedConnections(connectionSet, subject,
+					connectionRequestInfo);
+			managedConnection.addConnectionEventListener(connectionEventListener);
+			managedConnection.setLogWriter(printWriter);
+			xaResource = managedConnection.getXAResource();
+			// ?? Transaction enlist resource ?
+
+			// within transaction manager
+			xaResource.start(xid, startFlags);
+
+			// within application server
+			managedConnection.getConnection(subject, connectionRequestInfo);
+		}
+
+		toReadAgain();
+
+		section("6.8.3", RS.COMPLETED);
+
+		{
+
+			// application component
+			connection.close();
+
+			// managed connection
+			connectionEventListener.connectionClosed(connectionEvent);
+
+			// application server
+			// Transaction.delistResource ??
+			xaResource.end(xid, endFlags);
+
+			managedConnection.cleanup();
+
+		}
+
+		section("6.8.3.1", RS.COMPLETED);
+		section("6.8.3.2", RS.COMPLETED);
+
+		section("6.9", RS.COMPLETED);
+
+		toReadAgain();
+
+		section("6.9.1", RS.COMPLETED);
+
+		{
+			ConnectionFactory connectionFactory = (ConnectionFactory) managedConnectionFactory
+					.createConnectionFactory();
+			connection = connectionFactory.getConnection();
+			connection.close();
+
+		}
+
+		section("6.9.2", RS.COMPLETED);
+
+		{
+			// application client
+			connection = connectionFactory.getConnection();
+
+			// connection factory
+			connection = (Connection) connectionManager.allocateConnection(managedConnectionFactory,
+					connectionRequestInfo);
+
+			// connection manager
+			managedConnection = managedConnectionFactory.createManagedConnection(subject, connectionRequestInfo);
+			managedConnection.getConnection(subject, connectionRequestInfo);
+
+		}
+
+		section("6.10", RS.COMPLETED);
+
+		section("6.10.1", RS.COMPLETED);
+
+		// implementation of the following are required
+
+		ManagedConnectionFactory.class.getName();
+		ManagedConnection.class.getName();
+		ManagedConnectionMetaData.class.getName();
+
+		// ManagedConnection must use the following only in the managed case
+
+		ConnectionEvent.class.getName();
+		ConnectionEventListener.class.getName();
+
+		// a default implementation of the following is required
+
+		ConnectionManager.class.getName();
+
+		/*
+		 * a resource adapter is not allowed to support its own internal pooling
+		 */
+
+		section("6.10.2", RS.COMPLETED);
+
+		section("7", RS.STARTED);
+		section("7.1", RS.COMPLETED);
+
+		/* JTA , XA */
+		/* local transactions */
+
+		// JTA => XAResource
+
+		section("7.2", RS.COMPLETED);
+
+		section("7.2.1", RS.COMPLETED);
+
+		section("7.2.2", RS.COMPLETED);
+
+		section("7.3", RS.COMPLETED);
+		section("7.3.1", RS.COMPLETED);
+
+		// JTA
+		xaResource = managedConnection.getXAResource();
+
+		// local transactions
+		localTransaction = managedConnection.getLocalTransaction();
+
+		section("7.3.2", RS.COMPLETED);
+
+		xaResource.commit(xid, phaseCommitProtocol);
+		xaResource.end(xid, endFlags);
+		xaResource.forget(xid);
+		xaResource.prepare(xid);
+		xaResource.recover(recoverFlags);
+		xaResource.rollback(xid);
+		xaResource.start(xid, startFlags);
+
+		section("7.3.2.1", RS.COMPLETED);
+
+		/*
+		 * A resource adapter typically implements the XAResource interface
+		 * using a lowlevel library available for the underlying EIS resource
+		 * manager
+		 */
+
+		/*
+		 * there should be a 1-1 relationship between XAResource instances and
+		 * ManagedConnection instances
+		 */
+
+		/*
+		 * The XAResource instance used during the transaction completion
+		 * process need not be the one initially enlisted with the transaction
+		 * manager for this transaction.
+		 */
+
+		section("7.3.3", RS.COMPLETED);
+
+		localTransaction.begin();
+		localTransaction.rollback();
+		localTransaction.commit();
+
+		section("7.4", RS.COMPLETED);
+
+		// JTA, JTS
+
+		section("7.4.1", RS.COMPLETED);
+
+		TransactionManager.class.getName();
+		Transaction.class.getName();
+
+		section("7.5", RS.COMPLETED);
+		section("7.6", RS.STARTED);
+
+		section("7.6.1", RS.STARTED);
+
 		section("7.6.2", RS.UNTOUCHED);
 		section("7.6.2.1", RS.UNTOUCHED);
 		section("7.6.2.2", RS.UNTOUCHED);
@@ -388,6 +970,7 @@ public class Reading {
 		section("7.16.1.1", RS.UNTOUCHED);
 		section("7.16.2", RS.UNTOUCHED);
 		section("7.16.2.1", RS.UNTOUCHED);
+
 		section("8", RS.UNTOUCHED);
 		section("8.1", RS.UNTOUCHED);
 		section("8.2", RS.UNTOUCHED);
@@ -766,12 +1349,13 @@ public class Reading {
 
 	}
 
-	private <T> T i(Class<T> clazz) {
-		try {
-			return clazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+	private void toReadAgain() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private <T> T constructANewInstanceOf(Class<T> clazz) {
+		return null;
 	}
 
 	public String getSection() {
