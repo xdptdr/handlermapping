@@ -1,11 +1,11 @@
 package com.github.xdptdr.jee7;
 
 public abstract class Reading {
-	
+
 	public static enum RS {
 		UNTOUCHED, STARTED, COMPLETED
 	}
-	
+
 	private String section;
 
 	protected <T> T constructANewInstanceOf(Class<T> clazz) {
@@ -23,4 +23,6 @@ public abstract class Reading {
 	protected void toReadAgain() {
 
 	}
+
+	public abstract void reading() throws Exception;
 }
