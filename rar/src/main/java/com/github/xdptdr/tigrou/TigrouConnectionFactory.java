@@ -26,12 +26,16 @@ public class TigrouConnectionFactory extends AbstractConnectionFactory {
 
 	@Override
 	public Connection getConnection() throws ResourceException {
-		return (Connection) connectionManager.allocateConnection(managedConnectionFactory, null);
+		Connection connection = (Connection) connectionManager.allocateConnection(managedConnectionFactory, null);
+
+		return connection;
 	}
 
 	@Override
-	public Connection getConnection(ConnectionSpec properties) throws ResourceException {
-		return (Connection) connectionManager.allocateConnection(managedConnectionFactory, null);
+	public Connection getConnection(ConnectionSpec connectionSpec) throws ResourceException {
+		Connection connection = (Connection) connectionManager.allocateConnection(managedConnectionFactory, null);
+
+		return connection;
 	}
 
 }

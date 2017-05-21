@@ -37,7 +37,6 @@ public class TestServlet extends HttpServlet {
 			throws NamingException, IOException, ResourceException {
 
 		Context context = new InitialContext();
-
 		ConnectionFactory mcf = (ConnectionFactory) context.lookup("java:/eis/MyEIS");
 
 		Connection c1 = mcf.getConnection();

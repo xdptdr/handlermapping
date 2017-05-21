@@ -1,5 +1,7 @@
 package com.github.xdptdr.tigrou;
 
+import java.util.Set;
+
 import javax.resource.ResourceException;
 import javax.resource.cci.Connection;
 import javax.resource.cci.ConnectionFactory;
@@ -20,14 +22,29 @@ public class TigrouManagedConnectionFactory extends AbstractManagedConnectionFac
 	}
 
 	@Override
+	public Object createConnectionFactory() throws ResourceException {
+		Object connectionFactory = super.createConnectionFactory();
+		return connectionFactory;
+	}
+
+	@Override
 	public Object createConnectionFactory(ConnectionManager cxManager) throws ResourceException {
-		return new TigrouConnectionFactory(this, cxManager);
+		TigrouConnectionFactory connectionFactory = new TigrouConnectionFactory(this, cxManager);
+		return connectionFactory;
 	}
 
 	@Override
 	public ManagedConnection createManagedConnection(Subject subject, ConnectionRequestInfo cxRequestInfo)
 			throws ResourceException {
-		return new TigrouManagedConnection();
+		TigrouManagedConnection managedConnection = new TigrouManagedConnection();
+
+		return managedConnection;
+	}
+
+	@Override
+	public ManagedConnection matchManagedConnections(@SuppressWarnings("rawtypes") Set connectionSet, Subject subject,
+			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
+		return super.matchManagedConnections(connectionSet, subject, cxRequestInfo);
 	}
 
 	@Override
@@ -39,4 +56,5 @@ public class TigrouManagedConnectionFactory extends AbstractManagedConnectionFac
 	public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
+
 }
