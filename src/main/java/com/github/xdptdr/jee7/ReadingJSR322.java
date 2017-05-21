@@ -35,20 +35,15 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-public class Reading {
+public class ReadingJSR322 extends Reading {
 
-	public static enum RS {
-		UNTOUCHED, STARTED, COMPLETED
-	}
-
-	private String section;
+	
 	private BootstrapContext boostrapContext;
 	private WorkManager workManager;
 	private ManagedConnectionFactory managedConnectionFactory;
 	private ActivationSpec activationSpec;
 	private Work work;
 	private ResourceAdapter resourceAdapter;
-	@SuppressWarnings("unused")
 	private LocalTransaction localTransaction;
 	private XAResource xaResource;
 	private int recoverFlags;
@@ -74,7 +69,9 @@ public class Reading {
 	private int startFlags;
 	private int endFlags;
 	private boolean phaseCommitProtocol;
+	@SuppressWarnings("unused")
 	private TransactionManager transactionManager;
+	@SuppressWarnings("unused")
 	private Transaction transaction;
 
 	@SuppressWarnings("unused")
@@ -1349,20 +1346,7 @@ public class Reading {
 
 	}
 
-	private void toReadAgain() {
-		// TODO Auto-generated method stub
+	
 
-	}
-
-	private <T> T constructANewInstanceOf(Class<T> clazz) {
-		return null;
-	}
-
-	public String getSection() {
-		return section;
-	}
-
-	private void section(String section, RS readingStatus) {
-		this.section = section;
-	}
+	
 }
