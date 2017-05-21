@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.rmi.RemoteException;
 import java.security.Identity;
 import java.security.Principal;
+import java.sql.Connection;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -53,12 +54,18 @@ import javax.ejb.Stateful;
 import javax.ejb.StatefulTimeout;
 import javax.ejb.Stateless;
 import javax.ejb.TimerService;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.interceptor.AroundConstruct;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.AroundTimeout;
 import javax.jms.MessageListener;
 import javax.jms.Queue;
+import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -92,6 +99,9 @@ public class ReadingJSR345 extends Reading {
 	private Map<String, Object> contextData;
 	private SessionBean sessionBean;
 	private MessageDrivenContext messageDrivenContext;
+	private Connection connection;
+	private boolean autoCommit;
+	private Session session;
 
 	@Override
 	public void reading() throws Exception {
@@ -1780,23 +1790,560 @@ public class ReadingJSR345 extends Reading {
 
 		section("CORE.6", RS.COMPLETED);
 
-		section("CORE.7", RS.STARTED);
-		section("CORE.7.1", RS.UNTOUCHED);
-		section("CORE.7.2", RS.UNTOUCHED);
-		section("CORE.7.3", RS.UNTOUCHED);
-		section("CORE.7.4", RS.UNTOUCHED);
-		section("CORE.7.5", RS.UNTOUCHED);
-		section("CORE.7.6", RS.UNTOUCHED);
-		section("CORE.7.7", RS.UNTOUCHED);
-		section("CORE.7.8", RS.UNTOUCHED);
-		section("CORE.7.8.1", RS.UNTOUCHED);
-		section("CORE.7.8.2", RS.UNTOUCHED);
-		section("CORE.7.8.2.1", RS.UNTOUCHED);
+		section("CORE.7", RS.COMPLETED);
+		section("CORE.7.1", RS.COMPLETED);
+
+		/* see the Interceptors specification */
+
+		/*
+		 * JTA transactional interceptors must not be associated to session and
+		 * message driven beans
+		 */
+
+		/*
+		 * default interceptors apply to all components within an ejb-jar files
+		 * or .war file
+		 */
+
+		section("CORE.7.2", RS.COMPLETED);
+
+		/*
+		 * AroundConstruct, PostConstruct and PreDestroy support is required by
+		 * the Interceptors specification
+		 */
+
+		/* EJB adds PostActivate and PrePassivate */
+
+		/*
+		 * The use of an extended persistence context is only supported for
+		 * interceptors that are associated with stateful session beans.
+		 */
+
+		section("CORE.7.3", RS.COMPLETED);
+
+		/*
+		 * AroundInvoke interceptor methods may be defined for business methods
+		 * of sessions beans and for the message listener methods of
+		 * message-driven beans.
+		 */
+
+		/*
+		 * Business method interceptor methods may throw runtime exceptions or
+		 * application exceptions that are allowed in the throws clause of the
+		 * business method.
+		 */
+
+		section("CORE.7.4", RS.COMPLETED);
+
+		AroundTimeout.class.isAnnotation();
+
+		/* AroundTimeout can only throw system exceptions */
+
+		section("CORE.7.5", RS.COMPLETED);
+
+		/*
+		 * AroundConstruct lifecycle callback interceptor method may be defined
+		 * on an interceptor class only
+		 */
+
+		section("CORE.7.6", RS.COMPLETED);
+
+		/* InvocationContext, getContextData */
+
+		section("CORE.7.7", RS.COMPLETED);
+
+		/* interceptor can throw exceptions */
+
+		/* interceptor can recover by calling proceed() */
+
+		/* interceptor can mark a transaction for rollback */
+
+		section("CORE.7.8", RS.COMPLETED);
+
+		section("CORE.7.8.1", RS.COMPLETED);
+
+		// in XML : interceptor, around-invoke, around-timeout,
+		// around-construct, post-construct, pre-destroy, pre-passivate, and
+		// post-activate */
+
+		section("CORE.7.8.2", RS.COMPLETED);
+
+		/*
+		 * In XML : interceptor-binding, target-name, interceptor-class,
+		 * nterceptor-order, exclude-default-interceptors,
+		 * exclude-class-interceptors, method-name, method-params
+		 */
+
+		/*
+		 * Default interceptors are bound to all target classes in a module
+		 * using the wildcard syntax "*".
+		 */
+
+		/*-
+		 
+			<interceptor-binding>
+				<target-name>*</target-name>
+				<interceptor-class>INTERCEPTOR</interceptor-class>
+			</interceptor-binding>
+		
+			<interceptor-binding>
+				<target-name>TARGETNAME</target-name>
+				<interceptor-class>INTERCEPTOR</interceptor-class>
+			</interceptor-binding>
+		
+			<interceptor-binding>
+				<target-name>TARGETNAME</target-name>
+				<interceptor-class>INTERCEPTOR</interceptor-class>
+				<method-name>METHOD</method-name>
+			</interceptor-binding>
+		
+			<interceptor-binding>
+				<target-name>TARGETNAME</target-name>
+				<interceptor-class>INTERCEPTOR</interceptor-class>
+				<method-name>METHOD</method-name>
+				<method-params>
+					<method-param>PARAM-1</method-param>
+					<method-param>PARAM-2</method-param>
+					...
+					<method-param>PARAM-n</method-param>
+				</method-params>
+			<interceptor-binding>
+		  
+		 */
+
+		section("CORE.7.8.2.1", RS.COMPLETED);
+
+		/* some examples in XML */
+
+		section("CORE.8", RS.COMPLETED);
+
+		section("CORE.8.1", RS.COMPLETED);
+		section("CORE.8.1.1", RS.COMPLETED);
+
+		/* bean-managed transaction demarcation */
+
+		userTransaction.begin();
+		userTransaction.commit();
+		userTransaction.rollback();
+
+		/* container-managed transaction demarcation */
+
+		/* = transaction attributes */
+
+		/*
+		 * notion of an external transaction manager.
+		 */
+
+		section("CORE.8.1.2", RS.COMPLETED);
+
+		/*
+		 * EJB supports flat transactions, which cannot have nested transactions
+		 */
+
+		section("CORE.8.1.3", RS.COMPLETED);
+
+		/* EJB requires JTA and JCA support, but not JTS support */
+
+		section("CORE.8.2", RS.COMPLETED);
+
+		section("CORE.8.2.1", RS.COMPLETED);
+
+		/* update data in multiple databases in a single transaction. */
+
+		section("CORE.8.2.2", RS.COMPLETED);
+
+		/* message delivery and databases updates can be transactional */
+
+		section("CORE.8.2.3", RS.COMPLETED);
+
+		/*
+		 * several beans on different server can be part of the same transaction
+		 */
+		section("CORE.8.2.4", RS.COMPLETED);
+
+		section("CORE.8.2.5", RS.COMPLETED);
+		section("CORE.8.3", RS.COMPLETED);
+
+		section("CORE.8.3.1", RS.COMPLETED);
+
+		section("CORE.8.3.1.1", RS.COMPLETED);
+
+		/*
+		 * If an enterprise bean needs to access a resource manager that does
+		 * not support an external transaction coordinator, the Bean Provider
+		 * should design the enterprise bean with container-managed transaction
+		 * demarcation and assign the NOT_SUPPORTED transaction attribute
+		 */
+
+		section("CORE.8.3.2", RS.COMPLETED);
+
+		/*
+		 * The API for managing an isolation level is resource-manager-specific
+		 */
+
+		/*
+		 * the Bean Provider may specify the same or different isolation level
+		 * for each resource manager
+		 */
+
+		/*
+		 * An attempt to change the isolation level in the middle of a
+		 * transaction may cause undesirable behavior
+		 */
+
+		/*
+		 * Additional care must be taken if multiple enterprise beans access the
+		 * same resource manager in the same transaction. Conflicts in the
+		 * requested isolation levels must be avoided.
+		 */
+
+		section("CORE.8.3.3", RS.COMPLETED);
+
+		/*
+		 * question p 169 : how do the connection know about the coupled
+		 * transaction ?
+		 */
+
+		section("CORE.8.3.3.1", RS.COMPLETED);
+
+		/*
+		 * An enterprise bean with bean-managed transaction demarcation must not
+		 * use the getRollbackOnlyand setRollbackOnly methods of the EJBContext
+		 * interface.
+		 */
+
+		section("CORE.8.3.4", RS.COMPLETED);
+
+		/*
+		 * with container-managed transaction demarcation, resource-manager
+		 * specific transaction management methods that mayh interfere with the
+		 * container should not be used
+		 */
+
+		/* examples include: */
+
+		connection.commit();
+		connection.setAutoCommit(autoCommit);
+		connection.rollback();
+		session.commit();
+		session.rollback();
+
+		/* getting a UserTransaction is forbidden */
+
+		{
+			@Stateless
+			class MyBean {
+				@TransactionAttribute(TransactionAttributeType.REQUIRED)
+				public void foo() {
+
+				}
+			}
+		}
+
+		section("CORE.8.3.4.1", RS.COMPLETED);
+
+		section("CORE.8.3.4.2", RS.COMPLETED);
+
+		/*
+		 * setRollbackOnlymethod of its EJBContext object to mark the
+		 * transaction such that the transaction can never commit. Typically, an
+		 * enterprise bean marks a transaction for rollback to protect data
+		 * integrity before throwing an application exception, if the
+		 * application exception class has not been specified to automatically
+		 * cause the container to rollback the transaction
+		 */
+
+		section("CORE.8.3.4.3", RS.COMPLETED);
+		section("CORE.8.3.5", RS.COMPLETED);
+
+		/*
+		 * The Bean Provider should not make use of the JMS request/reply
+		 * paradigm within a single transaction.
+		 */
+
+		/*- with container-managed transaction, parameters to 
+		 * - createSession(boolean transacted, int acknowledgeMode)
+		 * - createQueueSession(boolean transacted, int acknowledgeMode) 
+		 * - createTopicSession(boolean transacted, int acknowledgeMode)
+		 * are ignored ; recommande to be true and 0 resp.
+		 */
+
+		/* The Bean Provider should not use the JMS acknowledge method */
+
+		section("CORE.8.3.6", RS.COMPLETED);
+
+		{
+			@TransactionManagement(TransactionManagementType.BEAN)
+			class MyBean {
+
+			}
+		}
+
+		// In XML : transaction-type
+
+		section("CORE.8.3.7", RS.COMPLETED);
+
+		/* default transaction demarcation is REQUIRED */
+
+		/*
+		 * business method, message listener method, timeout callback method,
+		 * web service endpoint method, PostConstruct, PreDeploy, PrePassivate,
+		 * PostActivate
+		 */
+
+		/*
+		 * the transactional structure of an application is typically intrinsic
+		 * to the semantics of the application
+		 */
+
+		TransactionAttributeType.MANDATORY.name(); // Mandatory in XML
+		TransactionAttributeType.REQUIRED.name(); // Required in XML
+		TransactionAttributeType.REQUIRES_NEW.name(); // RequiresNew in XML
+		TransactionAttributeType.SUPPORTS.name(); // Supports in XML
+		TransactionAttributeType.NOT_SUPPORTED.name(); // NotSupported in XML
+		TransactionAttributeType.NEVER.name(); // Never in XML
+
+		/*-
+		 * - message listener : REQUIRED or NOT_SUPPORTED
+		 * - timeout : REQUIRED, REQUIRES_NEW or NOT_SUPPORTED
+		 * - asynchronous method : REQUIRED, REQUIRES_NEW or NOT_SUPPORTED
+		 * - PostConstruct and PreDestroy on singleton beans: REQUIRED, REQUIRES_NEW or NOT_SUPPORTED
+		 * - PostConstruct and PreDestroy on stateful beans: REQUIRES_NEW or NOT_SUPPORTED
+		 */
+
+		/*
+		 * If SessinSynchronization is used, or if the corresponding annotations
+		 * are used: REQUIRED, REQUIRES_NEW, MANDATORY
+		 */
+
+		section("CORE.8.3.7.1", RS.COMPLETED);
+
+		TransactionAttribute.class.isAnnotation();
+		TransactionAttributeType.class.isEnum();
+
+		section("CORE.8.3.7.2", RS.COMPLETED);
+
+		/*
+		 * container-transaction, method, trans-attribute, ejb-name,
+		 * method-intf, method-name, method-params
+		 */
+
+		/*-
+			<method>
+				<ejb-name>EJBNAME</ejb-name>
+				<method-name>*</method-name>
+			</method>
+		
+			<method>
+				<ejb-name>EJBNAME</ejb-name>
+				<method-name>METHOD</method-name>
+			</method>
+			
+			<method>
+				<ejb-name>EJBNAME</ejb-name>
+				<method-name>METHOD</method-name>
+				<method-params>
+					<method-param>PARAMETER_1</method-param>
+					...
+					<method-param>PARAMETER_N</method-param>
+				</method-params>
+			</method>
+		 */
+
+		/*-
+		 <ejb-jar>
+			...
+			<assembly-descriptor>
+				...
+				<container-transaction>
+					<method>
+						<ejb-name>EmployeeRecord</ejb-name>
+						<method-name>*</method-name>
+					</method>
+					<trans-attribute>Required</trans-attribute>
+				</container-transaction>
+				<container-transaction>
+					<method>
+						<ejb-name>EmployeeRecord</ejb-name>
+						<method-name>updatePhoneNumber</method-name>
+					</method>
+					<trans-attribute>Mandatory</trans-attribute>
+				</container-transaction>
+				<container-transaction>
+					<method>
+						<ejb-name>AardvarkPayroll</ejb-name>
+						<method-name>*</method-name>
+					</method>
+					<trans-attribute>RequiresNew</trans-attribute>
+				</container-transaction>
+			</assembly-descriptor>
+		</ejb-jar>
+		 */
+
+		section("CORE.8.4", RS.COMPLETED);
+
+		/*
+		 * The Application Assembler must not define transaction attributes for
+		 * an enterprise bean with bean-managed transaction demarcation.
+		 */
+
+		section("CORE.8.5", RS.COMPLETED);
+		section("CORE.8.6", RS.COMPLETED);
+
+		section("CORE.8.6.1", RS.COMPLETED);
+
+		toReadAgain();
+
+		section("CORE.8.6.2", RS.COMPLETED);
+		section("CORE.8.6.2.1", RS.COMPLETED);
+		section("CORE.8.6.3", RS.COMPLETED);
+		section("CORE.8.6.3.1", RS.COMPLETED);
+
+		/*
+		 * NOT_SUPPORTED : suspend any any existing transactionthen resumes it
+		 */
+
+		section("CORE.8.6.3.2", RS.COMPLETED);
+
+		/* REQUIRED : creates a new transaction if one is not already running */
+
+		section("CORE.8.6.3.3", RS.COMPLETED);
+
+		/*
+		 * SUPPORTS : use existing transaction if any, but do not create a new
+		 * one
+		 */
+
+		section("CORE.8.6.3.4", RS.COMPLETED);
+
+		/*
+		 * REQUIRES_NEW : suspend any existing transaction and creates a new one
+		 */
+
+		section("CORE.8.6.3.5", RS.COMPLETED);
+
+		/*
+		 * MANDATORY : do not create a new transaction, throw
+		 * EJBTransactionRequiredException if a transaction does not already
+		 * exist
+		 */
+
+		section("CORE.8.6.3.6", RS.COMPLETED);
+
+		/*
+		 * NEVER : throw EJBException if a transaction exists
+		 */
+
+		section("CORE.8.6.3.7", RS.COMPLETED);
+
+		section("CORE.8.6.3.8", RS.COMPLETED);
+
+		section("CORE.8.6.3.9", RS.COMPLETED);
+
+		/*
+		 * The container must throw the java.lang.IllegalStateException if the
+		 * EJBContext.getRollbackOnly method is invoked from a business method
+		 * executing with the SUPPORTS, NOT_SUPPORTED, or NEVER transaction
+		 * attribute.
+		 */
+
+		section("CORE.8.6.3.10", RS.COMPLETED);
+
+		/*
+		 * If an instance of an enterprise bean with container-managed
+		 * transaction demarcation attempts to invoke the getUserTransaction
+		 * method of the EJBContext interface, the container must throw the
+		 * java.lang.IllegalStateException.
+		 */
+
+		section("CORE.8.6.3.11", RS.COMPLETED);
+
+		/*
+		 * the container must complete the commit protocol before marshalling
+		 * the return value
+		 */
+
+		section("CORE.8.6.4", RS.COMPLETED);
+
+		section("CORE.8.6.5", RS.COMPLETED);
+		section("CORE.8.6.5.1", RS.COMPLETED);
+		section("CORE.8.6.5.2", RS.COMPLETED);
+		section("CORE.8.6.5.3", RS.COMPLETED);
+		section("CORE.8.6.5.4", RS.COMPLETED);
+		section("CORE.8.6.5.5", RS.COMPLETED);
+		section("CORE.8.6.6", RS.COMPLETED);
+
+		/*
+		 * The container may use a local transaction optimization for enterprise
+		 * beans whose metadata annotations or deployment descriptor indicates
+		 * that connections to a resource manager are shareable
+		 */
+
+		section("CORE.8.6.7", RS.COMPLETED);
+
+		/*
+		 * A failure that occurs in the middle of the execution of a method that
+		 * runs with an unspecified transaction context may leave the resource
+		 * managers accessed from the method in an unpredictable state. The EJB
+		 * architecture does not define how the application should recover the
+		 * resource managers’ state after such a failure.
+		 */
+
+		section("CORE.8.7", RS.COMPLETED);
+
+		section("CORE.8.7.1", RS.COMPLETED);
+
+		/* Transaction “Diamond” Scenario with an Entity Object */
+
+		/* interesting case */
+
+		toReadAgain();
+
+		section("CORE.8.7.2", RS.COMPLETED);
+
+		/* support for local diamonds */
+
+		/*
+		 * if distributed diamonds are not supported, and if the container can
+		 * detect them, then it should throw an exception
+		 */
+
+		section("CORE.8.7.3", RS.COMPLETED);
+
+		section("CORE.8.7.4", RS.COMPLETED);
+		section("CORE.8.7.5", RS.COMPLETED);
+
+		/* interesting */
+		toReadAgain();
+
+		section("CORE.9", RS.UNTOUCHED);
+		section("CORE.9.1", RS.UNTOUCHED);
+		section("CORE.9.1.1", RS.UNTOUCHED);
+		section("CORE.9.1.2", RS.UNTOUCHED);
+		section("CORE.9.2", RS.UNTOUCHED);
+		section("CORE.9.2.1", RS.UNTOUCHED);
+		section("CORE.9.2.2", RS.UNTOUCHED);
+		section("CORE.9.3", RS.UNTOUCHED);
+		section("CORE.9.3.1", RS.UNTOUCHED);
+		section("CORE.9.3.2", RS.UNTOUCHED);
+		section("CORE.9.3.3", RS.UNTOUCHED);
+		section("CORE.9.3.4", RS.UNTOUCHED);
+		section("CORE.9.3.5", RS.UNTOUCHED);
+		section("CORE.9.3.6", RS.UNTOUCHED);
+		section("CORE.9.3.7", RS.UNTOUCHED);
+		section("CORE.9.3.8", RS.UNTOUCHED);
+		section("CORE.9.3.9", RS.UNTOUCHED);
+		section("CORE.9.3.10", RS.UNTOUCHED);
+		section("CORE.9.4", RS.UNTOUCHED);
+		section("CORE.9.4.1", RS.UNTOUCHED);
+		section("CORE.9.4.2", RS.UNTOUCHED);
+		section("CORE.9.4.2.1", RS.UNTOUCHED);
+		section("CORE.9.4.2.2", RS.UNTOUCHED);
+		section("CORE.9.4.2.3", RS.UNTOUCHED);
+		section("CORE.9.5", RS.UNTOUCHED);
 
 		// - end of outline
-
-		section("CORE.8", RS.UNTOUCHED);
-		section("CORE.9", RS.UNTOUCHED);
+		
 		section("CORE.10", RS.UNTOUCHED);
 		section("CORE.11", RS.UNTOUCHED);
 		section("CORE.12", RS.UNTOUCHED);
