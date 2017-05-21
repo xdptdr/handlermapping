@@ -25,4 +25,12 @@ public abstract class Reading {
 	}
 
 	public abstract void reading() throws Exception;
+
+	protected void questionHere() {
+
+	}
+
+	protected void skipped() {
+
+	}
 }
