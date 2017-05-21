@@ -33,4 +33,8 @@ public abstract class Reading {
 	protected void skipped() {
 
 	}
+
+	protected void important() {
+
+	}
 }
