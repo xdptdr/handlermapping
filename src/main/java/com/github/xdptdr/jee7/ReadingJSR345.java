@@ -13,7 +13,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.annotation.security.RunAs;
 import javax.ejb.AccessTimeout;
+import javax.ejb.ActivationConfigProperty;
 import javax.ejb.AfterBegin;
 import javax.ejb.AfterCompletion;
 import javax.ejb.AsyncResult;
@@ -30,11 +32,13 @@ import javax.ejb.EJBHome;
 import javax.ejb.EJBLocalHome;
 import javax.ejb.EJBLocalObject;
 import javax.ejb.EJBObject;
-import javax.ejb.IllegalLoopbackException;
 import javax.ejb.Local;
 import javax.ejb.LocalBean;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
+import javax.ejb.MessageDriven;
+import javax.ejb.MessageDrivenBean;
+import javax.ejb.MessageDrivenContext;
 import javax.ejb.NoSuchEJBException;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
@@ -53,6 +57,11 @@ import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.interceptor.AroundConstruct;
 import javax.interceptor.AroundInvoke;
+import javax.jms.MessageListener;
+import javax.jms.Queue;
+import javax.jms.Topic;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceRef;
@@ -82,6 +91,7 @@ public class ReadingJSR345 extends Reading {
 	private boolean wasCancelled;
 	private Map<String, Object> contextData;
 	private SessionBean sessionBean;
+	private MessageDrivenContext messageDrivenContext;
 
 	@Override
 	public void reading() throws Exception {
@@ -1437,60 +1447,354 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.4.10.15", RS.COMPLETED);
 		section("CORE.4.10.16", RS.COMPLETED);
 
-		section("CORE.5", RS.STARTED);
-		section("CORE.5.1", RS.UNTOUCHED);
-		section("CORE.5.2", RS.UNTOUCHED);
-		section("CORE.5.3", RS.UNTOUCHED);
-		section("CORE.5.4", RS.UNTOUCHED);
-		section("CORE.5.4.1", RS.UNTOUCHED);
-		section("CORE.5.4.2", RS.UNTOUCHED);
-		section("CORE.5.4.3", RS.UNTOUCHED);
-		section("CORE.5.4.4", RS.UNTOUCHED);
-		section("CORE.5.4.5", RS.UNTOUCHED);
-		section("CORE.5.4.6", RS.UNTOUCHED);
-		section("CORE.5.4.7", RS.UNTOUCHED);
-		section("CORE.5.4.8", RS.UNTOUCHED);
-		section("CORE.5.4.9", RS.UNTOUCHED);
-		section("CORE.5.4.10", RS.UNTOUCHED);
-		section("CORE.5.4.11", RS.UNTOUCHED);
-		section("CORE.5.4.12", RS.UNTOUCHED);
-		section("CORE.5.4.13", RS.UNTOUCHED);
-		section("CORE.5.4.14", RS.UNTOUCHED);
-		section("CORE.5.4.15", RS.UNTOUCHED);
-		section("CORE.5.4.16", RS.UNTOUCHED);
-		section("CORE.5.4.17", RS.UNTOUCHED);
-		section("CORE.5.4.17.1", RS.UNTOUCHED);
-		section("CORE.5.4.17.2", RS.UNTOUCHED);
-		section("CORE.5.4.17.3", RS.UNTOUCHED);
-		section("CORE.5.4.17.4", RS.UNTOUCHED);
-		section("CORE.5.4.17.5", RS.UNTOUCHED);
-		section("CORE.5.4.17.6", RS.UNTOUCHED);
-		section("CORE.5.4.17.7", RS.UNTOUCHED);
-		section("CORE.5.4.17.8", RS.UNTOUCHED);
-		section("CORE.5.4.18", RS.UNTOUCHED);
-		section("CORE.5.4.19", RS.UNTOUCHED);
-		section("CORE.5.4.20", RS.UNTOUCHED);
-		section("CORE.5.5", RS.UNTOUCHED);
-		section("CORE.5.5.1", RS.UNTOUCHED);
-		section("CORE.5.6", RS.UNTOUCHED);
-		section("CORE.5.6.1", RS.UNTOUCHED);
-		section("CORE.5.6.2", RS.UNTOUCHED);
-		section("CORE.5.6.3", RS.UNTOUCHED);
-		section("CORE.5.6.4", RS.UNTOUCHED);
-		section("CORE.5.6.5", RS.UNTOUCHED);
-		section("CORE.5.6.6", RS.UNTOUCHED);
-		section("CORE.5.7", RS.UNTOUCHED);
-		section("CORE.5.7.1", RS.UNTOUCHED);
-		section("CORE.5.7.2", RS.UNTOUCHED);
-		section("CORE.5.7.3", RS.UNTOUCHED);
-		section("CORE.5.7.4", RS.UNTOUCHED);
-		section("CORE.5.7.5", RS.UNTOUCHED);
-		section("CORE.5.7.6", RS.UNTOUCHED);
+		section("CORE.5", RS.COMPLETED);
+		section("CORE.5.1", RS.COMPLETED);
+
+		/* message driven beans are anonymous */
+
+		section("CORE.5.2", RS.COMPLETED);
+		section("CORE.5.3", RS.COMPLETED);
+
+		{ // message bean injection
+			class MyComponent {
+				@Resource
+				Queue myJmsQueue;
+			}
+		}
+
+		{
+			Context initialContext = new InitialContext();
+			Queue myJmsQueue = (Queue) initialContext.lookup("java:comp/env/jms/myJmsQueue");
+		}
+
+		section("CORE.5.4", RS.COMPLETED);
+
+		section("CORE.5.4.1", RS.COMPLETED);
+
+		/*
+		 * A message-driven bean must be annotated with the MessageDriven
+		 * annotation or denoted in the deployment descriptor as a
+		 * message-driven bean.
+		 */
+
+		{
+			@MessageDriven
+			class MyMessageBean {
+			}
+		}
+
+		section("CORE.5.4.2", RS.COMPLETED);
+
+		constructANewInstanceOf(MessageDriven.class).messageListenerInterface();
+
+		/* default to the one implemented by the bean */
+
+		/* possible interface to implement : */
+
+		MessageListener.class.getName();
+
+		/*
+		 * in XML : messaging-type element of the message-driven deployment
+		 * descriptor element
+		 */
+
+		section("CORE.5.4.3", RS.COMPLETED);
+
+		/*
+		 * A message-driven bean is permitted to implement a listener interface
+		 * with no methods. => similare to no-interface session beans
+		 */
+
+		section("CORE.5.4.4", RS.COMPLETED);
+
+		{
+			@MessageDriven
+			class MyBean {
+				@Resource
+				MessageDrivenContext messageDrivenContext;
+			}
+		}
+
+		{
+			@MessageDriven
+			class MyBean implements MessageDrivenBean {
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void setMessageDrivenContext(MessageDrivenContext ctx) throws EJBException {
+				}
+
+				@Override
+				public void ejbRemove() throws EJBException {
+				}
+			}
+		}
+
+		section("CORE.5.4.5", RS.COMPLETED);
+
+		messageDrivenContext.setRollbackOnly();
+		messageDrivenContext.getRollbackOnly();
+		messageDrivenContext.getUserTransaction();
+		messageDrivenContext.getTimerService();
+		messageDrivenContext.getCallerPrincipal();
+		messageDrivenContext.isCallerInRole(identity);
+		messageDrivenContext.isCallerInRole(roleName);
+		messageDrivenContext.getEJBHome();
+		messageDrivenContext.getEJBLocalHome();
+		messageDrivenContext.lookup(name);
+		messageDrivenContext.getContextData();
+
+		section("CORE.5.4.6", RS.COMPLETED);
+
+		{
+			@MessageDriven
+			class MyBean {
+				@AroundConstruct
+				public void foo() {
+				}
+
+				@PostConstruct
+				public void bar() {
+				}
+
+				@PreDestroy
+				public void baz() {
+				}
+			}
+		}
+
+		section("CORE.5.4.7", RS.COMPLETED);
+		section("CORE.5.4.8", RS.COMPLETED);
+
+		section("CORE.5.4.9", RS.COMPLETED);
+
+		section("CORE.5.4.10", RS.COMPLETED);
+
+		/* this annotation is supported on MDBs */
+		AroundInvoke.class.isAnnotation();
+
+		section("CORE.5.4.11", RS.COMPLETED);
+
+		section("CORE.5.4.12", RS.COMPLETED);
+
+		/*
+		 * Message-driven beans should therefore be prepared to handle messages
+		 * that are out of sequence: for example, the message to cancel a
+		 * reservation may be delivered before the message to make the
+		 * reservation.
+		 */
+
+		section("CORE.5.4.13", RS.COMPLETED);
+
+		section("CORE.5.4.14", RS.COMPLETED);
+
+		{
+			@MessageDriven
+			@RunAs("toto")
+			class MyBean {
+			}
+		}
+
+		section("CORE.5.4.15", RS.COMPLETED);
+
+		/*
+		 * A message-driven bean is associated with a destination or endpoint
+		 * when the bean is deployed in the container.
+		 */
+
+		section("CORE.5.4.16", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "foo", propertyValue = "bar") })
+			class MyBean {
+
+			}
+		}
+
+		// activation-config in XML
+		// activation-config-property in XML
+
+		section("CORE.5.4.17", RS.COMPLETED);
+
+		/* there's a built-in JMS provided in the container */
+
+		section("CORE.5.4.17.1", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
+			class MyJMSBean {
+
+			}
+		}
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Dups-ok-acknowledge") })
+			class MyJMSBean {
+
+			}
+		}
+
+		section("CORE.5.4.17.2", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "messageSelector", propertyValue = "JMSType = 'car' AND color = 'blue' AND weight > 2500") })
+			class MyJMSBean {
+
+			}
+		}
+
+		section("CORE.5.4.17.3", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue") })
+			class MyJMSBean {
+
+			}
+		}
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic") })
+			class MyJMSBean {
+
+			}
+		}
+
+		section("CORE.5.4.17.4", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queueOrTopicName") })
+			class MyJMSBean {
+
+			}
+		}
+		section("CORE.5.4.17.5", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "connectionFactoryLookup.", propertyValue = "connectionFactoryName") })
+			class MyJMSBean {
+
+			}
+		}
+
+		section("CORE.5.4.17.6", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
+					@ActivationConfigProperty(propertyName = "subscriptionDurability.", propertyValue = "Durable") })
+			class MyJMSBean {
+
+			}
+		}
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
+					@ActivationConfigProperty(propertyName = "subscriptionDurability.", propertyValue = "NonDurable") })
+			class MyJMSBean {
+
+			}
+		}
+
+		/*
+		 * The Deployer should avoid associating more than one message-driven
+		 * bean with the same JMS queue. If there are multiple JMS consumers for
+		 * a queue, JMS does not define how messages are distribued between the
+		 * queue receivers.
+		 */
+
+		section("CORE.5.4.17.7", RS.COMPLETED);
+
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
+					@ActivationConfigProperty(propertyName = "subscriptionDurability.", propertyValue = "Durable"),
+					@ActivationConfigProperty(propertyName = "subscriptionName.", propertyValue = "nameOfTheSubscription") })
+			class MyJMSBean {
+
+			}
+		}
+
+		/*
+		 * The Bean Provider or Deployer cannot specify whether a shared or
+		 * unshared subscription will be used.
+		 */
+
+		section("CORE.5.4.17.8", RS.COMPLETED);
+		{
+			@MessageDriven(activationConfig = {
+					@ActivationConfigProperty(propertyName = "clientId", propertyValue = "clientIdentifier") })
+			class MyJMSBean {
+
+			}
+		}
+
+		section("CORE.5.4.18", RS.COMPLETED);
+
+		/*
+		 * A message-driven bean’s message listener method must not throw the
+		 * java.rmi.RemoteException.
+		 */
+
+		/*
+		 * Message-driven beans should not, in general, throw RuntimeExceptions
+		 * ; they induce "does not exist" state.
+		 */
+
+		/* application exception are propagated to the client */
+
+		section("CORE.5.4.19", RS.COMPLETED);
+		section("CORE.5.4.20", RS.COMPLETED);
+
+		/* JMS replies should use the same mode */
+
+		Queue.class.getName();
+		Topic.class.getName();
+
+		section("CORE.5.5", RS.COMPLETED);
+		section("CORE.5.5.1", RS.COMPLETED);
+		section("CORE.5.6", RS.COMPLETED);
+		section("CORE.5.6.1", RS.COMPLETED);
+		section("CORE.5.6.2", RS.COMPLETED);
+
+		section("CORE.5.6.3", RS.COMPLETED);
+		section("CORE.5.6.4", RS.COMPLETED);
+		section("CORE.5.6.5", RS.COMPLETED);
+		section("CORE.5.6.6", RS.COMPLETED);
+		section("CORE.5.7", RS.COMPLETED);
+		section("CORE.5.7.1", RS.COMPLETED);
+		section("CORE.5.7.2", RS.COMPLETED);
+		section("CORE.5.7.3", RS.COMPLETED);
+		section("CORE.5.7.4", RS.COMPLETED);
+		section("CORE.5.7.5", RS.COMPLETED);
+		section("CORE.5.7.6", RS.COMPLETED);
+
+		section("CORE.6", RS.COMPLETED);
+
+		section("CORE.7", RS.STARTED);
+		section("CORE.7.1", RS.UNTOUCHED);
+		section("CORE.7.2", RS.UNTOUCHED);
+		section("CORE.7.3", RS.UNTOUCHED);
+		section("CORE.7.4", RS.UNTOUCHED);
+		section("CORE.7.5", RS.UNTOUCHED);
+		section("CORE.7.6", RS.UNTOUCHED);
+		section("CORE.7.7", RS.UNTOUCHED);
+		section("CORE.7.8", RS.UNTOUCHED);
+		section("CORE.7.8.1", RS.UNTOUCHED);
+		section("CORE.7.8.2", RS.UNTOUCHED);
+		section("CORE.7.8.2.1", RS.UNTOUCHED);
 
 		// - end of outline
 
-		section("CORE.6", RS.UNTOUCHED);
-		section("CORE.7", RS.UNTOUCHED);
 		section("CORE.8", RS.UNTOUCHED);
 		section("CORE.9", RS.UNTOUCHED);
 		section("CORE.10", RS.UNTOUCHED);
