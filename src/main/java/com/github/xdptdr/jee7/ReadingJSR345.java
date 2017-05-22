@@ -1,12 +1,17 @@
 package com.github.xdptdr.jee7;
 
+import java.awt.dnd.DragGestureEvent;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.rmi.AccessException;
+import java.rmi.MarshalException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.security.Identity;
 import java.security.Principal;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -31,14 +36,18 @@ import javax.ejb.ConcurrentAccessTimeoutException;
 import javax.ejb.CreateException;
 import javax.ejb.DependsOn;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.ejb.EJBException;
 import javax.ejb.EJBHome;
 import javax.ejb.EJBLocalHome;
 import javax.ejb.EJBLocalObject;
+import javax.ejb.EJBMetaData;
 import javax.ejb.EJBObject;
 import javax.ejb.EJBTransactionRequiredException;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.FinderException;
+import javax.ejb.Handle;
+import javax.ejb.HomeHandle;
 import javax.ejb.Local;
 import javax.ejb.LocalBean;
 import javax.ejb.Lock;
@@ -68,6 +77,8 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.ejb.TransactionRequiredLocalException;
 import javax.ejb.TransactionRolledbackLocalException;
+import javax.ejb.embeddable.EJBContainer;
+import javax.ejb.spi.HandleDelegate;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.interceptor.AroundConstruct;
@@ -79,6 +90,16 @@ import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.OperationNotSupportedException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.persistence.PersistenceUnit;
+import javax.rmi.PortableRemoteObject;
+import javax.sql.DataSource;
+import javax.transaction.InvalidTransactionException;
 import javax.transaction.TransactionRequiredException;
 import javax.transaction.TransactionRolledbackException;
 import javax.transaction.UserTransaction;
@@ -86,7 +107,9 @@ import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceRef;
 import javax.xml.ws.handler.MessageContext;
 
-import org.omg.CORBA.TRANSACTION_MODE;
+import org.omg.CORBA.ORB;
+import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.PortableServer.POA;
 
 public class ReadingJSR345 extends Reading {
 
@@ -116,6 +139,10 @@ public class ReadingJSR345 extends Reading {
 	private Connection connection;
 	private boolean autoCommit;
 	private Session session;
+	private HandleDelegate handleDelegate;
+	private ObjectInputStream objectInputStream;
+	private ObjectOutputStream objectOutputStream;
+	private EJBContext ejbContext;
 
 	@Override
 	public void reading() throws Exception {
@@ -2440,135 +2467,1541 @@ public class ReadingJSR345 extends Reading {
 		// extends RemoteException
 		NoSuchObjectException.class.getName();
 
-		section("CORE.9.5", RS.UNTOUCHED);
+		section("CORE.9.5", RS.STARTED);
 
-		section("CORE.10", RS.UNTOUCHED);
-		section("CORE.10.1", RS.UNTOUCHED);
-		section("CORE.10.1.1", RS.UNTOUCHED);
-		section("CORE.10.2", RS.UNTOUCHED);
-		section("CORE.10.2.1", RS.UNTOUCHED);
-		section("CORE.10.3", RS.UNTOUCHED);
-		section("CORE.10.3.1", RS.UNTOUCHED);
-		section("CORE.10.3.2", RS.UNTOUCHED);
-		section("CORE.10.3.3", RS.UNTOUCHED);
-		section("CORE.10.3.4", RS.UNTOUCHED);
-		section("CORE.10.4", RS.UNTOUCHED);
-		section("CORE.10.5", RS.UNTOUCHED);
-		section("CORE.10.5.1", RS.UNTOUCHED);
-		section("CORE.10.5.2", RS.UNTOUCHED);
-		section("CORE.10.5.3", RS.UNTOUCHED);
-		section("CORE.10.5.4", RS.UNTOUCHED);
-		section("CORE.10.5.5", RS.UNTOUCHED);
-		section("CORE.10.5.5.1", RS.UNTOUCHED);
-		section("CORE.10.6", RS.UNTOUCHED);
-		section("CORE.10.6.1", RS.UNTOUCHED);
-		section("CORE.10.6.1.1", RS.UNTOUCHED);
-		section("CORE.10.6.1.2", RS.UNTOUCHED);
-		section("CORE.10.6.1.3", RS.UNTOUCHED);
-		section("CORE.10.6.1.4", RS.UNTOUCHED);
-		section("CORE.10.6.2", RS.UNTOUCHED);
-		section("CORE.10.6.2.1", RS.UNTOUCHED);
-		section("CORE.10.6.2.2", RS.UNTOUCHED);
-		section("CORE.10.7", RS.UNTOUCHED);
-		section("CORE.10.8", RS.UNTOUCHED);
-		section("CORE.10.8.1", RS.UNTOUCHED);
-		section("CORE.10.8.1.1", RS.UNTOUCHED);
-		section("CORE.10.8.1.2", RS.UNTOUCHED);
-		section("CORE.10.8.2", RS.UNTOUCHED);
-		section("CORE.10.8.2.1", RS.UNTOUCHED);
-		section("CORE.10.8.2.2", RS.UNTOUCHED);
-		section("CORE.10.8.2.3", RS.UNTOUCHED);
-		section("CORE.10.8.2.4", RS.UNTOUCHED);
-		section("CORE.10.8.2.5", RS.UNTOUCHED);
+		section("CORE.10", RS.STARTED);
 
-		section("CORE.11", RS.UNTOUCHED);
-		section("CORE.11.1", RS.UNTOUCHED);
-		section("CORE.11.2", RS.UNTOUCHED);
-		section("CORE.11.2.1", RS.UNTOUCHED);
-		section("CORE.11.2.2", RS.UNTOUCHED);
-		section("CORE.11.2.3", RS.UNTOUCHED);
-		section("CORE.11.3", RS.UNTOUCHED);
-		section("CORE.11.3.1", RS.UNTOUCHED);
-		section("CORE.11.3.2", RS.UNTOUCHED);
-		section("CORE.11.3.3", RS.UNTOUCHED);
-		section("CORE.11.3.4", RS.UNTOUCHED);
-		section("CORE.11.4", RS.UNTOUCHED);
-		section("CORE.11.4.1", RS.UNTOUCHED);
-		section("CORE.11.4.1.1", RS.UNTOUCHED);
-		section("CORE.11.4.1.2", RS.UNTOUCHED);
-		section("CORE.11.4.1.3", RS.UNTOUCHED);
-		section("CORE.11.4.2", RS.UNTOUCHED);
-		section("CORE.11.4.3", RS.UNTOUCHED);
-		section("CORE.11.4.4", RS.UNTOUCHED);
-		section("CORE.11.5", RS.UNTOUCHED);
-		section("CORE.11.5.1", RS.UNTOUCHED);
-		section("CORE.11.5.1.1", RS.UNTOUCHED);
-		section("CORE.11.5.1.2", RS.UNTOUCHED);
-		section("CORE.11.5.1.3", RS.UNTOUCHED);
-		section("CORE.11.5.2", RS.UNTOUCHED);
-		section("CORE.11.5.2.1", RS.UNTOUCHED);
-		section("CORE.11.5.3", RS.UNTOUCHED);
-		section("CORE.11.5.4", RS.UNTOUCHED);
-		section("CORE.11.6", RS.UNTOUCHED);
-		section("CORE.11.7", RS.UNTOUCHED);
-		section("CORE.11.7.1", RS.UNTOUCHED);
-		section("CORE.11.7.1.1", RS.UNTOUCHED);
-		section("CORE.11.7.1.2", RS.UNTOUCHED);
-		section("CORE.11.7.1.3", RS.UNTOUCHED);
-		section("CORE.11.7.1.4", RS.UNTOUCHED);
-		section("CORE.11.7.2", RS.UNTOUCHED);
-		section("CORE.11.7.3", RS.UNTOUCHED);
-		section("CORE.11.7.4", RS.UNTOUCHED);
-		section("CORE.11.8", RS.UNTOUCHED);
-		section("CORE.11.8.1", RS.UNTOUCHED);
-		section("CORE.11.8.1.1", RS.UNTOUCHED);
-		section("CORE.11.8.1.2", RS.UNTOUCHED);
-		section("CORE.11.8.1.3", RS.UNTOUCHED);
-		section("CORE.11.8.2", RS.UNTOUCHED);
-		section("CORE.11.8.3", RS.UNTOUCHED);
-		section("CORE.11.9", RS.UNTOUCHED);
-		section("CORE.11.9.1", RS.UNTOUCHED);
+		/*
+		 * Distributed Interoperability is not defined for the EJB 3.x remote
+		 * client view, only for EJB 2.1
+		 */
+
+		section("CORE.10.1", RS.STARTED);
+
+		/* Java RMI interfaces */
+
+		/* RMI-IIOP types */
+
+		section("CORE.10.1.1", RS.STARTED);
+
+		/*
+		 * stubs for the server side objects, which implement the remote home
+		 * and remote component interface
+		 */
+
+		section("CORE.10.2", RS.STARTED);
+
+		section("CORE.10.2.1", RS.STARTED);
+
+		section("CORE.10.3", RS.STARTED);
+
+		section("CORE.10.3.1", RS.STARTED);
+
+		/* JSPs on one Java EE container, EJBs on another Java EE container */
+
+		section("CORE.10.3.2", RS.STARTED);
+
+		section("CORE.10.3.3", RS.STARTED);
+
+		section("CORE.10.3.4", RS.STARTED);
+
+		section("CORE.10.4", RS.STARTED);
+
+		section("CORE.10.5", RS.STARTED);
+
+		/* IIOP 1.2 */
+
+		/* CORBA 2.3.1 */
+
+		/* GIOP version number 1.2 */
+
+		/* fragmented GIOP messages */
+
+		/* BiDirIIOPServiceContext structure */
+
+		/* Java Language to IDL mapping specification */
+
+		section("CORE.10.5.1", RS.STARTED);
+
+		/* Java RMI APIs */
+
+		/* CORBA portable Stub APIs */
+
+		/* CORBA Tie objects */
+
+		section("CORE.10.5.2", RS.STARTED);
+
+		Handle.class.getName();
+		HomeHandle.class.getName();
+		EJBMetaData.class.getName();
+
+		section("CORE.10.5.3", RS.STARTED);
+
+		{
+			Map<String, Class<?>> corbaToSystemExceptionsMapping = new HashMap<String, Class<?>>();
+			corbaToSystemExceptionsMapping.put("TRANSACTION_ROLLEDBACK", TransactionRolledbackException.class);
+			corbaToSystemExceptionsMapping.put("TRANSACTION_REQUIRED", TransactionRequiredException.class);
+			corbaToSystemExceptionsMapping.put("INVALID_TRANSACTION", InvalidTransactionException.class);
+			corbaToSystemExceptionsMapping.put("OBJECT_NOT_EXIST", NoSuchObjectException.class);
+			corbaToSystemExceptionsMapping.put("NO_PERMISSION", AccessException.class);
+			corbaToSystemExceptionsMapping.put("MARSHAL", MarshalException.class);
+			corbaToSystemExceptionsMapping.put("UNKNOWN", RemoteException.class);
+		}
+
+		section("CORE.10.5.4", RS.STARTED);
+
+		/* EJBObject or EJBHome’s IOR */
+
+		section("CORE.10.5.5", RS.STARTED);
+
+		section("CORE.10.5.5.1", RS.STARTED);
+
+		HandleDelegate.class.getName();
+
+		/* java:comp/HandleDelegate */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				handleDelegate.readEJBHome(objectInputStream);
+				handleDelegate.readEJBObject(objectInputStream);
+				handleDelegate.writeEJBHome(ejbHome, objectOutputStream);
+				handleDelegate.writeEJBObject(ejbObject, objectOutputStream);
+			}
+		});
+
+		section("CORE.10.6", RS.STARTED);
+
+		/*
+		 * Transaction interoperability between containers provided by different
+		 * vendors is an optional feature in this version of the EJB
+		 * specification.
+		 */
+
+		section("CORE.10.6.1", RS.STARTED);
+
+		section("CORE.10.6.1.1", RS.STARTED);
+
+		/*
+		 * implicit propagation mechanism described in the CORBA Object
+		 * Transaction Service (OTS) v1.2 specification
+		 */
+
+		/* CosTransactions::PropagationContext */
+
+		section("CORE.10.6.1.2", RS.STARTED);
+
+		section("CORE.10.6.1.3", RS.STARTED);
+
+		/* CosTransactions::OTSPolicy */
+
+		/* CosTransactions::InvocationPolicy */
+
+		/* CosTransactions::SHARED or CosTransactions::EITHER */
+
+		/* CosTransactions::ADAPTS */
+
+		/* CosTransactions::Synchronization */
+
+		section("CORE.10.6.1.4", RS.STARTED);
+
+		section("CORE.10.6.2", RS.STARTED);
+
+		/*
+		 * when a Java EE container does not support transaction
+		 * interoperability, the failure modes are well defined so that the
+		 * integrity of an application’s data is not compromised: at worst the
+		 * transaction is rolled back
+		 */
+
+		section("CORE.10.6.2.1", RS.STARTED);
+
+		/* CosTransactions::Coordinator and CosTransactions::Terminator */
+
+		/* Coordinator::register_resource call */
+
+		section("CORE.10.6.2.2", RS.STARTED);
+
+		/* CosTransactions::OTSPolicy */
+		/* CosTransactions::InvocationPolicy */
+
+		section("CORE.10.6.2.2.1", RS.STARTED);
+		section("CORE.10.6.2.2.2", RS.STARTED);
+
+		section("CORE.10.7", RS.STARTED);
+
+		/* CORBA CosNaming service */
+
+		/* CORBA Interoperable Name Service specification */
+
+		/* corbaloc:iiop:1.2@<host>:<port>/<objectkey> */
+
+		section("CORE.10.8", RS.STARTED);
+
+		/* CSIv2 specification Conformance Level 0 */
+
+		section("CORE.10.8.1", RS.STARTED);
+
+		/* Kerberos-based secret key mechanisms */
+
+		/* X.509 certificate-based public key mechanisms */
+
+		section("CORE.10.8.1.1", RS.STARTED);
+
+		section("CORE.10.8.1.2", RS.STARTED);
+
+		/* Java Authentication and Authorization Service (JAAS) */
+
+		section("CORE.10.8.2", RS.STARTED);
+
+		section("CORE.10.8.2.1", RS.STARTED);
+
+		/* Secure Sockets Layer (SSL 3.0) */
+
+		/* Transport Layer Security (TLS 1.0) */
+
+		/*
+		 * The original SSL and TLS specifications supported only X.509
+		 * certificates for authenticating principals.
+		 */
+
+		/*
+		 * Recently, Kerberos-based authentication mechanisms and cipher suites
+		 * have been defined for TLS
+		 */
+
+		/*
+		 * EJB, web and application client containers are required to support
+		 * both SSL 3.0 and TLS 1.0 as security protocols for IIOP.
+		 */
+
+		/*-
+		 * - TLS_RSA_WITH_RC4_128_MD5
+		 * - SSL_RSA_WITH_RC4_128_MD5
+		 * - TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA
+		 * - SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA
+		 * - TLS_RSA_EXPORT_WITH_RC4_40_MD5
+		 * - SSL_RSA_EXPORT_WITH_RC4_40_MD5
+		 * - TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA
+		 * - SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA
+		 */
+
+		/* SSL handshake layer */
+		/* SSL record layer */
+
+		section("CORE.10.8.2.2", RS.STARTED);
+
+		/* TAG_CSI_SEC_MECH_LIST */
+		/* CSIIOP::CompoundSecMech */
+
+		section("CORE.10.8.2.3", RS.STARTED);
+
+		section("CORE.10.8.2.4", RS.STARTED);
+
+		section("CORE.10.8.2.5", RS.STARTED);
+
+		section("CORE.11", RS.STARTED);
+
+		section("CORE.11.1", RS.STARTED);
+
+		section("CORE.11.2", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				sessionContext.lookup(name);
+			}
+		});
+
+		section("CORE.11.2.1", RS.STARTED);
+
+		/*
+		 * For enterprise beans packaged in a standalone ejb-jar file or in an
+		 * ejb-jar file within an .ear file, each enterprise bean defines its
+		 * own set of environment entries. In this case, all instances of an
+		 * enterprise bean share the same environment entries; the environment
+		 * entries are not shared with other enterprise beans.
+		 */
+
+		/*
+		 * In a .war file, there is only a single naming environment shared
+		 * between all the components in the module. For enterprise beans
+		 * packaged in a .war file, all enterprise beans share this single
+		 * naming environment. The enterprise beans share their environment
+		 * entries with all other enterprise bean components and web components
+		 * in the .war file.
+		 */
+
+		/*
+		 * lookups of objects in the JNDI java: namespace are required to return
+		 * a new instance of the requested object every time.
+		 */
+
+		/*- exceptions :
+		 * - immutable objects
+		 * - singletons
+		 * - objects intented to be shared (i.e. java:comp/ORB)
+		 */
+
+		section("CORE.11.2.2", RS.STARTED);
+
+		/*
+		 * a field named myDatabase in the class MySessionBean in the package
+		 * com.acme.example would correspond to the JNDI name
+		 * java:comp/env/com.acme.example.MySessionBean/myDatabase.
+		 */
+
+		/*
+		 * The annotation is applied to the set method for the property, which
+		 * is the method that is called to inject the environment entry.
+		 */
+
+		/*
+		 * a method named setMyDatabase in the same MySessionBean class would
+		 * correspond to the JNDI name
+		 * java:comp/env/com.example.MySessionBean/myDatabase
+		 */
+
+		/*
+		 * When a deployment descriptor entry is used to specify injection, the
+		 * JNDI name and the instance variable name or property name are both
+		 * specified explicitly.
+		 */
+
+		/*
+		 * the JNDI name is always relative to the java:comp/env naming context
+		 */
+
+		/*
+		 * By explicitly specifying the JNDI name of a resource, a single
+		 * resource may be injected into multiple fields or methods of multiple
+		 * classes.
+		 */
+
+		/*
+		 * Annotations may also be applied to the bean class itself. These
+		 * annotations declare an entry in the bean’s environment, but do not
+		 * cause the resource to be injected. Instead, the bean is expected to
+		 * use the EJBContext lookup method or the methods of the JNDI API to
+		 * lookup the entry. When the annotation is applied to the bean class,
+		 * the JNDI name and the environment entry type must be explicitly
+		 * specified
+		 */
+
+		section("CORE.11.2.3", RS.STARTED);
+
+		/*
+		 * rules apply to how a deployment descriptor entry may override a
+		 * Resource annotation
+		 */
+
+		/*
+		 * rules for how a deployment descriptor entry may override a
+		 * PersistenceUnit or PersistenceContext annotation are described in
+		 * Sections 11.10 and 11.11
+		 */
+
+		/*
+		 * The rules for web services references and how a deployment descriptor
+		 * entry may override a WebServiceRef annotation are included in the Web
+		 * Services for Java EE specification
+		 */
+
+		section("CORE.11.3", RS.STARTED);
+
+		section("CORE.11.3.1", RS.STARTED);
+		/*
+		 * When using JNDI interfaces directly, an enterprise bean instance
+		 * creates a javax.naming.InitialContext object by using the constructor
+		 * with no arguments, and looks up the environment naming via the
+		 * InitialContext under the name java:comp/env
+		 */
+
+		section("CORE.11.3.2", RS.STARTED);
+
+		section("CORE.11.3.3", RS.STARTED);
+
+		section("CORE.11.3.4", RS.STARTED);
+
+		/*-
+		 *  - java:comp/env
+		 *  - java:module
+		 *  - java:app
+		 *  - java:global
+		 *  */
+
+		/*
+		 * The container must ensure that the enterprise bean instances have
+		 * only read access to their environment variables.
+		 */
+
+		OperationNotSupportedException.class.getName();
+
+		section("CORE.11.4", RS.STARTED);
+		section("CORE.11.4.1", RS.STARTED);
+		section("CORE.11.4.1.1", RS.STARTED);
+
+		/*
+		 * The authenticationType and shareable elements of the Resource
+		 * annotation must not be specified for simple environment entries
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				class MyBean {
+					@Resource
+					int someInteger;
+				}
+			}
+		});
+
+		section("CORE.11.4.1.2", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				Context initCtx = new InitialContext();
+				Context myEnv = (Context) initCtx.lookup("java:comp/env");
+				Integer maxExemptions = (Integer) myEnv.lookup("maxExemptions");
+			}
+		});
+
+		section("CORE.11.4.1.3", RS.STARTED);
+
+		/*
+		 * In XML: - env-entry - env-entry-value
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>EmployeeService</ejb-name>
+					<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+					...
+					<env-entry>
+						<description>The maximum number of tax exemptions allowed to be set.</description>
+						<env-entry-name>maxExemptions</env-entry-name>
+						<env-entry-type>java.lang.Integer</env-entry-type>
+						<env-entry-value>15</env-entry-value>
+					</env-entry>
+					<env-entry>
+						<description>The minimum number of tax exemptions allowed to be set.</description>
+						<env-entry-name>minExemptions</env-entry-name>
+						<env-entry-type>java.lang.Integer</env-entry-type>
+						<env-entry-value>1</env-entry-value>
+					</env-entry>
+					<env-entry>
+						<env-entry-name>foo/name1</env-entry-name>
+						<env-entry-type>java.lang.String</env-entry-type>
+						<env-entry-value>value1</env-entry-value>
+					</env-entry>
+					<env-entry>
+						<env-entry-name>foo/bar/name2</env-entry-name>
+						<env-entry-type>java.lang.Boolean</env-entry-type>
+						<env-entry-value>true</env-entry-value>
+					</env-entry>
+					<env-entry>
+						<description>Some description.</description>
+						<env-entry-name>name3</env-entry-name>
+						<env-entry-type>java.lang.Integer</env-entry-type>
+					</env-entry>
+					<env-entry>
+						<env-entry-name>foo/name4</env-entry-name>
+						<env-entry-type>java.lang.Integer</env-entry-type>
+						<env-entry-value>10</env-entry-value>
+					</env-entry>
+					...
+				</session>
+			</enterprise-beans>
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>EmployeeService</ejb-name>
+					<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+					...
+					<env-entry>
+						<description>The maximum number of tax exemptions allowed to be set.</description>
+						<env-entry-name>com.wombat.empl.EmployeeService/maxExemptions</env-entry-name>
+						<env-entry-type>java.lang.Integer</env-entry-type>
+						<env-entry-value>15</env-entry-value>
+						<injection-target>
+							<injection-target-class>com.wombat.empl.EmployeeServiceBean</injection-target-class>
+							<injection-target-name>maxExemptions</injection-target-name>
+						</injection-target>
+					</env-entry>
+					<env-entry>
+						<description>The minimum number of tax exemptions allowed to be set.</description>
+						<env-entry-name>com.wombat.empl.EmployeeService/minExemptions</env-entry-name>
+						<env-entry-type>java.lang.Integer</env-entry-type>
+						<env-entry-value>1</env-entry-value>
+						<injection-target>
+							<injection-target-class>com.wombat.empl.EmployeeServiceBean</injection-target-class>
+							<injection-target-name>minExemptions</injection-target-name>
+						</injection-target>
+					</env-entry>
+					...
+				</session>
+			</enterprise-beans>
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				// default value on injected resources
+				class MyBean {
+					@Resource
+					int maxExemptions = 4;
+				}
+
+			}
+		});
+
+		/*-
+		
+			<env-entry>
+				<env-entry-name>com.wombat.empl.EmployeeServiceBean/timeout</env-entry-name>
+				<env-entry-type>java.lang.Integer</env-entry-type>
+				<injection-target>
+					<injection-target-class>com.wombat.empl.EmployeeServiceBean</injection-target-class>
+					<injection-target-name>timeout</injection-target-name>
+				</injection-target>
+				<lookup-name>java:app/env/timeout</lookup-name>
+			</env-entry>
+		 */
+
+		/*
+		 * It is an error for both the env-entry-value and lookup-name elements
+		 * to be specified for a given env-entry element.
+		 */
+
+		section("CORE.11.4.2", RS.STARTED);
+		section("CORE.11.4.3", RS.STARTED);
+		section("CORE.11.4.4", RS.STARTED);
+		section("CORE.11.5", RS.STARTED);
+		section("CORE.11.5.1", RS.STARTED);
+		section("CORE.11.5.1.1", RS.STARTED);
+
+		EJB.class.isAnnotation();
+		constructANewInstanceOf(EJB.class).name();
+		constructANewInstanceOf(EJB.class).beanInterface();
+		constructANewInstanceOf(EJB.class).beanName();
+		constructANewInstanceOf(EJB.class).mappedName();
+		constructANewInstanceOf(EJB.class).lookup();
+
+		/*
+		 * Either the beanName or the lookup element can be used to resolve the
+		 * EJB dependency to the target component.
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@Stateless(name = "myejb")
+				class MyEJB {
+
+				}
+				class MyUsingEntity {
+					@EJB(name = "ejb/myEJB", beanInterface = MyEJB.class, beanName = "myEJB")
+					private MyEJB myEJB;
+					@EJB(name = "ejb/myOtherEJB", beanInterface = MyEJB.class, lookup = "java:app/myModule/myOtherEJB")
+					private MyEJB myOtherEJB;
+				}
+			}
+		});
+
+		section("CORE.11.5.1.2", RS.STARTED);
+
+		/*
+		 * The EJB specification recommends, but does not require, that all
+		 * references to other enterprise beans be organized in the ejb
+		 * subcontext of the bean’s environment
+		 */
+
+		/* java:comp/env/ejb */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				class MyOtherBeanInterface {
+					// would actually be an interface
+				}
+				class MyOtherBeanHome {
+
+				}
+				@EJB(name = "ejb/myOtherBean", beanInterface = MyOtherBeanInterface.class)
+				@Stateless
+				class MyBean /* implements MyBeanInterface */ {
+					@SuppressWarnings("unused")
+					public void foo() throws NamingException {
+						Context ctx = new InitialContext();
+						Object result = ctx.lookup("java:comp/env/ejb/myBean");
+						MyOtherBeanHome myOtherBeanHome = (MyOtherBeanHome) PortableRemoteObject.narrow(result,
+								MyOtherBeanHome.class);
+
+					}
+				}
+			}
+		});
+
+		section("CORE.11.5.1.3", RS.STARTED);
+
+		/*
+		 * Although the EJB reference is an entry in the enterprise bean’s
+		 * environment, the Bean Provider must not use a env-entry element to
+		 * declare it
+		 */
+
+		/*
+		 * the Bean Provider must declare all the EJB references using the
+		 * ejb-ref and ejb-local-ref elements of the deployment descriptor
+		 */
+
+		/*-
+		 * - ejb-ref
+		 *   - description
+		 *   - ejb-ref-name
+		 *   - ejb-ref-type
+		 *   - home
+		 *   - remote
+		 *   - ejb-link
+		 *   - lookup-name
+		 * - ejb-local-ref
+		 *   - description
+		 *   - ejb-ref-name
+		 *   - ejb-ref-type
+		 *   - local-home
+		 *   - local
+		 *   - ejb-link
+		 *   - lookup-name
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>EmployeeService</ejb-name>
+					<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+					...
+					<ejb-ref>
+						<description>This is a reference to an EJB 2.1 session bean that encapsulates access to employee records.</description>
+						<ejb-ref-name>ejb/EmplRecord</ejb-ref-name>
+						<ejb-ref-type>Session</ejb-ref-type>
+						<home>com.wombat.empl.EmployeeRecordHome</home>
+						<remote>com.wombat.empl.EmployeeRecord</remote>
+					</ejb-ref>
+					<ejb-local-ref>
+						<description>This is a reference to the local business interface of an EJB 3.0 session bean that provides a payroll service.</description>
+						<ejb-ref-name>ejb/Payroll</ejb-ref-name>
+						<local>com.aardvark.payroll.Payroll</local>
+					</ejb-local-ref>
+					<ejb-local-ref>
+						<description>This is a reference to the local business interface of an EJB 3.0 session bean that provides a pension plan service.</description>
+						<ejb-ref-name>ejb/PensionPlan</ejb-ref-name>
+						<local>com.wombat.empl.PensionPlan</local>
+					</ejb-local-ref>
+					...
+				</session>
+				...
+			</enterprise-beans>
+		 */
+
+		section("CORE.11.5.2", RS.STARTED);
+
+		/*
+		 * The Application Assembler can use the ejb-link element in the
+		 * deployment descriptor to link an EJB reference to a target enterprise
+		 * bean within the same application.
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>EmployeeService</ejb-name>
+					<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+					...
+					<ejb-ref>
+						<ejb-ref-name>ejb/EmplRecord</ejb-ref-name>
+						<ejb-ref-type>Session</ejb-ref-type>
+						<home>com.wombat.empl.EmployeeRecordHome</home>
+						<remote>com.wombat.empl.EmployeeRecord</remote>
+						<ejb-link>EmployeeRecord</ejb-link>
+					</ejb-ref>
+					...
+				</session>
+				...
+				<session>
+					<ejb-name>EmployeeRecord</ejb-name>
+					<home>com.wombat.empl.EmployeeRecordHome</home>
+					<remote>com.wombat.empl.EmployeeRecord</remote>
+					...
+				</session>
+				...
+			</enterprise-beans>
+		 */
+
+		/*-
+			<session>
+				...
+				<ejb-name>OrderEJB</ejb-name>
+				<ejb-class>com.wombat.orders.OrderBean</ejb-class>
+				...
+				<ejb-ref>
+					<ejb-ref-name>ejb/Product</ejb-ref-name>
+					<ejb-ref-type>Session</ejb-ref-type>
+					<home>com.acme.orders.ProductHome</home>
+					<remote>com.acme.orders.Product</remote>
+					<ejb-link>../products/product.jar#ProductEJB</ejb-link>
+				</ejb-ref>
+				...
+			</session>
+		 */
+
+		/*-
+			<ejb-ref>
+				<ejb-ref-name>ShoppingService/myCart</ejb-ref-name>
+				<ejb-link>product/ShoppingCart</ejb-link>
+			</ejb-ref>
+		 */
+
+		/*-
+			<ejb-ref>
+				<ejb-ref-name>ShoppingService/myCart</ejb-ref-name>
+				<lookup-name>java:app/products/ShoppingCart</lookup-name>
+			</ejb-ref>
+		 */
+
+		section("CORE.11.5.2.1", RS.STARTED);
+
+		section("CORE.11.5.3", RS.STARTED);
+
+		/*-
+			<ejb-ref>
+				<ejb-ref-name>ShoppingService/myCart</ejb-ref-name>
+				<lookup-name>java:global/products/ShoppingCart</lookup-name>
+			</ejb-ref>
+		 */
+
+		section("CORE.11.5.4", RS.STARTED);
+
+		section("CORE.11.6", RS.STARTED);
+
+		/* Java API for XML Web Services (JAX-WS) */
+
+		/* Web Services for Java EE */
+
+		/*
+		 * The EJB specification recommends, but does not require, that all
+		 * references to web services be organized in the service subcontext of
+		 * the bean’s environment (i.e., in the java:comp/env/service JNDI
+		 * context).
+		 */
+
+		section("CORE.11.7", RS.STARTED);
+
+		/* manager connection factory references */
+
+		section("CORE.11.7.1", RS.STARTED);
+		section("CORE.11.7.1.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyClass {
+					@Resource
+					DataSource myDataSource;
+
+					public void foo() throws SQLException {
+						connection = myDataSource.getConnection();
+					}
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyClass {
+					@Resource(lookup = "java:app/env/myDataSource")
+					DataSource myDataSource;
+
+					public void foo() throws SQLException {
+						connection = myDataSource.getConnection();
+					}
+				}
+			}
+		});
+
+		section("CORE.11.7.1.2", RS.STARTED);
+
+		/*
+		 * The EJB specification recommends, but does not require, that all
+		 * resource manager connection factory references be organized in the
+		 * subcontexts of the bean’s environment, using a different subcontext
+		 * for each resource manager type.
+		 */
+
+		/*-
+		 * - java:comp/env/jdbc
+		 * - java:comp/env/jms
+		 * - java:comp/env/mail
+		 * - java:comp/env/url
+		 */
+
+		/*
+		 * resource manager connection factory references declared via
+		 * annotations will not, by default, appear in any subcontext
+		 */
+
+		/*
+		 * The Bean Provider can control the shareability of the connections
+		 * acquired from the resource manager connection factory.
+		 */
+
+		/*
+		 * by default, connections to a resource manager are shareable across
+		 * other enterprise beans in the application that use the same resource
+		 * in the same transaction context
+		 */
+
+		/*-
+		 * - shareable annotation element
+		 * - in XML : res-sharing-scope : can be 'Unshareable'
+		 */
+
+		/*-
+		 * - allow the Deployer to set up principal mapping or resource manager sign-on information
+		 * - sign on to the resource manager from the bean code
+		 */
+
+		/*-
+		 * - authenticationType annotation element
+		 * - in XML : res-auth
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@Resource(name = "jdbc/myDataSource", type = DataSource.class)
+				@Stateless
+				class MyBean {
+					@Resource
+					SessionContext ctx;
+
+					@SuppressWarnings("unused")
+					public void foo() throws SQLException {
+						DataSource dataSource = (DataSource) ctx.lookup("jdbc/myDataSource");
+						Connection connection = dataSource.getConnection();
+					}
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@Resource(name = "jdbc/myDataSource", type = DataSource.class)
+				@Stateless
+				class MyBean {
+					@SuppressWarnings("unused")
+					public void foo() throws SQLException, NamingException {
+						Context ctx = new InitialContext();
+						DataSource dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/myDataSource");
+						Connection connection = dataSource.getConnection();
+					}
+				}
+			}
+		});
+
+		section("CORE.11.7.1.3", RS.STARTED);
+
+		/*
+		 * the Bean Provider must not use an env-entry element to declare a
+		 * resource manager connection factory
+		 */
+
+		/* resource-ref */
+
+		/*
+		 * See Section “Declaration of Resource Manager Connection Factory
+		 * References in Deployment Descriptor” in the Java EE Platform
+		 * specification [12] for the description of the resource-ref element.
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>EmployeeService</ejb-name>
+					<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+					...
+					<resource-ref>
+						<description>A data source for the database in which the EmployeeService enterprise bean will record a log of all transactions.</description>
+						<res-ref-name>jdbc/EmployeeAppDB</res-ref-name>
+						<res-type>javax.sql.DataSource</res-type>
+						<res-auth>Container</res-auth>
+						<res-sharing-scope>Shareable</res-sharing-scope>
+					</resource-ref>
+					...
+				</session>
+			</enterprise-beans>
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+				...
+				<resource-ref>
+					<description>A queue connection factory used by the MySession enterprise bean to send notifications.</description>
+					<res-ref-name>jms/qConnFactory</res-ref-name>
+					<res-type>javax.jms.QueueConnectionFactory</res-type>
+					<res-auth>Container</res-auth>
+					<res-sharing-scope>Unshareable</res-sharing-scope>
+				</resource-ref>
+				...
+				</session>
+			</enterprise-beans>
+		 */
+
+		section("CORE.11.7.1.4", RS.STARTED);
+
+		/*-
+		 * - javax.sql.DataSource for JDBC connections in java:comp/env/jdbc
+		 * - javax.jms.ConnectionFactory for JMS in java:comp/env/jms
+		 * - javax.jms.QueueConnectionFactory for JMS in java:comp/env/jms
+		 * - javax.jms.TopicConnectionFactory for JMS in java:comp/env/jms
+		 * - javax.mail.Session for JavaMail in java:comp/env/mail
+		 * - java.net.URL for URLs in java:comp/env/url
+		 */
+
+		/*
+		 * The Connector architecture [14] allows an enterprise bean to use the
+		 * API described in this section to obtain resource objects that provide
+		 * access to additional back-end systems.
+		 */
+
+		section("CORE.11.7.2", RS.STARTED);
+		section("CORE.11.7.3", RS.STARTED);
+		section("CORE.11.7.4", RS.STARTED);
+		section("CORE.11.8", RS.STARTED);
+
+		/* administered objects that are associated with resources */
+
+		/* Connector CCI InteractionSpec instance */
+
+		/* resource environment references */
+
+		section("CORE.11.8.1", RS.STARTED);
+		section("CORE.11.8.1.1", RS.STARTED);
+
+		Resource.class.isAnnotation();
+		constructANewInstanceOf(Resource.class).authenticationType();
+		constructANewInstanceOf(Resource.class).shareable();
+
+		section("CORE.11.8.1.2", RS.STARTED);
+		section("CORE.11.8.1.3", RS.STARTED);
+
+		/*
+		 * the Bean Provider must not use a env-entry element to declare
+		 * resource environment references
+		 */
+
+		/* resource-env-ref */
+
+		/*
+		 * See Section “Declaration of Resource Environment References in
+		 * Deployment Descriptor” in the Java EE Platform specification [12] for
+		 * the description of the resource-env-ref element
+		 */
+
+		section("CORE.11.8.2", RS.STARTED);
+
+		/* JNDI LinkRef mechanism */
+
+		section("CORE.11.8.3", RS.STARTED);
+		section("CORE.11.9", RS.STARTED);
+		section("CORE.11.9.1", RS.STARTED);
 		section("CORE.11.9.1.1", RS.UNTOUCHED);
-		section("CORE.11.9.1.2", RS.UNTOUCHED);
-		section("CORE.11.9.1.3", RS.UNTOUCHED);
-		section("CORE.11.9.2", RS.UNTOUCHED);
-		section("CORE.11.9.3", RS.UNTOUCHED);
-		section("CORE.11.9.4", RS.UNTOUCHED);
-		section("CORE.11.10", RS.UNTOUCHED);
-		section("CORE.11.10.1", RS.UNTOUCHED);
-		section("CORE.11.10.1.1", RS.UNTOUCHED);
-		section("CORE.11.10.1.2", RS.UNTOUCHED);
-		section("CORE.11.10.1.3", RS.UNTOUCHED);
-		section("CORE.11.10.2", RS.UNTOUCHED);
-		section("CORE.11.10.2.1", RS.UNTOUCHED);
-		section("CORE.11.10.3", RS.UNTOUCHED);
-		section("CORE.11.10.4", RS.UNTOUCHED);
-		section("CORE.11.10.5", RS.UNTOUCHED);
-		section("CORE.11.11", RS.UNTOUCHED);
-		section("CORE.11.11.1", RS.UNTOUCHED);
-		section("CORE.11.11.1.1", RS.UNTOUCHED);
-		section("CORE.11.11.1.2", RS.UNTOUCHED);
-		section("CORE.11.11.1.3", RS.UNTOUCHED);
-		section("CORE.11.11.1.", RS.UNTOUCHED);
-		section("CORE.11.11.2", RS.UNTOUCHED);
-		section("CORE.11.11.2.1", RS.UNTOUCHED);
-		section("CORE.11.11.3", RS.UNTOUCHED);
-		section("CORE.11.11.4", RS.UNTOUCHED);
-		section("CORE.11.11.5", RS.UNTOUCHED);
-		section("CORE.11.12", RS.UNTOUCHED);
-		section("CORE.11.12.1", RS.UNTOUCHED);
-		section("CORE.11.12.2", RS.UNTOUCHED);
-		section("CORE.11.13", RS.UNTOUCHED);
-		section("CORE.11.13.1", RS.UNTOUCHED);
-		section("CORE.11.13.2", RS.UNTOUCHED);
-		section("CORE.11.14", RS.UNTOUCHED);
-		section("CORE.11.14.1", RS.UNTOUCHED);
-		section("CORE.11.14.2", RS.UNTOUCHED);
-		section("CORE.11.15", RS.UNTOUCHED);
-		section("CORE.11.15.1", RS.UNTOUCHED);
-		section("CORE.11.15.2", RS.UNTOUCHED);
-		section("CORE.11.16", RS.UNTOUCHED);
-		section("CORE.11.17", RS.UNTOUCHED);
+
+		/*
+		 * A field or a method of a bean may be annotated with the Resource
+		 * annotation to request injection of a message destination reference
+		 */
+
+		/*
+		 * Note that when using the Resource annotation to declare a message
+		 * destination reference it is not possible to link the reference to
+		 * other references to the same message destination, or to specify
+		 * whether the destination is used to produce or consume messages.
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					@Resource
+					Queue myQueue;
+				}
+			}
+		});
+		section("CORE.11.9.1.2", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@Resource(name = "jms/myQueue", type = Queue.class)
+				class MyThingy /* implements Something */ {
+					@Resource
+					SessionContext sessionContext;
+
+					@SuppressWarnings("unused")
+					public void foo() {
+						Queue queue = (Queue) sessionContext.lookup("jms/myQueue");
+					}
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@Resource(name = "jms/myQueue", type = Queue.class)
+				class MyThingy /* implements Something */ {
+					@SuppressWarnings("unused")
+					public void foo() throws NamingException {
+						Context ctx = new InitialContext();
+						Queue queue = (Queue) ctx.lookup("jms/myQueue");
+					}
+				}
+			}
+		});
+
+		section("CORE.11.9.1.3", RS.STARTED);
+
+		/*
+		 * the Bean Provider must not use a env-entry element to declare message
+		 * destination references
+		 */
+
+		/*- message-destination-ref
+		 * - description
+		 * - message-destination-type
+		 * - message-destination-usage
+		 * - message-destination-ref-name
+		 */
+
+		/*-
+			<message-destination-ref>
+				<description>This is a reference to a JMS queue used in processing Stock info</description>
+				<message-destination-ref-name>jms/StockInfo</message-destination-ref-name>
+				<message-destination-type>javax.jms.Queue</message-destination-type>
+				<message-destination-usage>Produces</message-destination-usage>
+			</message-destination-ref>
+		 */
+
+		section("CORE.11.9.2", RS.STARTED);
+
+		/* message-destination */
+		/* message-destination-link */
+
+		/* message-destination-type element of the message-driven element */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>EmployeeService</ejb-name>
+					<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+					...
+					<message-destination-ref>
+						<message-destination-ref-name>jms/EmployeeReimbursements</message-destination-ref-name>
+						<message-destination-type>javax.jms.Queue</message-destination-type>
+						<message-destination-usage>Produces</message-destination-usage>
+						<message-destination-link>ExpenseProcessingQueue</message-destination-link>
+					</message-destination-ref>
+				</session>
+				...
+				<message-driven>
+					<ejb-name>ExpenseProcessing</ejb-name>
+					<ejb-class>com.wombat.empl.ExpenseProcessingBean</ejb-class>
+					<messaging-type>javax.jms.MessageListener</messaging-type>
+					...
+					<message-destination-type>javax.jms.Queue</message-destination-type>
+					<message-destination-link>ExpenseProcessingQueue</message-destination-link>
+					...
+				</message-driven>
+				...
+			</enterprise-beans>
+			...
+			<assembly-descriptor>
+				...
+				<message-destination>
+					<message-destination-name>ExpenseProcessingQueue</message-destination-name>
+				</message-destination>
+				...
+			</assembly-descriptor>
+		 */
+
+		/*-
+			<session>
+				...
+				<ejb-name>EmployeeService</ejb-name>
+				<ejb-class>com.wombat.empl.EmployeeServiceBean</ejb-class>
+				...
+				<message-destination-ref>
+					<message-destination-ref-name>jms/EmployeeReimbursements</message-destination-ref-name>
+					<message-destination-type>javax.jms.Queue</message-destination-type>
+					<message-destination-usage>Produces</message-destination-usage>
+					<message-destination-link>finance.jar#ExpenseProcessingQueue</message-destination-link>
+				</message-destination-ref>
+			</session>
+		 */
+		section("CORE.11.9.3", RS.STARTED);
+		section("CORE.11.9.4", RS.STARTED);
+		section("CORE.11.10", RS.STARTED);
+
+		/* persistence unit reference. */
+
+		/*
+		 * The Deployer binds the persistence unit references to entity manager
+		 * factories that are configured in accordance with the persistence.xml
+		 * specification for the persistence unit, as described in the Java
+		 * Persistence API specification
+		 */
+
+		section("CORE.11.10.1", RS.STARTED);
+		section("CORE.11.10.1.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				class MyThingy {
+					@PersistenceUnit
+					EntityManagerFactory entityManagerFactory;
+
+					@PersistenceUnit(unitName = "MyEntityManagerFactory")
+					EntityManagerFactory myEntityManagerFactory;
+
+				}
+			}
+		});
+
+		section("CORE.11.10.1.2", RS.STARTED);
+
+		/*
+		 * The EJB specification recommends, but does not require, that all
+		 * persistence unit references be organized in the
+		 * java:comp/env/persistence subcontexts of the bean’s environment
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@PersistenceUnit(name = "persistence/MyEMF")
+				@Stateless
+				class MyThingy {
+					@Resource
+					SessionContext sessionContext;
+
+					@SuppressWarnings("unused")
+					public void foo() {
+						EntityManagerFactory entityManagerFactory = (EntityManagerFactory) sessionContext
+								.lookup("persistence/MyEMF");
+						EntityManager entityManager = entityManagerFactory.createEntityManager();
+					}
+				}
+
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@PersistenceUnit(name = "persistence/MyEMF")
+				@Stateless
+				class MyThingy {
+					@SuppressWarnings("unused")
+					public void foo() throws NamingException {
+						Context ctx = new InitialContext();
+						EntityManagerFactory entityManagerFactory = (EntityManagerFactory) ctx
+								.lookup("java:comp/env/persistence/MyEMF");
+						EntityManager entityManager = entityManagerFactory.createEntityManager();
+					}
+				}
+
+			}
+		});
+
+		section("CORE.11.10.1.3", RS.STARTED);
+
+		/*
+		 * the Bean Provider must not use an env-entry element to declare
+		 * persistence unit references
+		 */
+
+		/*- persistence-unit-ref
+		 * - description
+		 * - persistence-unit-name
+		 * - persistence-unit-ref-name
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>InventoryManagerBean</ejb-name>
+					<ejb-class>com.wombat.empl.InventoryManagerBean</ejb-class>
+					...
+					<persistence-unit-ref>
+						<description>Persistence unit for the inventory management application.</description>
+						<persistence-unit-ref-name>persistence/InventoryAppDB</persistence-unit-ref-name>
+						<persistence-unit-name>InventoryManagement</persistence-unit-name>
+					</persistence-unit-ref>
+					...
+				</session>
+			</enterprise-beans>
+		 */
+
+		section("CORE.11.10.2", RS.STARTED);
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>InventoryManagerBean</ejb-name>
+					<ejb-class>com.wombat.empl.InventoryManagerBean</ejb-class>
+					...
+					<persistence-unit-ref>
+						<description>Persistence unit for the inventory management application.</description>
+						<persistence-unit-ref-name>persistence/InventoryAppDB</persistence-unit-ref-name>
+						<persistence-unit-name>../lib/inventory.jar#InventoryManagement</persistence-unit-name>
+					</persistence-unit-ref>
+					...
+				</session>
+			</enterprise-beans>
+		 */
+		section("CORE.11.10.2.1", RS.STARTED);
+		section("CORE.11.10.3", RS.STARTED);
+		section("CORE.11.10.4", RS.STARTED);
+		section("CORE.11.10.5", RS.STARTED);
+
+		section("CORE.11.11", RS.STARTED);
+
+		/* persistence context reference */
+
+		section("CORE.11.11.1", RS.STARTED);
+		section("CORE.11.11.1.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					@PersistenceContext(type = PersistenceContextType.EXTENDED)
+					EntityManager entityManager;
+				}
+			}
+		});
+
+		section("CORE.11.11.1.2", RS.STARTED);
+
+		/*
+		 * The EJB specification recommends, but does not require, that all
+		 * persistence context references be organized in the
+		 * java:comp/env/persistence
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@PersistenceContext(name = "persistence/MyEntityManager")
+				class MyThingy {
+					@Resource
+					SessionContext sessionContext;
+
+					@SuppressWarnings("unused")
+					public void foo() {
+						EntityManager entityManager = (EntityManager) sessionContext
+								.lookup("persistence/MyEntityManager");
+					}
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@PersistenceContext(name = "persistence/MyEntityManager")
+				class MyThingy {
+					@SuppressWarnings("unused")
+					public void foo() throws NamingException {
+						Context ctx = new InitialContext();
+						EntityManager entityManager = (EntityManager) ctx
+								.lookup("java:comp/env/persistence/MyEntityManager");
+					}
+				}
+			}
+		});
+
+		section("CORE.11.11.1.3", RS.STARTED);
+
+		/*
+		 * the Bean Provider must not use an env-entry element to declare
+		 * persistence context references
+		 */
+
+		/*- persistence-context-ref
+		 * - description
+		 * -persistence-unit-name
+		 * -persistence-context-type
+		 * -persistence-context-synchronization
+		 * -persistence-property
+		 * -persistence-context-ref-name
+		 */
+
+		/*-
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>InventoryManagerBean</ejb-name>
+					<ejb-class>com.wombat.empl.InventoryManagerBean</ejb-class>
+					...
+					<persistence-context-ref>
+						<description>Persistence context for the inventory management application.</description>
+						<persistence-context-ref-name>persistence/InventoryAppMgr</persistence-context-ref-name>
+						<persistence-unit-name>InventoryManagement</persistence-unit-name>
+					</persistence-context-ref>
+					...
+				</session>
+			</enterprise-beans>
+		 */
+
+		section("CORE.11.11.2", RS.STARTED);
+
+		/*-
+			...
+			<enterprise-beans>
+				<session>
+					...
+					<ejb-name>InventoryManagerBean</ejb-name>
+					<ejb-class>com.wombat.empl.InventoryManagerBean</ejb-class>
+					...
+					<persistence-context-ref>
+						<description>Persistence context for the inventory management application.</description>
+						<persistence-context-ref-name>persistence/InventoryAppMgr</persistence-context-ref-name>
+						<persistence-unit-name>../lib/inventory.jar#InventoryManagement</persistence-unit-name>
+					</persistence-context-ref>
+					...
+				</session>
+			</enterprise-beans>
+			...
+		 */
+
+		section("CORE.11.11.2.1", RS.STARTED);
+		section("CORE.11.11.3", RS.STARTED);
+		section("CORE.11.11.4", RS.STARTED);
+		section("CORE.11.11.5", RS.STARTED);
+		section("CORE.11.12", RS.STARTED);
+		/*
+		 * The container must make the UserTransaction interface available to
+		 * the enterprise beans that are allowed to use this interface either
+		 * through injection using the Resource annotation or in JNDI under the
+		 * name java:comp/UserTransaction, in addition to through the EJBContext
+		 * interface.
+		 */
+
+		/*
+		 * session and message-driven beans with bean-managed transaction
+		 * demarcation
+		 */
+
+		/*
+		 * The container must not make the UserTransaction interface available
+		 * to the enterprise beans that are not allowed to use this interface
+		 */
+
+		/* javax.naming.NameNotFoundException */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					@Resource
+					UserTransaction userTransaction;
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					public void foo() throws NamingException {
+						Context ctx = new InitialContext();
+						UserTransaction userTransaction = (UserTransaction) ctx.lookup("java:comp/UserTransaction");
+					}
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					SessionContext sessionContext;
+
+					public void foo() throws NamingException {
+						UserTransaction userTransaction = sessionContext.getUserTransaction();
+					}
+				}
+			}
+		});
+
+		/*
+		 * A UserTransaction object reference may also be declared in a
+		 * deployment descriptor in the same way as a resource environment
+		 * reference. Such a deployment descriptor entry may be used to specify
+		 * injection of a UserTransaction object.
+		 */
+
+		section("CORE.11.12.1", RS.STARTED);
+		section("CORE.11.12.2", RS.STARTED);
+
+		section("CORE.11.13", RS.STARTED);
+		/*
+		 * Enterprise beans that need to make use of the CORBA ORB to perform
+		 * certain operations can find an appropriate object implementing the
+		 * ORB interface by requesting injection of an ORB object or by looking
+		 * up the JNDI name java:comp/ORB. Any such reference to an ORB object
+		 * is only valid within the bean instance that performed the lookup.
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					@Resource
+					ORB orb;
+
+					public void foo() throws InvalidName {
+						POA poa = (POA) orb.resolve_initial_references("MyPOA");
+					}
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					public void foo() throws InvalidName, NamingException {
+						Context ctx = new InitialContext();
+						ORB orb = (ORB) ctx.lookup("java:comp/ORB");
+						POA poa = (POA) orb.resolve_initial_references("MyPOA");
+					}
+				}
+			}
+		});
+
+		/*
+		 * The ORB instance available under the JNDI name java:comp/ORB may
+		 * always be a shared instance.
+		 */
+
+		/*
+		 * the ORB instance injected into an enterprise bean or declared via a
+		 * deployment descriptor entry may also be a shared instance
+		 */
+
+		/*
+		 * the application may set the shareable element of the Resource
+		 * annotation to false, or may set the res-sharing-scope element in the
+		 * deployment descriptor to Unshareable, to request a non-shared ORB
+		 * instance
+		 */
+
+		section("CORE.11.13.1", RS.STARTED);
+		section("CORE.11.13.2", RS.STARTED);
+		section("CORE.11.14", RS.STARTED);
+
+		/*
+		 * The container must make the TimerService interface available either
+		 * through injection using the Resource annotation or in JNDI under the
+		 * name java:comp/TimerService, in addition to through the EJBContext
+		 * interface. The authenticationType and shareable elements of the
+		 * Resource annotation must not be specified.
+		 */
+
+		/*
+		 * A TimerService object reference may also be declared in a deployment
+		 * descriptor in the same way as a resource environment reference. Such
+		 * a deployment descriptor entry may be used to specify injection of a
+		 * TimerService object
+		 */
+
+		section("CORE.11.14.1", RS.STARTED);
+		section("CORE.11.14.2", RS.STARTED);
+		section("CORE.11.15", RS.STARTED);
+		/*
+		 * The container must make a component’s EJBContext interface available
+		 * either through injection using the Resource annotation or in JNDI
+		 * under the name java:comp/EJBContext. The authenticationType and
+		 * shareable elements of the Resource annotation must not be specified.
+		 * An EJBContext object reference may also be declared in a deployment
+		 * descriptor in the same way as a resource environment reference. Such
+		 * a deployment descriptor entry may be used to specify injection of an
+		 * EJBContext object.
+		 */
+
+		section("CORE.11.15.1", RS.STARTED);
+		section("CORE.11.15.2", RS.STARTED);
+
+		SessionContext.class.getName();
+		MessageDrivenContext.class.getName();
+
+		section("CORE.11.16", RS.STARTED);
+		section("CORE.11.17", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public void dontRun() throws Exception {
+				try {
+					ejbContext.getEnvironment();
+				} catch (RuntimeException ex) {
+					// ejbContext.getEnvironment(); is depreacted
+				}
+			}
+		});
+		
+		/*-
+			...
+			<env-entry>
+				env-entry-name>ejb10-properties/foo</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+			</env-entry>
+			<env-entry>
+				<description>bar’s description</description>
+				<env-entry-name>ejb10-properties/bar</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>bar value</env-entry-value>
+			</env-entry>
+			...
+		 */
 
 		section("CORE.12", RS.UNTOUCHED);
 		section("CORE.12.1", RS.UNTOUCHED);

@@ -37,4 +37,7 @@ public abstract class Reading {
 	protected void important() {
 
 	}
+
+	protected void dontRun(NotRunnable r) {
+	}
 }
