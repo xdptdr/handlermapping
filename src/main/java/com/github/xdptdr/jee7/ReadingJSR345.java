@@ -20,6 +20,10 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
 import javax.ejb.AccessTimeout;
 import javax.ejb.ActivationConfigProperty;
@@ -88,6 +92,7 @@ import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
+import javax.mail.search.SearchException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -143,6 +148,7 @@ public class ReadingJSR345 extends Reading {
 	private ObjectInputStream objectInputStream;
 	private ObjectOutputStream objectOutputStream;
 	private EJBContext ejbContext;
+	protected String role;
 
 	@Override
 	public void reading() throws Exception {
@@ -3987,7 +3993,7 @@ public class ReadingJSR345 extends Reading {
 				}
 			}
 		});
-		
+
 		/*-
 			...
 			<env-entry>
@@ -4003,47 +4009,399 @@ public class ReadingJSR345 extends Reading {
 			...
 		 */
 
-		section("CORE.12", RS.UNTOUCHED);
-		section("CORE.12.1", RS.UNTOUCHED);
-		section("CORE.12.2", RS.UNTOUCHED);
-		section("CORE.12.2.1", RS.UNTOUCHED);
-		section("CORE.12.2.2", RS.UNTOUCHED);
-		section("CORE.12.2.3", RS.UNTOUCHED);
-		section("CORE.12.2.4", RS.UNTOUCHED);
-		section("CORE.12.2.5", RS.UNTOUCHED);
-		section("CORE.12.2.5.1", RS.UNTOUCHED);
-		section("CORE.12.2.5.2", RS.UNTOUCHED);
-		section("CORE.12.2.5.3", RS.UNTOUCHED);
-		section("CORE.12.3", RS.UNTOUCHED);
-		section("CORE.12.3.1", RS.UNTOUCHED);
-		section("CORE.12.3.2", RS.UNTOUCHED);
-		section("CORE.12.3.2.1", RS.UNTOUCHED);
-		section("CORE.12.3.2.2", RS.UNTOUCHED);
-		section("CORE.12.3.2.3", RS.UNTOUCHED);
-		section("CORE.12.3.3", RS.UNTOUCHED);
-		section("CORE.12.3.4", RS.UNTOUCHED);
-		section("CORE.12.4", RS.UNTOUCHED);
-		section("CORE.12.4.1", RS.UNTOUCHED);
-		section("CORE.12.4.2", RS.UNTOUCHED);
-		section("CORE.12.4.3", RS.UNTOUCHED);
-		section("CORE.12.4.4", RS.UNTOUCHED);
-		section("CORE.12.4.5", RS.UNTOUCHED);
-		section("CORE.12.5", RS.UNTOUCHED);
-		section("CORE.12.6", RS.UNTOUCHED);
-		section("CORE.12.6.1", RS.UNTOUCHED);
-		section("CORE.12.6.2", RS.UNTOUCHED);
-		section("CORE.12.6.3", RS.UNTOUCHED);
-		section("CORE.12.6.4", RS.UNTOUCHED);
-		section("CORE.12.6.5", RS.UNTOUCHED);
-		section("CORE.12.6.6", RS.UNTOUCHED);
-		section("CORE.12.6.7", RS.UNTOUCHED);
-		section("CORE.12.6.8", RS.UNTOUCHED);
-		section("CORE.12.6.9", RS.UNTOUCHED);
-		section("CORE.12.6.10", RS.UNTOUCHED);
-		section("CORE.12.7", RS.UNTOUCHED);
-		section("CORE.12.7.1", RS.UNTOUCHED);
-		section("CORE.12.7.2", RS.UNTOUCHED);
-		section("CORE.12.7.3", RS.UNTOUCHED);
+		section("CORE.12", RS.STARTED);
+		section("CORE.12.1", RS.STARTED);
+		/* security roles */
+		/* method permissions */
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				ejbContext.getCallerPrincipal();
+			}
+		});
+
+		/* security-identity */
+
+		RunAs.class.isAnnotation();
+
+		/* use-caller-identity : security-identity */
+		/* run-as */
+
+		section("CORE.12.2", RS.STARTED);
+		section("CORE.12.2.1", RS.STARTED);
+
+		/*
+		 * The EJB architecture provides no programmatic interfaces for the
+		 * invoking enterprise bean to control the principal passed to the
+		 * invoked enterprise bean.
+		 */
+		/*
+		 * The management of caller principals passed on inter-enterprise bean
+		 * invocations (i.e. principal delegation) is set up by the Deployer and
+		 * System Administrator in a container-specific way.
+		 */
+
+		section("CORE.12.2.2", RS.STARTED);
+		section("CORE.12.2.3", RS.STARTED);
+
+		/*
+		 * the Bean Provider cannot rely on a specific principal for accessing
+		 * the underlying OS resources, such as files
+		 */
+
+		section("CORE.12.2.4", RS.STARTED);
+		section("CORE.12.2.5", RS.STARTED);
+
+		/*
+		 * security management should be enforced by the container in a manner
+		 * that is transparent to the enterprise beans’ business methods
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				try {
+					ejbContext.getCallerPrincipal();
+					ejbContext.isCallerInRole(role);
+				} catch (IllegalStateException ex) {
+					// when no security context exists
+				}
+			}
+		});
+
+		section("CORE.12.2.5.1", RS.STARTED);
+		section("CORE.12.2.5.2", RS.STARTED);
+		section("CORE.12.2.5.3", RS.STARTED);
+
+		RolesAllowed.class.isAnnotation();
+		DeclareRoles.class.isAnnotation();
+
+		/*- security-role-ref 
+		 * - role-name
+		 * - description
+		 * */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@DeclareRoles({ "role1", "role2" })
+				class MyThingy {
+					@Resource
+					SessionContext sessionContext;
+
+					@SuppressWarnings("unused")
+					public void foo() throws SearchException {
+						if (!sessionContext.isCallerInRole("role1") || sessionContext.isCallerInRole("role1")) {
+							throw new SearchException();
+						}
+					}
+				}
+			}
+		});
+
+		/*-
+			<enterprise-beans>
+				...
+				<session>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<ejb-class>com.aardvark.payroll.PayrollBean</ejb-class>
+					...
+					<security-role-ref>
+						<description>This security role should be assigned to the employees of the payroll department who are allowed to update employees’ salaries.</description>
+						<role-name>payroll</role-name>
+					</security-role-ref>
+					...
+				</session>
+				...
+			</enterprise-beans>
+		 */
+
+		section("CORE.12.3", RS.STARTED);
+		section("CORE.12.3.1", RS.STARTED);
+
+		/*
+		 * A security role with the name “**” is defined by the Container, and
+		 * is intended to be used by the Bean Provider, Application Assembler,
+		 * or Deployer to indicate that the caller must log on or authenticate
+		 * to invoke a method or to perform some processing requiring membership
+		 * in this container role.
+		 */
+
+		/*-
+			<assembly-descriptor>
+				<security-role>
+					<description>This role includes the employees of the enterprise who are allowed to access the employee self-service application. This role is allowed only to access his/her own information.</description>
+					<role-name>employee</role-name>
+				</security-role>
+				<security-role>
+					<description>This role includes the employees of the human resources department. The role is allowed to view and update all employee records.</description>
+					<role-name>hr-department</role-name>
+				</security-role>
+				<security-role>
+					<description>This role includes the employees of the payroll department. The role is allowed to view and update the payroll entry for any employee.</description>
+					<role-name>payroll-department</role-name>
+				</security-role>
+				<security-role>
+					<description>This role should be assigned to the personnel authorized to perform administrative functions for the employee self-service application. This role does not have direct access to sensitive employee and payroll information.</description>
+					<role-name>admin</role-name>
+				</security-role>
+				...
+			</assembly-descriptor>
+		 */
+
+		section("CORE.12.3.2", RS.STARTED);
+		section("CORE.12.3.2.1", RS.STARTED);
+
+		RolesAllowed.class.isAnnotation();
+		PermitAll.class.isAnnotation();
+		DenyAll.class.isAnnotation();
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@RolesAllowed("admin")
+				class MyThingy {
+					public void foo() {
+
+					}
+
+					public void bar() {
+
+					}
+				}
+				class MySuperThingy extends MyThingy {
+					@Override
+					@RolesAllowed("RH")
+					public void foo() {
+						// HR
+					};
+
+					// bar : admin
+					public void baz() {
+						// unspecified
+
+					}
+				}
+			}
+
+		});
+
+		section("CORE.12.3.2.2", RS.STARTED);
+
+		/*- method-permission
+		 * - ejb-name
+		 * - method-name
+		 * - method-params */
+
+		/* exclude-list */
+
+		/*-
+			<method>
+				<ejb-name>EJBNAME</ejb-name>
+				<method-name>*</method-name>
+			</method>
+			<method>
+				<ejb-name>EJBNAME</ejb-name>
+				<method-name>METHOD</method-name>
+			</method>
+			<method>
+				<ejb-name>EJBNAME</ejb-name>
+				<method-name>METHOD</method-name>
+				<method-params>
+					<method-param>PARAMETER_1</method-param>
+					...
+					<method-param>PARAMETER_N</method-param>
+				</method-params>
+			</method>
+		 */
+
+		/* method-intf */
+
+		/*-
+			<method-permission>
+				<role-name>employee</role-name>
+				<method>
+					<ejb-name>EmployeeService</ejb-name>
+					<method-name>*</method-name>
+				</method>
+			</method-permission>
+			<method-permission>
+				<role-name>employee</role-name>
+				<method>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<method-name>findByPrimaryKey</method-name>
+				</method>
+				<method>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<method-name>getEmployeeInfo</method-name>
+				</method>
+				<method>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<method-name>updateEmployeeInfo</method-name>
+				</method>
+			</method-permission>
+			<method-permission>
+				<role-name>payroll-department</role-name>
+				<method>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<method-name>findByPrimaryKey</method-name>
+				</method>
+				<method>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<method-name>getEmployeeInfo</method-name>
+				</method>
+				<method>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<method-name>updateEmployeeInfo</method-name>
+				</method>
+				<method>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<method-name>updateSalary</method-name>
+				</method>
+			</method-permission>
+			<method-permission>
+				<role-name>admin</role-name>
+				<method>
+					<ejb-name>EmployeeServiceAdmin</ejb-name>
+					<method-name>*</method-name>
+				</method>
+			</method-permission>
+			...
+		 */
+
+		section("CORE.12.3.2.3", RS.STARTED);
+
+		/* security-role-ref */
+		/* security-role */
+		/* role-link */
+
+		/*-
+			<enterprise-beans>
+				...
+				<session>
+					<ejb-name>AardvarkPayroll</ejb-name>
+					<ejb-class>com.aardvark.payroll.PayrollBean</ejb-class>
+					...
+					<security-role-ref>
+						<description>This role should be assigned to the employees of the payroll department. Members of this role have access to anyone’s payroll record. The role has been linked to the payroll-department role.</description>
+						<role-name>payroll</role-name>
+						<role-link>payroll-department</role-link>
+					</security-role-ref>
+					...
+				</session>
+				...
+			</enterprise-beans>
+		 */
+
+		section("CORE.12.3.3", RS.STARTED);
+
+		section("CORE.12.3.4", RS.STARTED);
+		section("CORE.12.3.4", RS.STARTED);
+
+		RunAs.class.isAnnotation();
+
+		/*- security-identity
+		 * - use-caller-identity
+		 * - run-as
+		 */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@RunAs("admin")
+				class MyThingy {
+
+				}
+			}
+		});
+
+		/*-
+			<enterprise-beans>
+				...
+				<session>
+					<ejb-name>EmployeeService</ejb-name>
+					...
+					<security-identity>
+						<run-as>
+							<role-name>admin</role-name>
+						</run-as>
+					</security-identity>
+				...
+				</session>
+			...
+			</enterprise-beans>
+		 */
+
+		section("CORE.12.4", RS.STARTED);
+		section("CORE.12.4.1", RS.STARTED);
+
+		section("CORE.12.4.2", RS.STARTED);
+		section("CORE.12.4.3", RS.STARTED);
+		section("CORE.12.4.4", RS.STARTED);
+		section("CORE.12.4.5", RS.STARTED);
+		section("CORE.12.5", RS.STARTED);
+
+		/*
+		 * A transactional client cannot change its principal association within
+		 * a transaction
+		 */
+
+		/*
+		 * A session bean’s client must not change its principal association for
+		 * the duration of the communication with the session object.
+		 */
+
+		/*
+		 * If transactional requests within a single transaction arrive from
+		 * multiple clients, all requests within the same transaction must be
+		 * associated with the same security context.
+		 */
+
+		section("CORE.12.6", RS.STARTED);
+		section("CORE.12.6.1", RS.STARTED);
+
+		section("CORE.12.6.2", RS.STARTED);
+
+		/*
+		 * The EJB container provides a security domain and one or more
+		 * principal realms to the enterprise beans.
+		 */
+
+		/*
+		 * The EJB architecture does not specify how an EJB server should
+		 * implement a security domain, and does not define the scope of a
+		 * security domain.
+		 */
+
+		section("CORE.12.6.3", RS.STARTED);
+
+		/*
+		 * The EJB Container Provider must provide the security mechanisms
+		 * necessary to enforce the security policies set by the Deployer. The
+		 * EJB specification does not specify the exact mechanisms that must be
+		 * implemented and supported by the EJB server.
+		 */
+
+		section("CORE.12.6.4", RS.STARTED);
+		section("CORE.12.6.5", RS.STARTED);
+		section("CORE.12.6.6", RS.STARTED);
+		section("CORE.12.6.7", RS.STARTED);
+		section("CORE.12.6.8", RS.STARTED);
+
+		/*
+		 * The EJB specification does not define the “system” principal under
+		 * which the JVM running an enterprise bean’s method executes.
+		 */
+
+		section("CORE.12.6.9", RS.STARTED);
+		section("CORE.12.6.10", RS.STARTED);
+
+		/* The EJB container may provide a security audit trail mechanism */
+
+		section("CORE.12.7", RS.STARTED);
+		section("CORE.12.7.1", RS.STARTED);
+		section("CORE.12.7.2", RS.STARTED);
+		section("CORE.12.7.3", RS.STARTED);
 
 		section("CORE.13", RS.UNTOUCHED);
 		section("CORE.13.1", RS.UNTOUCHED);
