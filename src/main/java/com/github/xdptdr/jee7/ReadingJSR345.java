@@ -2,6 +2,7 @@ package com.github.xdptdr.jee7;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.security.Identity;
 import java.security.Principal;
@@ -19,6 +20,7 @@ import javax.ejb.AccessTimeout;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.AfterBegin;
 import javax.ejb.AfterCompletion;
+import javax.ejb.ApplicationException;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.BeforeCompletion;
@@ -26,6 +28,7 @@ import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.ConcurrentAccessException;
 import javax.ejb.ConcurrentAccessTimeoutException;
+import javax.ejb.CreateException;
 import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -33,6 +36,9 @@ import javax.ejb.EJBHome;
 import javax.ejb.EJBLocalHome;
 import javax.ejb.EJBLocalObject;
 import javax.ejb.EJBObject;
+import javax.ejb.EJBTransactionRequiredException;
+import javax.ejb.EJBTransactionRolledbackException;
+import javax.ejb.FinderException;
 import javax.ejb.Local;
 import javax.ejb.LocalBean;
 import javax.ejb.Lock;
@@ -41,10 +47,12 @@ import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenBean;
 import javax.ejb.MessageDrivenContext;
 import javax.ejb.NoSuchEJBException;
+import javax.ejb.NoSuchObjectLocalException;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remote;
 import javax.ejb.Remove;
+import javax.ejb.RemoveException;
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
 import javax.ejb.SessionSynchronization;
@@ -58,6 +66,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
+import javax.ejb.TransactionRequiredLocalException;
+import javax.ejb.TransactionRolledbackLocalException;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.interceptor.AroundConstruct;
@@ -69,10 +79,14 @@ import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.transaction.TransactionRequiredException;
+import javax.transaction.TransactionRolledbackException;
 import javax.transaction.UserTransaction;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceRef;
 import javax.xml.ws.handler.MessageContext;
+
+import org.omg.CORBA.TRANSACTION_MODE;
 
 public class ReadingJSR345 extends Reading {
 
@@ -2316,30 +2330,116 @@ public class ReadingJSR345 extends Reading {
 		/* interesting */
 		toReadAgain();
 
-		section("CORE.9", RS.UNTOUCHED);
-		section("CORE.9.1", RS.UNTOUCHED);
-		section("CORE.9.1.1", RS.UNTOUCHED);
-		section("CORE.9.1.2", RS.UNTOUCHED);
-		section("CORE.9.2", RS.UNTOUCHED);
-		section("CORE.9.2.1", RS.UNTOUCHED);
-		section("CORE.9.2.2", RS.UNTOUCHED);
-		section("CORE.9.3", RS.UNTOUCHED);
-		section("CORE.9.3.1", RS.UNTOUCHED);
-		section("CORE.9.3.2", RS.UNTOUCHED);
-		section("CORE.9.3.3", RS.UNTOUCHED);
-		section("CORE.9.3.4", RS.UNTOUCHED);
-		section("CORE.9.3.5", RS.UNTOUCHED);
-		section("CORE.9.3.6", RS.UNTOUCHED);
-		section("CORE.9.3.7", RS.UNTOUCHED);
-		section("CORE.9.3.8", RS.UNTOUCHED);
-		section("CORE.9.3.9", RS.UNTOUCHED);
-		section("CORE.9.3.10", RS.UNTOUCHED);
-		section("CORE.9.4", RS.UNTOUCHED);
-		section("CORE.9.4.1", RS.UNTOUCHED);
-		section("CORE.9.4.2", RS.UNTOUCHED);
-		section("CORE.9.4.2.1", RS.UNTOUCHED);
-		section("CORE.9.4.2.2", RS.UNTOUCHED);
-		section("CORE.9.4.2.3", RS.UNTOUCHED);
+		section("CORE.9", RS.STARTED);
+		section("CORE.9.1", RS.STARTED);
+		section("CORE.9.1.1", RS.STARTED);
+
+		/*
+		 * application exceptions can subclass Exception or RuntimeException but
+		 * not RemoteException
+		 */
+
+		RemoteException.class.getName();
+
+		/* CreateException and RemoveException are application exceptions */
+
+		CreateException.class.getName();
+		RemoveException.class.getName();
+
+		section("CORE.9.1.2", RS.STARTED);
+
+		/* application exceptions do not imply transaction rollback */
+
+		section("CORE.9.2", RS.STARTED);
+		section("CORE.9.2.1", RS.STARTED);
+
+		/*
+		 * Runtime exceptions that should be handled as application exception
+		 * must be marked as such in the ApplicationException metadata
+		 * annotation
+		 */
+
+		ApplicationException.class.isAnnotation();
+		// application-exception in XML
+
+		constructANewInstanceOf(ApplicationException.class).rollback();
+
+		FinderException.class.getName();
+
+		/*
+		 * designating an unchecked exception as an application exception also
+		 * applies to subclasses of that exception
+		 */
+
+		constructANewInstanceOf(ApplicationException.class).inherited();
+
+		section("CORE.9.2.2", RS.STARTED);
+
+		/*
+		 * A system exception is an exception that is a java.rmi.RemoteException
+		 * (or one of its subclasses) or a RuntimeException that is not an
+		 * application exception.
+		 */
+
+		/*
+		 * checked non-recoerable system exception should be encapsulated in
+		 * EJBException
+		 */
+		EJBException.class.getName();
+
+		toReadAgain();
+
+		section("CORE.9.3", RS.STARTED);
+
+		section("CORE.9.3.1", RS.STARTED);
+
+		section("CORE.9.3.2", RS.STARTED);
+
+		section("CORE.9.3.3", RS.STARTED);
+		section("CORE.9.3.4", RS.STARTED);
+		section("CORE.9.3.5", RS.STARTED);
+		section("CORE.9.3.6", RS.STARTED);
+		section("CORE.9.3.7", RS.STARTED);
+		section("CORE.9.3.8", RS.STARTED);
+
+		section("CORE.9.3.9", RS.STARTED);
+		section("CORE.9.3.10", RS.STARTED);
+		section("CORE.9.4", RS.STARTED);
+		section("CORE.9.4.1", RS.STARTED);
+		section("CORE.9.4.2", RS.STARTED);
+		section("CORE.9.4.2.1", RS.STARTED);
+
+		// extends EJBException
+		EJBTransactionRolledbackException.class.getName();
+
+		// extends EJBException
+		TransactionRolledbackLocalException.class.getName();
+
+		// extends RemoteException
+		TransactionRolledbackException.class.getName();
+
+		section("CORE.9.4.2.2", RS.STARTED);
+
+		// extends EJBException
+		EJBTransactionRequiredException.class.getName();
+
+		// extends EJBException
+		TransactionRequiredLocalException.class.getName();
+
+		// extends RemoteException
+		TransactionRequiredException.class.getName();
+
+		section("CORE.9.4.2.3", RS.STARTED);
+
+		// extends EJBException
+		NoSuchEJBException.class.getName();
+
+		// extends EJBException
+		NoSuchObjectLocalException.class.getName();
+
+		// extends RemoteException
+		NoSuchObjectException.class.getName();
+
 		section("CORE.9.5", RS.UNTOUCHED);
 
 		section("CORE.10", RS.UNTOUCHED);
@@ -2619,9 +2719,9 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.19.6", RS.UNTOUCHED);
 
 		section("CORE.20", RS.UNTOUCHED);
-		
+
 		// - end of outline
-		
+
 		section("OPTIONAL", RS.UNTOUCHED);
 	}
 
