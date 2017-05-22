@@ -7,7 +7,7 @@
 	<version>1.0</version>
 	<name>manybranches-pom</name>
 	<modules>
-		<module>rar</module>
+		<module>ejb</module>
 		<module>war</module>
 	</modules>
 	
