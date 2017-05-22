@@ -6,9 +6,9 @@
 		<artifactId>manybranches-pom</artifactId>
 		<version>1.0</version>
 	</parent>
-	<artifactId>manybranches-rar</artifactId>
+	<artifactId>manybranches-ejb</artifactId>
 	<packaging>jar</packaging>
-	<name>manybranches-rar</name>
+	<name>manybranches-ejb</name>
 
 	<build>
 		<plugins>
@@ -25,15 +25,9 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.jboss.spec.javax.resource</groupId>
-			<artifactId>jboss-connector-api_1.7_spec</artifactId>
-			<version>1.0.0.Final</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>javax.transaction-api</artifactId>
-			<version>1.2</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
