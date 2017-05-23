@@ -1,6 +1,5 @@
 package com.github.xdptdr.jee7;
 
-import java.awt.dnd.DragGestureEvent;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -92,7 +91,6 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.ejb.TransactionRequiredLocalException;
 import javax.ejb.TransactionRolledbackLocalException;
-import javax.ejb.embeddable.EJBContainer;
 import javax.ejb.spi.HandleDelegate;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;

@@ -1,0 +1,1046 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://xmlns.jcp.org/xml/ns/javaee" xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	attributeFormDefault="unqualified" version="3.2">
+
+
+
+
+
+
+	<xsd:include schemaLocation="javaee_7.xsd" />
+
+
+
+
+	<xsd:element name="ejb-jar" type="javaee:ejb-jarType">
+
+		<xsd:key name="ejb-name-key">
+			<xsd:annotation>
+				<xsd:documentation>
+
+					The ejb-name element contains the name of an
+					enterprise
+					bean. The name must be unique within the ejb-jar file or
+					.war file.
+
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:selector xpath="javaee:enterprise-beans/*" />
+			<xsd:field xpath="javaee:ejb-name" />
+		</xsd:key>
+		<xsd:keyref name="ejb-name-references" refer="javaee:ejb-name-key">
+
+			<xsd:selector
+				xpath=".//javaee:ejb-relationship-role/javaee:relationship-role-source" />
+			<xsd:field xpath="javaee:ejb-name" />
+		</xsd:keyref>
+		<xsd:key name="role-name-key">
+
+			<xsd:selector xpath="javaee:assembly-descriptor/javaee:security-role" />
+			<xsd:field xpath="javaee:role-name" />
+		</xsd:key>
+		<xsd:keyref name="role-name-references" refer="javaee:role-name-key">
+
+			<xsd:selector xpath="javaee:enterprise-beans/*/javaee:security-role-ref" />
+			<xsd:field xpath="javaee:role-link" />
+		</xsd:keyref>
+	</xsd:element>
+
+
+
+	<xsd:complexType name="access-timeoutType">
+
+		<xsd:sequence>
+			<xsd:element name="timeout" type="javaee:xsdIntegerType" />
+			<xsd:element name="unit" type="javaee:time-unit-typeType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="async-methodType">
+
+		<xsd:sequence>
+			<xsd:element name="method-name" type="javaee:string" />
+			<xsd:element name="method-params" type="javaee:method-paramsType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="activation-configType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="activation-config-property" type="javaee:activation-config-propertyType"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="activation-config-propertyType">
+
+		<xsd:sequence>
+			<xsd:element name="activation-config-property-name" type="javaee:xsdStringType">
+
+			</xsd:element>
+			<xsd:element name="activation-config-property-value"
+				type="javaee:xsdStringType">
+
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="around-invokeType">
+
+		<xsd:sequence>
+			<xsd:element name="class" type="javaee:fully-qualified-classType"
+				minOccurs="0" />
+			<xsd:element name="method-name" type="javaee:java-identifierType" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="around-timeoutType">
+
+		<xsd:sequence>
+			<xsd:element name="class" type="javaee:fully-qualified-classType"
+				minOccurs="0" />
+			<xsd:element name="method-name" type="javaee:java-identifierType" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="assembly-descriptorType">
+
+		<xsd:sequence>
+			<xsd:element name="security-role" type="javaee:security-roleType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="method-permission" type="javaee:method-permissionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="container-transaction" type="javaee:container-transactionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="interceptor-binding" type="javaee:interceptor-bindingType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="message-destination" type="javaee:message-destinationType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="exclude-list" type="javaee:exclude-listType"
+				minOccurs="0" />
+			<xsd:element name="application-exception" type="javaee:application-exceptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="cmp-fieldType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="field-name" type="javaee:java-identifierType">
+
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="cmp-versionType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="1.x" />
+				<xsd:enumeration value="2.x" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="cmr-fieldType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="cmr-field-name" type="javaee:string">
+
+			</xsd:element>
+			<xsd:element name="cmr-field-type" type="javaee:cmr-field-typeType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="cmr-field-typeType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="java.util.Collection" />
+				<xsd:enumeration value="java.util.Set" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="concurrency-management-typeType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="Bean" />
+				<xsd:enumeration value="Container" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="concurrent-lock-typeType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="Read" />
+				<xsd:enumeration value="Write" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="concurrent-methodType">
+
+		<xsd:sequence>
+			<xsd:element name="method" type="javaee:named-methodType" />
+			<xsd:element name="lock" type="javaee:concurrent-lock-typeType"
+				minOccurs="0" />
+			<xsd:element name="access-timeout" type="javaee:access-timeoutType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="container-transactionType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="method" type="javaee:methodType"
+				maxOccurs="unbounded" />
+			<xsd:element name="trans-attribute" type="javaee:trans-attributeType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="depends-onType">
+
+		<xsd:sequence>
+			<xsd:element name="ejb-name" type="javaee:ejb-linkType"
+				minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="ejb-classType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:fully-qualified-classType" />
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="ejb-jarType">
+
+		<xsd:sequence>
+			<xsd:element name="module-name" type="javaee:string"
+				minOccurs="0" />
+			<xsd:group ref="javaee:descriptionGroup" />
+			<xsd:element name="enterprise-beans" type="javaee:enterprise-beansType"
+				minOccurs="0" />
+			<xsd:element name="interceptors" type="javaee:interceptorsType"
+				minOccurs="0" />
+			<xsd:element name="relationships" type="javaee:relationshipsType"
+				minOccurs="0">
+				<xsd:unique name="relationship-name-uniqueness">
+
+					<xsd:selector xpath="javaee:ejb-relation" />
+					<xsd:field xpath="javaee:ejb-relation-name" />
+				</xsd:unique>
+			</xsd:element>
+			<xsd:element name="assembly-descriptor" type="javaee:assembly-descriptorType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="ejb-client-jar" type="javaee:pathType"
+				minOccurs="0">
+
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="version" type="javaee:dewey-versionType"
+			fixed="3.2" use="required">
+
+		</xsd:attribute>
+		<xsd:attribute name="metadata-complete" type="xsd:boolean">
+
+		</xsd:attribute>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="ejb-nameType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:xsdNMTOKENType" />
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="ejb-relationType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="ejb-relation-name" type="javaee:string"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="ejb-relationship-role" type="javaee:ejb-relationship-roleType"
+				minOccurs="2" maxOccurs="2" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="ejb-relationship-roleType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="ejb-relationship-role-name" type="javaee:string"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="multiplicity" type="javaee:multiplicityType" />
+			<xsd:element name="cascade-delete" type="javaee:emptyType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="relationship-role-source" type="javaee:relationship-role-sourceType" />
+			<xsd:element name="cmr-field" type="javaee:cmr-fieldType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="enterprise-beansType">
+
+		<xsd:choice maxOccurs="unbounded">
+			<xsd:element name="session" type="javaee:session-beanType">
+				<xsd:unique name="session-ejb-local-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:ejb-local-ref" />
+					<xsd:field xpath="javaee:ejb-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="session-ejb-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:ejb-ref" />
+					<xsd:field xpath="javaee:ejb-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="session-resource-env-ref-uniqueness">
+
+					<xsd:selector xpath="javaee:resource-env-ref" />
+					<xsd:field xpath="javaee:resource-env-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="session-message-destination-ref-uniqueness">
+
+					<xsd:selector xpath="javaee:message-destination-ref" />
+					<xsd:field xpath="javaee:message-destination-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="session-res-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:resource-ref" />
+					<xsd:field xpath="javaee:res-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="session-env-entry-name-uniqueness">
+
+					<xsd:selector xpath="javaee:env-entry" />
+					<xsd:field xpath="javaee:env-entry-name" />
+				</xsd:unique>
+			</xsd:element>
+			<xsd:element name="entity" type="javaee:entity-beanType">
+				<xsd:unique name="entity-ejb-local-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:ejb-local-ref" />
+					<xsd:field xpath="javaee:ejb-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="entity-ejb-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:ejb-ref" />
+					<xsd:field xpath="javaee:ejb-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="entity-resource-env-ref-uniqueness">
+
+					<xsd:selector xpath="javaee:resource-env-ref" />
+					<xsd:field xpath="javaee:resource-env-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="entity-message-destination-ref-uniqueness">
+
+					<xsd:selector xpath="javaee:message-destination-ref" />
+					<xsd:field xpath="javaee:message-destination-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="entity-res-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:resource-ref" />
+					<xsd:field xpath="javaee:res-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="entity-env-entry-name-uniqueness">
+
+					<xsd:selector xpath="javaee:env-entry" />
+					<xsd:field xpath="javaee:env-entry-name" />
+				</xsd:unique>
+			</xsd:element>
+			<xsd:element name="message-driven" type="javaee:message-driven-beanType">
+				<xsd:unique name="messaged-ejb-local-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:ejb-local-ref" />
+					<xsd:field xpath="javaee:ejb-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="messaged-ejb-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:ejb-ref" />
+					<xsd:field xpath="javaee:ejb-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="messaged-resource-env-ref-uniqueness">
+
+					<xsd:selector xpath="javaee:resource-env-ref" />
+					<xsd:field xpath="javaee:resource-env-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="messaged-message-destination-ref-uniqueness">
+
+					<xsd:selector xpath="javaee:message-destination-ref" />
+					<xsd:field xpath="javaee:message-destination-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="messaged-res-ref-name-uniqueness">
+
+					<xsd:selector xpath="javaee:resource-ref" />
+					<xsd:field xpath="javaee:res-ref-name" />
+				</xsd:unique>
+				<xsd:unique name="messaged-env-entry-name-uniqueness">
+
+					<xsd:selector xpath="javaee:env-entry" />
+					<xsd:field xpath="javaee:env-entry-name" />
+				</xsd:unique>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="entity-beanType">
+
+		<xsd:sequence>
+			<xsd:group ref="javaee:descriptionGroup" />
+			<xsd:element name="ejb-name" type="javaee:ejb-nameType" />
+			<xsd:element name="mapped-name" type="javaee:xsdStringType"
+				minOccurs="0" />
+			<xsd:element name="home" type="javaee:homeType"
+				minOccurs="0" />
+			<xsd:element name="remote" type="javaee:remoteType"
+				minOccurs="0" />
+			<xsd:element name="local-home" type="javaee:local-homeType"
+				minOccurs="0" />
+			<xsd:element name="local" type="javaee:localType"
+				minOccurs="0" />
+			<xsd:element name="ejb-class" type="javaee:ejb-classType" />
+			<xsd:element name="persistence-type" type="javaee:persistence-typeType" />
+			<xsd:element name="prim-key-class" type="javaee:fully-qualified-classType">
+
+			</xsd:element>
+			<xsd:element name="reentrant" type="javaee:true-falseType">
+
+			</xsd:element>
+			<xsd:element name="cmp-version" type="javaee:cmp-versionType"
+				minOccurs="0" />
+			<xsd:element name="abstract-schema-name" type="javaee:java-identifierType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="cmp-field" type="javaee:cmp-fieldType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="primkey-field" type="javaee:string"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:group ref="javaee:jndiEnvironmentRefsGroup" />
+			<xsd:element name="security-role-ref" type="javaee:security-role-refType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="security-identity" type="javaee:security-identityType"
+				minOccurs="0" />
+			<xsd:element name="query" type="javaee:queryType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="exclude-listType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="method" type="javaee:methodType"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="application-exceptionType">
+
+		<xsd:sequence>
+			<xsd:element name="exception-class" type="javaee:fully-qualified-classType" />
+			<xsd:element name="rollback" type="javaee:true-falseType"
+				minOccurs="0" />
+			<xsd:element name="inherited" type="javaee:true-falseType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="interceptorsType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="interceptor" type="javaee:interceptorType"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="interceptorType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="interceptor-class" type="javaee:fully-qualified-classType" />
+			<xsd:element name="around-invoke" type="javaee:around-invokeType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="around-timeout" type="javaee:around-timeoutType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="around-construct" type="javaee:lifecycle-callbackType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:group ref="javaee:jndiEnvironmentRefsGroup" />
+			<xsd:element name="post-activate" type="javaee:lifecycle-callbackType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="pre-passivate" type="javaee:lifecycle-callbackType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="interceptor-bindingType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="ejb-name" type="javaee:string" />
+			<xsd:choice>
+				<xsd:element name="interceptor-class" type="javaee:fully-qualified-classType"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element name="interceptor-order" type="javaee:interceptor-orderType"
+					minOccurs="1" />
+			</xsd:choice>
+			<xsd:element name="exclude-default-interceptors" type="javaee:true-falseType"
+				minOccurs="0" />
+			<xsd:element name="exclude-class-interceptors" type="javaee:true-falseType"
+				minOccurs="0" />
+			<xsd:element name="method" type="javaee:named-methodType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="interceptor-orderType">
+
+		<xsd:sequence>
+			<xsd:element name="interceptor-class" type="javaee:fully-qualified-classType"
+				minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="named-methodType">
+		<xsd:sequence>
+			<xsd:element name="method-name" type="javaee:string" />
+			<xsd:element name="method-params" type="javaee:method-paramsType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="init-methodType">
+		<xsd:sequence>
+			<xsd:element name="create-method" type="javaee:named-methodType" />
+			<xsd:element name="bean-method" type="javaee:named-methodType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="remove-methodType">
+		<xsd:sequence>
+			<xsd:element name="bean-method" type="javaee:named-methodType" />
+			<xsd:element name="retain-if-exception" type="javaee:true-falseType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="message-driven-beanType">
+
+		<xsd:sequence>
+			<xsd:group ref="javaee:descriptionGroup" />
+			<xsd:element name="ejb-name" type="javaee:ejb-nameType" />
+			<xsd:element name="mapped-name" type="javaee:xsdStringType"
+				minOccurs="0" />
+			<xsd:element name="ejb-class" type="javaee:ejb-classType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="messaging-type" type="javaee:fully-qualified-classType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="timeout-method" type="javaee:named-methodType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="timer" type="javaee:timerType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="transaction-type" type="javaee:transaction-typeType"
+				minOccurs="0" />
+			<xsd:element name="message-destination-type" type="javaee:message-destination-typeType"
+				minOccurs="0" />
+			<xsd:element name="message-destination-link" type="javaee:message-destination-linkType"
+				minOccurs="0" />
+			<xsd:element name="activation-config" type="javaee:activation-configType"
+				minOccurs="0" />
+			<xsd:element name="around-invoke" type="javaee:around-invokeType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="around-timeout" type="javaee:around-timeoutType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:group ref="javaee:jndiEnvironmentRefsGroup" />
+			<xsd:element name="security-role-ref" type="javaee:security-role-refType"
+				minOccurs="0" maxOccurs="unbounded">
+			</xsd:element>
+			<xsd:element name="security-identity" type="javaee:security-identityType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="methodType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="ejb-name" type="javaee:ejb-nameType" />
+			<xsd:element name="method-intf" type="javaee:method-intfType"
+				minOccurs="0">
+			</xsd:element>
+			<xsd:element name="method-name" type="javaee:method-nameType" />
+			<xsd:element name="method-params" type="javaee:method-paramsType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="method-intfType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="Home" />
+				<xsd:enumeration value="Remote" />
+				<xsd:enumeration value="LocalHome" />
+				<xsd:enumeration value="Local" />
+				<xsd:enumeration value="ServiceEndpoint" />
+				<xsd:enumeration value="Timer" />
+				<xsd:enumeration value="MessageEndpoint" />
+				<xsd:enumeration value="LifecycleCallback" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="method-nameType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string" />
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="method-paramsType">
+
+		<xsd:sequence>
+			<xsd:element name="method-param" type="javaee:java-typeType"
+				minOccurs="0" maxOccurs="unbounded">
+
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="method-permissionType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:choice>
+				<xsd:element name="role-name" type="javaee:role-nameType"
+					maxOccurs="unbounded" />
+				<xsd:element name="unchecked" type="javaee:emptyType">
+
+				</xsd:element>
+			</xsd:choice>
+			<xsd:element name="method" type="javaee:methodType"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="multiplicityType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="One" />
+				<xsd:enumeration value="Many" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="persistence-typeType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="Bean" />
+				<xsd:enumeration value="Container" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="queryType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" />
+			<xsd:element name="query-method" type="javaee:query-methodType" />
+			<xsd:element name="result-type-mapping" type="javaee:result-type-mappingType"
+				minOccurs="0" />
+			<xsd:element name="ejb-ql" type="javaee:xsdStringType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="query-methodType">
+
+		<xsd:sequence>
+			<xsd:element name="method-name" type="javaee:method-nameType" />
+			<xsd:element name="method-params" type="javaee:method-paramsType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="relationship-role-sourceType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="ejb-name" type="javaee:ejb-nameType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="relationshipsType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="ejb-relation" type="javaee:ejb-relationType"
+				maxOccurs="unbounded">
+				<xsd:unique name="role-name-uniqueness">
+
+					<xsd:selector xpath=".//javaee:ejb-relationship-role-name" />
+					<xsd:field xpath="." />
+				</xsd:unique>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="result-type-mappingType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="Local" />
+				<xsd:enumeration value="Remote" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="security-identityType">
+
+		<xsd:sequence>
+			<xsd:element name="description" type="javaee:descriptionType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:choice>
+				<xsd:element name="use-caller-identity" type="javaee:emptyType">
+
+				</xsd:element>
+				<xsd:element name="run-as" type="javaee:run-asType" />
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="session-beanType">
+
+		<xsd:sequence>
+			<xsd:group ref="javaee:descriptionGroup" />
+			<xsd:element name="ejb-name" type="javaee:ejb-nameType" />
+			<xsd:element name="mapped-name" type="javaee:xsdStringType"
+				minOccurs="0" />
+			<xsd:element name="home" type="javaee:homeType"
+				minOccurs="0" />
+			<xsd:element name="remote" type="javaee:remoteType"
+				minOccurs="0" />
+			<xsd:element name="local-home" type="javaee:local-homeType"
+				minOccurs="0" />
+			<xsd:element name="local" type="javaee:localType"
+				minOccurs="0" />
+			<xsd:element name="business-local" type="javaee:fully-qualified-classType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="business-remote" type="javaee:fully-qualified-classType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="local-bean" type="javaee:emptyType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="service-endpoint" type="javaee:fully-qualified-classType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="ejb-class" type="javaee:ejb-classType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="session-type" type="javaee:session-typeType"
+				minOccurs="0" />
+			<xsd:element name="stateful-timeout" type="javaee:stateful-timeoutType"
+				minOccurs="0" />
+			<xsd:element name="timeout-method" type="javaee:named-methodType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="timer" type="javaee:timerType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="init-on-startup" type="javaee:true-falseType"
+				minOccurs="0">
+
+			</xsd:element>
+			<xsd:element name="concurrency-management-type"
+				type="javaee:concurrency-management-typeType" minOccurs="0" />
+			<xsd:element name="concurrent-method" type="javaee:concurrent-methodType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="depends-on" type="javaee:depends-onType"
+				minOccurs="0" />
+			<xsd:element name="init-method" type="javaee:init-methodType"
+				minOccurs="0" maxOccurs="unbounded">
+
+			</xsd:element>
+			<xsd:element name="remove-method" type="javaee:remove-methodType"
+				minOccurs="0" maxOccurs="unbounded">
+
+			</xsd:element>
+			<xsd:element name="async-method" type="javaee:async-methodType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="transaction-type" type="javaee:transaction-typeType"
+				minOccurs="0" />
+			<xsd:element name="after-begin-method" type="javaee:named-methodType"
+				minOccurs="0" />
+			<xsd:element name="before-completion-method" type="javaee:named-methodType"
+				minOccurs="0" />
+			<xsd:element name="after-completion-method" type="javaee:named-methodType"
+				minOccurs="0" />
+			<xsd:element name="around-invoke" type="javaee:around-invokeType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="around-timeout" type="javaee:around-timeoutType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:group ref="javaee:jndiEnvironmentRefsGroup" />
+			<xsd:element name="post-activate" type="javaee:lifecycle-callbackType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="pre-passivate" type="javaee:lifecycle-callbackType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="security-role-ref" type="javaee:security-role-refType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="security-identity" type="javaee:security-identityType"
+				minOccurs="0" />
+			<xsd:element name="passivation-capable" type="xsd:boolean"
+				default="true" minOccurs="0">
+
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="session-typeType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="Singleton" />
+				<xsd:enumeration value="Stateful" />
+				<xsd:enumeration value="Stateless" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="stateful-timeoutType">
+
+		<xsd:sequence>
+			<xsd:element name="timeout" type="javaee:xsdIntegerType" />
+			<xsd:element name="unit" type="javaee:time-unit-typeType" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="time-unit-typeType">
+
+		<xsd:simpleContent>
+			<xsd:restriction base="javaee:string">
+				<xsd:enumeration value="Days" />
+				<xsd:enumeration value="Hours" />
+				<xsd:enumeration value="Minutes" />
+				<xsd:enumeration value="Seconds" />
+				<xsd:enumeration value="Milliseconds" />
+				<xsd:enumeration value="Microseconds" />
+				<xsd:enumeration value="Nanoseconds" />
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="timer-scheduleType">
+		<xsd:sequence>
+			<xsd:element name="second" type="javaee:string"
+				minOccurs="0" />
+			<xsd:element name="minute" type="javaee:string"
+				minOccurs="0" />
+			<xsd:element name="hour" type="javaee:string" minOccurs="0" />
+			<xsd:element name="day-of-month" type="javaee:string"
+				minOccurs="0" />
+			<xsd:element name="month" type="javaee:string" minOccurs="0" />
+			<xsd:element name="day-of-week" type="javaee:string"
+				minOccurs="0" />
+			<xsd:element name="year" type="javaee:string" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+
+	timerType : id,
+	- description : javaee:descriptionType
+	- schedule : javaee:timer-scheduleType
+	- start : dateTime
+	- end : dateTime
+	- timeout-method : javaee:named-methodType
+	- persistent : bool
+	- timezone
+	- info
+
+	trans-attributeType : NotSupported, Supports, Required, RequiresNew, Mandatory, Never
+	
+	transaction-typeType : Bean, Container
+
+</xsd:schema>
