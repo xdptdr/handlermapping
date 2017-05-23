@@ -91,6 +91,7 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.ejb.TransactionRequiredLocalException;
 import javax.ejb.TransactionRolledbackLocalException;
+import javax.ejb.embeddable.EJBContainer;
 import javax.ejb.spi.HandleDelegate;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
@@ -173,6 +174,7 @@ public class ReadingJSR345 extends Reading {
 	private Date initialExpiration;
 	private ScheduleExpression scheduleExpression;
 	private Collection<Timer> timers;
+	private EJBContainer ejbContainer;
 
 	@Override
 	public void reading() throws Exception {
@@ -5059,59 +5061,190 @@ public class ReadingJSR345 extends Reading {
 
 		section("CORE.15.8", RS.STARTED);
 
-		section("CORE.16", RS.UNTOUCHED);
-		section("CORE.16.1", RS.UNTOUCHED);
-		section("CORE.16.1.1", RS.UNTOUCHED);
-		section("CORE.16.1.2", RS.UNTOUCHED);
-		section("CORE.16.2", RS.UNTOUCHED);
-		section("CORE.16.2.1", RS.UNTOUCHED);
-		section("CORE.16.2.2", RS.UNTOUCHED);
-		section("CORE.16.3", RS.UNTOUCHED);
-		section("CORE.16.3.1", RS.UNTOUCHED);
-		section("CORE.16.3.2", RS.UNTOUCHED);
-		section("CORE.16.3.3", RS.UNTOUCHED);
-		section("CORE.16.3.4", RS.UNTOUCHED);
-		section("CORE.16.3.5", RS.UNTOUCHED);
-		section("CORE.16.3.6", RS.UNTOUCHED);
-		section("CORE.16.3.7", RS.UNTOUCHED);
+		section("CORE.16", RS.STARTED);
 
-		section("CORE.17", RS.UNTOUCHED);
-		section("CORE.17.1", RS.UNTOUCHED);
-		section("CORE.17.2", RS.UNTOUCHED);
-		section("CORE.17.3", RS.UNTOUCHED);
-		section("CORE.17.4", RS.UNTOUCHED);
-		section("CORE.17.4.1", RS.UNTOUCHED);
-		section("CORE.17.4.2", RS.UNTOUCHED);
-		section("CORE.17.4.3", RS.UNTOUCHED);
-		section("CORE.17.5", RS.UNTOUCHED);
-		section("CORE.17.5.1", RS.UNTOUCHED);
-		section("CORE.17.5.2", RS.UNTOUCHED);
+		/*- EJB Lite
+		 * - Stateless, stateful, and singleton session bean components
+		 *   - Local business interface and no-interface view only
+		 * - Container-managed transactions and bean-managed transactions
+		 * - Declarative and programmatic security
+		 * - Interceptors
+		 * - Local asynchronous session bean invocations
+		 * - Non-persistent EJB Timer Service
+		 * - Deployment descriptor support (ejb-jar.xml)
+		 * */
 
-		section("CORE.18", RS.UNTOUCHED);
-		section("CORE.18.1", RS.UNTOUCHED);
-		section("CORE.18.2", RS.UNTOUCHED);
-		section("CORE.18.2.1", RS.UNTOUCHED);
-		section("CORE.18.2.2", RS.UNTOUCHED);
-		section("CORE.18.2.2.1", RS.UNTOUCHED);
-		section("CORE.18.2.2.2", RS.UNTOUCHED);
-		section("CORE.18.2.2.3", RS.UNTOUCHED);
-		section("CORE.18.2.3", RS.UNTOUCHED);
-		section("CORE.18.2.4", RS.UNTOUCHED);
-		section("CORE.18.3", RS.UNTOUCHED);
-		section("CORE.18.3.1", RS.UNTOUCHED);
-		section("CORE.18.3.2", RS.UNTOUCHED);
-		section("CORE.18.3.3", RS.UNTOUCHED);
-		section("CORE.18.3.4", RS.UNTOUCHED);
+		section("CORE.16.1", RS.STARTED);
+		section("CORE.16.1.1", RS.STARTED);
+		section("CORE.16.1.2", RS.STARTED);
+		section("CORE.16.2", RS.STARTED);
+		section("CORE.16.2.1", RS.STARTED);
+		section("CORE.16.2.2", RS.STARTED);
 
-		section("CORE.19", RS.UNTOUCHED);
-		section("CORE.19.1", RS.UNTOUCHED);
-		section("CORE.19.1.1", RS.UNTOUCHED);
-		section("CORE.19.1.2", RS.UNTOUCHED);
-		section("CORE.19.2", RS.UNTOUCHED);
-		section("CORE.19.3", RS.UNTOUCHED);
-		section("CORE.19.4", RS.UNTOUCHED);
-		section("CORE.19.5", RS.UNTOUCHED);
-		section("CORE.19.6", RS.UNTOUCHED);
+		/* An enterprise bean must not use read/write static fields. */
+
+		/*
+		 * An enterprise bean must not use thread synchronization primitives to
+		 * synchronize execution of multiple instances, unless it is a singleton
+		 * session bean with bean-managed concurrency
+		 */
+
+		/*
+		 * An enterprise bean must not use the AWT functionality to attempt to
+		 * output information to a display, or to input information from a
+		 * keyboard.
+		 */
+
+		/*
+		 * An enterprise bean should exercise caution when using the Java I/O
+		 * package to attempt to access files and directories in the file
+		 * system.
+		 */
+
+		/*
+		 * An enterprise bean must not attempt to listen on a socket, accept
+		 * connections on a socket, or use a socket for multicast.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to query a class to obtain
+		 * information about the declared members that are not otherwise
+		 * accessible to the enterprise bean because of the security rules of
+		 * the Java language. The enterprise bean must not attempt to use the
+		 * Reflection API to access information that the security rules of the
+		 * Java programming language make unavailable.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to create a class loader; set
+		 * the context class loader; set security manager; create a new security
+		 * manager; stop the JVM; or change the input, output, and error
+		 * streams.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to set the socket factory used
+		 * by ServerSocket, Socket, or the stream handler factory used by URL.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to manage threads. The
+		 * enterprise bean must not attempt to start, stop, suspend, or resume a
+		 * thread, or to change a thread’s priority or name. The enterprise bean
+		 * must not attempt to manage thread groups.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to directly read or write a file
+		 * descriptor.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to obtain the security policy
+		 * information for a particular code source.
+		 */
+
+		/* The enterprise bean must not attempt to load a native library. */
+
+		/*
+		 * The enterprise bean must not attempt to gain access to packages and
+		 * classes that the usual rules of the Java programming language make
+		 * unavailable to the enterprise bean.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to define a class in a package.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to access or modify the security
+		 * configuration objects (Policy, Security, Provider, Signer, and
+		 * Identity).
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to use the subclass and object
+		 * substitution features of the Java Serialization Protocol.
+		 */
+
+		/*
+		 * The enterprise bean must not attempt to pass this as an argument or
+		 * method result. The enterprise bean must pass the result of
+		 * SessionContext.getBusinessObject, SessionContext.getEJBObject,
+		 * SessionContext.getEJBLocalObject, EntityContext.getEJBObject, or
+		 * EntityContext.getEJBLocalObject instead.
+		 */
+
+		section("CORE.16.3", RS.STARTED);
+
+		section("CORE.16.3.1", RS.STARTED);
+		section("CORE.16.3.2", RS.STARTED);
+		section("CORE.16.3.3", RS.STARTED);
+		section("CORE.16.3.4", RS.STARTED);
+		section("CORE.16.3.5", RS.STARTED);
+		section("CORE.16.3.6", RS.STARTED);
+		section("CORE.16.3.7", RS.STARTED);
+
+		section("CORE.17", RS.STARTED);
+		section("CORE.17.1", RS.STARTED);
+		section("CORE.17.2", RS.STARTED);
+		section("CORE.17.3", RS.STARTED);
+		section("CORE.17.4", RS.STARTED);
+		section("CORE.17.4.1", RS.STARTED);
+		section("CORE.17.4.2", RS.STARTED);
+		section("CORE.17.4.3", RS.STARTED);
+		section("CORE.17.5", RS.STARTED);
+		section("CORE.17.5.1", RS.STARTED);
+		section("CORE.17.5.2", RS.STARTED);
+
+		section("CORE.18", RS.STARTED);
+		section("CORE.18.1", RS.STARTED);
+		section("CORE.18.2", RS.STARTED);
+		section("CORE.18.2.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				ejbContainer.createEJBContainer();
+			}
+		});
+
+		section("CORE.18.2.2", RS.STARTED);
+
+		/*-
+		 * - javax.ejb.embeddable.provider
+		 * - javax.ejb.embeddable.modules
+		 * - javax.ejb.embeddable.appName
+		 */
+		section("CORE.18.2.2.1", RS.STARTED);
+		section("CORE.18.2.2.2", RS.STARTED);
+		section("CORE.18.2.2.3", RS.STARTED);
+		section("CORE.18.2.3", RS.STARTED);
+		section("CORE.18.2.4", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				ejbContainer.close();
+			}
+		});
+		
+		
+		section("CORE.18.3", RS.STARTED);
+		section("CORE.18.3.1", RS.STARTED);
+		section("CORE.18.3.2", RS.STARTED);
+		section("CORE.18.3.3", RS.STARTED);
+		section("CORE.18.3.4", RS.STARTED);
+
+		section("CORE.19", RS.STARTED);
+		section("CORE.19.1", RS.STARTED);
+		section("CORE.19.1.1", RS.STARTED);
+		section("CORE.19.1.2", RS.STARTED);
+		section("CORE.19.2", RS.STARTED);
+		section("CORE.19.3", RS.STARTED);
+		section("CORE.19.4", RS.STARTED);
+		section("CORE.19.5", RS.STARTED);
+		section("CORE.19.6", RS.STARTED);
 
 		section("CORE.20", RS.UNTOUCHED);
 
