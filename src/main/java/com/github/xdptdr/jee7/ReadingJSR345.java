@@ -3,6 +3,7 @@ package com.github.xdptdr.jee7;
 import java.awt.dnd.DragGestureEvent;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.rmi.AccessException;
 import java.rmi.MarshalException;
 import java.rmi.NoSuchObjectException;
@@ -11,6 +12,8 @@ import java.security.Identity;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -66,6 +69,9 @@ import javax.ejb.PrePassivate;
 import javax.ejb.Remote;
 import javax.ejb.Remove;
 import javax.ejb.RemoveException;
+import javax.ejb.Schedule;
+import javax.ejb.ScheduleExpression;
+import javax.ejb.Schedules;
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
 import javax.ejb.SessionSynchronization;
@@ -74,6 +80,11 @@ import javax.ejb.Startup;
 import javax.ejb.Stateful;
 import javax.ejb.StatefulTimeout;
 import javax.ejb.Stateless;
+import javax.ejb.TimedObject;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -149,6 +160,21 @@ public class ReadingJSR345 extends Reading {
 	private ObjectOutputStream objectOutputStream;
 	private EJBContext ejbContext;
 	protected String role;
+	private Timer timer;
+	private long duration;
+	private Serializable info;
+	private long timeRemaining;
+	private Date nextTimeout;
+	private TimerHandle timerHandle;
+	private boolean persistent;
+	private boolean isCalendarTimer;
+	private Date date;
+	private TimerConfig timerConfig;
+	private long initialDuration;
+	private long intervalDuration;
+	private Date initialExpiration;
+	private ScheduleExpression scheduleExpression;
+	private Collection<Timer> timers;
 
 	@Override
 	public void reading() throws Exception {
@@ -4403,35 +4429,414 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.12.7.2", RS.COMPLETED);
 		section("CORE.12.7.3", RS.COMPLETED);
 
-		section("CORE.13", RS.UNTOUCHED);
-		section("CORE.13.1", RS.UNTOUCHED);
-		section("CORE.13.2", RS.UNTOUCHED);
-		section("CORE.13.2.1", RS.UNTOUCHED);
-		section("CORE.13.2.1.1", RS.UNTOUCHED);
-		section("CORE.13.2.1.2", RS.UNTOUCHED);
-		section("CORE.13.2.1.3", RS.UNTOUCHED);
-		section("CORE.13.2.1.4", RS.UNTOUCHED);
-		section("CORE.13.2.2", RS.UNTOUCHED);
-		section("CORE.13.2.3", RS.UNTOUCHED);
-		section("CORE.13.2.4", RS.UNTOUCHED);
-		section("CORE.13.2.4.1", RS.UNTOUCHED);
-		section("CORE.13.2.5", RS.UNTOUCHED);
-		section("CORE.13.2.5.1", RS.UNTOUCHED);
-		section("CORE.13.2.5.2", RS.UNTOUCHED);
-		section("CORE.13.2.5.3", RS.UNTOUCHED);
-		section("CORE.13.2.6", RS.UNTOUCHED);
-		section("CORE.13.2.7", RS.UNTOUCHED);
-		section("CORE.13.2.8", RS.UNTOUCHED);
-		section("CORE.13.3", RS.UNTOUCHED);
-		section("CORE.13.3.1", RS.UNTOUCHED);
-		section("CORE.13.3.2", RS.UNTOUCHED);
-		section("CORE.13.4", RS.UNTOUCHED);
-		section("CORE.13.4.1", RS.UNTOUCHED);
-		section("CORE.13.4.2", RS.UNTOUCHED);
-		section("CORE.13.4.3", RS.UNTOUCHED);
-		section("CORE.13.4.4", RS.UNTOUCHED);
+		section("CORE.13", RS.COMPLETED);
+		section("CORE.13.1", RS.COMPLETED);
+		section("CORE.13.2", RS.COMPLETED);
 
-		section("CORE.14", RS.UNTOUCHED);
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				class MyTimer {
+					@Timeout
+					public void timeout() {
+
+					}
+				}
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				class MyTimer implements TimedObject {
+					@Override
+					public void ejbTimeout(Timer timer) {
+
+					}
+				}
+			}
+		});
+
+		Schedule.class.isAnnotation();
+
+		/* Timers cannot be created for stateful session beans. */
+
+		/*
+		 * The timeout callback method invocation for a timer that is created
+		 * for a stateless session bean or a message-driven bean may be called
+		 * on any bean instance in the pooled state.
+		 */
+
+		/*
+		 * The timeout callback method for a programmatically created persistent
+		 * timer will be invoked on the JVM on which the timer was created or on
+		 * another JVM instance across which the container is distributed.
+		 */
+
+		/*
+		 * The timeout callback method for a programmatically created
+		 * non-persistent timer will be invoked on the JVM on which the timer
+		 * was created.
+		 */
+
+		/*
+		 * The timeout callback method for a programmatically created timer is
+		 * invoked on a single JVM instance regardless of the number of JVMs
+		 * across which the container is distributed.
+		 */
+
+		/* persistent timer */
+
+		/*
+		 * For each automatically-created persistent timer, the container
+		 * creates a single persistent timer, regardless of the number of JVMs
+		 * across which the container is distributed. For automatically-created
+		 * non-persistent timers, the container creates a new non-persistent
+		 * timer during application initialization for each JVM across which the
+		 * container is distributed.
+		 */
+
+		/*
+		 * In the event of a container crash or container shutdown, the timeout
+		 * callback method for a persistent timer that has not been cancelled
+		 * will be invoked on a new JVM when the container is reCOMPLETED or on
+		 * another JVM instance across which the container is distributed. This
+		 * rule applies to both programmatically or automatically created
+		 * persistent timers.
+		 */
+
+		/* A timer is cancelled by calling its cancel method. */
+
+		timer.cancel();
+
+		/*
+		 * Invocations of the timeout callback methods and the methods of the
+		 * Timer Service to programmatically create timers and to cancel timers
+		 * are typically made within a transaction.
+		 */
+
+		section("CORE.13.2.1", RS.COMPLETED);
+
+		/* calendar-based syntax that is modeled after the UNIX cron facility */
+
+		section("CORE.13.2.1.1", RS.COMPLETED);
+
+		/*-
+		 * - second : 0..59
+		 * - minute : 0..59
+		 * - hour : 0..23
+		 * - dayOfMonth : 1..31 ; -7..-1 ; "1st", "2nd", "3rd", "5th", "Last" ; "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+		 * - month : 1..12 ; "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+		 * - dayOfWeek : 0..7 ; "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+		 * - year
+		 */
+
+		section("CORE.13.2.1.2", RS.COMPLETED);
+
+		/* single value, wildcard, list, range, increments, */
+
+		/*-
+		 * - 10
+		 * - Sep
+		 * - *
+		 * - 10,20,30
+		 * - Mon, Wed, Fri
+		 * - 0-10,30,40
+		 * - 1-10
+		 * - Fri-Mon
+		 * - 27-3
+		 * - * / 5
+		 * - 30/10
+		 * - * / 14
+		 */
+
+		/*
+		 * Time zones are specified as an ID String[91]. The set of required
+		 * time zone IDs is defined by the Zone Name(TZ) column of the public
+		 * domain zoneinfo database [35].
+		 */
+
+		section("CORE.13.2.1.3", RS.COMPLETED);
+
+		/*- default values
+		 * - second : 0
+		 * - minute : 0
+		 * - hour : 0
+		 * - dayOfMonth : *
+		 * - month : *
+		 * - dayOfWeek : *
+		 * - year : *
+		 */
+
+		/*
+		 * If the dayOfMonth attribute has a non-wildcard value and the
+		 * dayOfWeek attribute has a non-wildcard value, then the timer expires
+		 * when the current day matches the dayOfMonth attribute or the
+		 * dayOfWeek attribute
+		 */
+
+		/* string constants are case insensitive */
+
+		/*
+		 * “5th” is the highest ordinal number allowed as the value for the
+		 * dayOfMonth
+		 */
+
+		/*
+		 * The increments syntax is only supported within the second, minute,
+		 * and hour attributes.
+		 */
+		section("CORE.13.2.1.4", RS.COMPLETED);
+
+		/*-
+		 * - dayOfWeek="Mon"
+		 * - minute="15", hour="3", dayOfWeek="Mon-Fri"
+		 * - minute="15", hour="3", timezone="America/New_York"
+		 * - minute="*", hour="*"
+		 * - second="30", hour="12", dayOfWeek="Mon,Wed,Fri"
+		 * - minute="* / 5", hour="*"
+		 * - hour="14", dayOfMonth="Last Thu", month="Nov"
+		 * - hour="1", dayOfMonth="-1"
+		 * - hour="12/2", dayOfMonth="2nd Tue"
+		 */
+
+		section("CORE.13.2.2", RS.COMPLETED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					@Schedule(hour = "1", dayOfMonth = "1", info = "titi")
+					public void foo(Timer t) {
+						t.getInfo();
+					}
+
+					@Schedules({ @Schedule(hour = "1"), @Schedule(month = "1") })
+					public void bar() {
+					}
+				}
+			}
+		});
+
+		section("CORE.13.2.3", RS.COMPLETED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyThingy {
+					@Schedule(hour = "1", persistent = false)
+					public void foo() {
+					}
+				}
+			}
+		});
+
+		section("CORE.13.2.4", RS.COMPLETED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				timer = timerService.createTimer(duration, info);
+				timer = timerService.createTimer(date, info);
+				timer = timerService.createSingleActionTimer(duration, timerConfig);
+				timer = timerService.createSingleActionTimer(date, timerConfig);
+				timer = timerService.createTimer(initialDuration, intervalDuration, info);
+				timer = timerService.createTimer(initialExpiration, intervalDuration, info);
+				timer = timerService.createIntervalTimer(initialDuration, intervalDuration, timerConfig);
+				timer = timerService.createIntervalTimer(initialExpiration, intervalDuration, timerConfig);
+				timer = timerService.createCalendarTimer(scheduleExpression);
+				timer = timerService.createCalendarTimer(scheduleExpression, timerConfig);
+				timers = timerService.getTimers();
+				timers = timerService.getAllTimers();
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				timerConfig.setPersistent(false);
+				timerConfig.setInfo(info);
+			}
+		});
+
+		/*
+		 * The getTimers method returns active timers associated with the bean.
+		 * These include all active persistent timers regardless of the number
+		 * of JVMs across which the container is distributed, and active
+		 * non-persistent timers created in the same JVM as the executing
+		 * method. Timers returned by this method include both the
+		 * programmatically-created timers and the automatically-created timers.
+		 */
+
+		/*
+		 * The getAllTimers method returns active timers associated with the
+		 * beans in the same module in which the caller bean is packaged. These
+		 * include all active persistent timers regardless of the number of JVMs
+		 * across which the container is distributed, and active non-persistent
+		 * timers created in the same JVM as the executing method. Timers
+		 * returned by this method include both the programmatically-created
+		 * timers and the automatically-created timers.
+		 */
+
+		section("CORE.13.2.4.1", RS.COMPLETED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				scheduleExpression = new ScheduleExpression().dayOfWeek("Sat").hour(1);
+				timer = timerService.createCalendarTimer(scheduleExpression);
+			}
+		});
+
+		section("CORE.13.2.5", RS.COMPLETED);
+
+		/*
+		 * timeout callback methods for timers that are programmatically created
+		 * via a TimerServicetimer creation method
+		 */
+
+		/*
+		 * timeout callback methods for timers that are automatically created
+		 * via the Schedule annotation or the deployment descriptor
+		 */
+
+		section("CORE.13.2.5.1", RS.COMPLETED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyTimer {
+					@Timeout
+					public void myTimeout() {
+					}
+				}
+
+			}
+		});
+
+		section("CORE.13.2.5.2", RS.COMPLETED);
+
+		section("CORE.13.2.5.3", RS.COMPLETED);
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyTimer {
+					@Timeout
+					public void myTimeout() {
+					}
+				}
+
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@SuppressWarnings("unused")
+				class MyTimer {
+					@Timeout
+					public void myTimeout(Timeout t) {
+					}
+				}
+
+			}
+		});
+
+		/* Timeout callback methods must not throw application exceptions. */
+
+		/*
+		 * The time at which a timeout callback method is called may therefore
+		 * not correspond exactly to the time specified at timer creation.
+		 */
+
+		/*
+		 * the Bean Provider must be prepared to handle timeout callbacks that
+		 * are out of sequence
+		 */
+
+		/*
+		 * The Bean Provider must be prepared to handle extraneous calls to a
+		 * timeout callback method in the event that a timer expiration is
+		 * outstanding when a call to the cancellation method has been made.
+		 */
+
+		/* a timeout callback method has no client security context */
+
+		/*
+		 * If the bean invokes the getNextTimeout or getTimeRemaining method on
+		 * the timer associated with a timeout callback while within the timeout
+		 * callback, and there are no future timeouts for this calendar-based
+		 * timer, the NoMoreTimeoutsException must be thrown.
+		 */
+
+		section("CORE.13.2.6", RS.COMPLETED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				timer.cancel();
+				timeRemaining = timer.getTimeRemaining();
+				nextTimeout = timer.getNextTimeout();
+				scheduleExpression = timer.getSchedule();
+				timerHandle = timer.getHandle();
+				info = timer.getInfo();
+				persistent = timer.isPersistent();
+				isCalendarTimer = timer.isCalendarTimer();
+			}
+		});
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				timer = timerHandle.getTimer();
+			}
+		});
+
+		section("CORE.13.2.7", RS.COMPLETED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				timer.equals(timer);
+			}
+		});
+
+		section("CORE.13.2.8", RS.COMPLETED);
+
+		/*
+		 * An enterprise bean typically creates a timer within the scope of a
+		 * transaction. If the transaction is then rolled back, the timer
+		 * creation is rolled back.
+		 */
+
+		/*
+		 * A timer is typically cancelled within a transaction. If the
+		 * transaction is rolled back, the container rescinds the timer
+		 * cancellation.
+		 */
+
+		/*
+		 * A timeout callback method on a bean with container-managed
+		 * transactions must have transaction attribute REQUIRED or REQUIRES_NEW
+		 */
+
+		section("CORE.13.3", RS.COMPLETED);
+		section("CORE.13.3.1", RS.COMPLETED);
+		section("CORE.13.3.2", RS.COMPLETED);
+
+		/* A TimerHandle is intended to be storable in persistent storage. */
+
+		section("CORE.13.4", RS.COMPLETED);
+		section("CORE.13.4.1", RS.COMPLETED);
+		section("CORE.13.4.2", RS.COMPLETED);
+		section("CORE.13.4.3", RS.COMPLETED);
+		section("CORE.13.4.4", RS.COMPLETED);
+
+		section("CORE.14", RS.STARTED);
 		section("CORE.14.1", RS.UNTOUCHED);
 		section("CORE.14.2", RS.UNTOUCHED);
 		section("CORE.14.3", RS.UNTOUCHED);
