@@ -2363,9 +2363,9 @@ public class ReadingJSR345 extends Reading {
 		/* interesting */
 		toReadAgain();
 
-		section("CORE.9", RS.STARTED);
-		section("CORE.9.1", RS.STARTED);
-		section("CORE.9.1.1", RS.STARTED);
+		section("CORE.9", RS.COMPLETED);
+		section("CORE.9.1", RS.COMPLETED);
+		section("CORE.9.1.1", RS.COMPLETED);
 
 		/*
 		 * application exceptions can subclass Exception or RuntimeException but
@@ -2379,12 +2379,12 @@ public class ReadingJSR345 extends Reading {
 		CreateException.class.getName();
 		RemoveException.class.getName();
 
-		section("CORE.9.1.2", RS.STARTED);
+		section("CORE.9.1.2", RS.COMPLETED);
 
 		/* application exceptions do not imply transaction rollback */
 
-		section("CORE.9.2", RS.STARTED);
-		section("CORE.9.2.1", RS.STARTED);
+		section("CORE.9.2", RS.COMPLETED);
+		section("CORE.9.2.1", RS.COMPLETED);
 
 		/*
 		 * Runtime exceptions that should be handled as application exception
@@ -2406,7 +2406,7 @@ public class ReadingJSR345 extends Reading {
 
 		constructANewInstanceOf(ApplicationException.class).inherited();
 
-		section("CORE.9.2.2", RS.STARTED);
+		section("CORE.9.2.2", RS.COMPLETED);
 
 		/*
 		 * A system exception is an exception that is a java.rmi.RemoteException
@@ -2422,25 +2422,25 @@ public class ReadingJSR345 extends Reading {
 
 		toReadAgain();
 
-		section("CORE.9.3", RS.STARTED);
+		section("CORE.9.3", RS.COMPLETED);
 
-		section("CORE.9.3.1", RS.STARTED);
+		section("CORE.9.3.1", RS.COMPLETED);
 
-		section("CORE.9.3.2", RS.STARTED);
+		section("CORE.9.3.2", RS.COMPLETED);
 
-		section("CORE.9.3.3", RS.STARTED);
-		section("CORE.9.3.4", RS.STARTED);
-		section("CORE.9.3.5", RS.STARTED);
-		section("CORE.9.3.6", RS.STARTED);
-		section("CORE.9.3.7", RS.STARTED);
-		section("CORE.9.3.8", RS.STARTED);
+		section("CORE.9.3.3", RS.COMPLETED);
+		section("CORE.9.3.4", RS.COMPLETED);
+		section("CORE.9.3.5", RS.COMPLETED);
+		section("CORE.9.3.6", RS.COMPLETED);
+		section("CORE.9.3.7", RS.COMPLETED);
+		section("CORE.9.3.8", RS.COMPLETED);
 
-		section("CORE.9.3.9", RS.STARTED);
-		section("CORE.9.3.10", RS.STARTED);
-		section("CORE.9.4", RS.STARTED);
-		section("CORE.9.4.1", RS.STARTED);
-		section("CORE.9.4.2", RS.STARTED);
-		section("CORE.9.4.2.1", RS.STARTED);
+		section("CORE.9.3.9", RS.COMPLETED);
+		section("CORE.9.3.10", RS.COMPLETED);
+		section("CORE.9.4", RS.COMPLETED);
+		section("CORE.9.4.1", RS.COMPLETED);
+		section("CORE.9.4.2", RS.COMPLETED);
+		section("CORE.9.4.2.1", RS.COMPLETED);
 
 		// extends EJBException
 		EJBTransactionRolledbackException.class.getName();
@@ -2451,7 +2451,7 @@ public class ReadingJSR345 extends Reading {
 		// extends RemoteException
 		TransactionRolledbackException.class.getName();
 
-		section("CORE.9.4.2.2", RS.STARTED);
+		section("CORE.9.4.2.2", RS.COMPLETED);
 
 		// extends EJBException
 		EJBTransactionRequiredException.class.getName();
@@ -2462,7 +2462,7 @@ public class ReadingJSR345 extends Reading {
 		// extends RemoteException
 		TransactionRequiredException.class.getName();
 
-		section("CORE.9.4.2.3", RS.STARTED);
+		section("CORE.9.4.2.3", RS.COMPLETED);
 
 		// extends EJBException
 		NoSuchEJBException.class.getName();
@@ -2473,47 +2473,47 @@ public class ReadingJSR345 extends Reading {
 		// extends RemoteException
 		NoSuchObjectException.class.getName();
 
-		section("CORE.9.5", RS.STARTED);
+		section("CORE.9.5", RS.COMPLETED);
 
-		section("CORE.10", RS.STARTED);
+		section("CORE.10", RS.COMPLETED);
 
 		/*
 		 * Distributed Interoperability is not defined for the EJB 3.x remote
 		 * client view, only for EJB 2.1
 		 */
 
-		section("CORE.10.1", RS.STARTED);
+		section("CORE.10.1", RS.COMPLETED);
 
 		/* Java RMI interfaces */
 
 		/* RMI-IIOP types */
 
-		section("CORE.10.1.1", RS.STARTED);
+		section("CORE.10.1.1", RS.COMPLETED);
 
 		/*
 		 * stubs for the server side objects, which implement the remote home
 		 * and remote component interface
 		 */
 
-		section("CORE.10.2", RS.STARTED);
+		section("CORE.10.2", RS.COMPLETED);
 
-		section("CORE.10.2.1", RS.STARTED);
+		section("CORE.10.2.1", RS.COMPLETED);
 
-		section("CORE.10.3", RS.STARTED);
+		section("CORE.10.3", RS.COMPLETED);
 
-		section("CORE.10.3.1", RS.STARTED);
+		section("CORE.10.3.1", RS.COMPLETED);
 
 		/* JSPs on one Java EE container, EJBs on another Java EE container */
 
-		section("CORE.10.3.2", RS.STARTED);
+		section("CORE.10.3.2", RS.COMPLETED);
 
-		section("CORE.10.3.3", RS.STARTED);
+		section("CORE.10.3.3", RS.COMPLETED);
 
-		section("CORE.10.3.4", RS.STARTED);
+		section("CORE.10.3.4", RS.COMPLETED);
 
-		section("CORE.10.4", RS.STARTED);
+		section("CORE.10.4", RS.COMPLETED);
 
-		section("CORE.10.5", RS.STARTED);
+		section("CORE.10.5", RS.COMPLETED);
 
 		/* IIOP 1.2 */
 
@@ -2527,7 +2527,7 @@ public class ReadingJSR345 extends Reading {
 
 		/* Java Language to IDL mapping specification */
 
-		section("CORE.10.5.1", RS.STARTED);
+		section("CORE.10.5.1", RS.COMPLETED);
 
 		/* Java RMI APIs */
 
@@ -2535,13 +2535,13 @@ public class ReadingJSR345 extends Reading {
 
 		/* CORBA Tie objects */
 
-		section("CORE.10.5.2", RS.STARTED);
+		section("CORE.10.5.2", RS.COMPLETED);
 
 		Handle.class.getName();
 		HomeHandle.class.getName();
 		EJBMetaData.class.getName();
 
-		section("CORE.10.5.3", RS.STARTED);
+		section("CORE.10.5.3", RS.COMPLETED);
 
 		{
 			Map<String, Class<?>> corbaToSystemExceptionsMapping = new HashMap<String, Class<?>>();
@@ -2554,13 +2554,13 @@ public class ReadingJSR345 extends Reading {
 			corbaToSystemExceptionsMapping.put("UNKNOWN", RemoteException.class);
 		}
 
-		section("CORE.10.5.4", RS.STARTED);
+		section("CORE.10.5.4", RS.COMPLETED);
 
 		/* EJBObject or EJBHome’s IOR */
 
-		section("CORE.10.5.5", RS.STARTED);
+		section("CORE.10.5.5", RS.COMPLETED);
 
-		section("CORE.10.5.5.1", RS.STARTED);
+		section("CORE.10.5.5.1", RS.COMPLETED);
 
 		HandleDelegate.class.getName();
 
@@ -2576,7 +2576,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.10.6", RS.STARTED);
+		section("CORE.10.6", RS.COMPLETED);
 
 		/*
 		 * Transaction interoperability between containers provided by different
@@ -2584,9 +2584,9 @@ public class ReadingJSR345 extends Reading {
 		 * specification.
 		 */
 
-		section("CORE.10.6.1", RS.STARTED);
+		section("CORE.10.6.1", RS.COMPLETED);
 
-		section("CORE.10.6.1.1", RS.STARTED);
+		section("CORE.10.6.1.1", RS.COMPLETED);
 
 		/*
 		 * implicit propagation mechanism described in the CORBA Object
@@ -2595,9 +2595,9 @@ public class ReadingJSR345 extends Reading {
 
 		/* CosTransactions::PropagationContext */
 
-		section("CORE.10.6.1.2", RS.STARTED);
+		section("CORE.10.6.1.2", RS.COMPLETED);
 
-		section("CORE.10.6.1.3", RS.STARTED);
+		section("CORE.10.6.1.3", RS.COMPLETED);
 
 		/* CosTransactions::OTSPolicy */
 
@@ -2609,9 +2609,9 @@ public class ReadingJSR345 extends Reading {
 
 		/* CosTransactions::Synchronization */
 
-		section("CORE.10.6.1.4", RS.STARTED);
+		section("CORE.10.6.1.4", RS.COMPLETED);
 
-		section("CORE.10.6.2", RS.STARTED);
+		section("CORE.10.6.2", RS.COMPLETED);
 
 		/*
 		 * when a Java EE container does not support transaction
@@ -2620,21 +2620,21 @@ public class ReadingJSR345 extends Reading {
 		 * transaction is rolled back
 		 */
 
-		section("CORE.10.6.2.1", RS.STARTED);
+		section("CORE.10.6.2.1", RS.COMPLETED);
 
 		/* CosTransactions::Coordinator and CosTransactions::Terminator */
 
 		/* Coordinator::register_resource call */
 
-		section("CORE.10.6.2.2", RS.STARTED);
+		section("CORE.10.6.2.2", RS.COMPLETED);
 
 		/* CosTransactions::OTSPolicy */
 		/* CosTransactions::InvocationPolicy */
 
-		section("CORE.10.6.2.2.1", RS.STARTED);
-		section("CORE.10.6.2.2.2", RS.STARTED);
+		section("CORE.10.6.2.2.1", RS.COMPLETED);
+		section("CORE.10.6.2.2.2", RS.COMPLETED);
 
-		section("CORE.10.7", RS.STARTED);
+		section("CORE.10.7", RS.COMPLETED);
 
 		/* CORBA CosNaming service */
 
@@ -2642,25 +2642,25 @@ public class ReadingJSR345 extends Reading {
 
 		/* corbaloc:iiop:1.2@<host>:<port>/<objectkey> */
 
-		section("CORE.10.8", RS.STARTED);
+		section("CORE.10.8", RS.COMPLETED);
 
 		/* CSIv2 specification Conformance Level 0 */
 
-		section("CORE.10.8.1", RS.STARTED);
+		section("CORE.10.8.1", RS.COMPLETED);
 
 		/* Kerberos-based secret key mechanisms */
 
 		/* X.509 certificate-based public key mechanisms */
 
-		section("CORE.10.8.1.1", RS.STARTED);
+		section("CORE.10.8.1.1", RS.COMPLETED);
 
-		section("CORE.10.8.1.2", RS.STARTED);
+		section("CORE.10.8.1.2", RS.COMPLETED);
 
 		/* Java Authentication and Authorization Service (JAAS) */
 
-		section("CORE.10.8.2", RS.STARTED);
+		section("CORE.10.8.2", RS.COMPLETED);
 
-		section("CORE.10.8.2.1", RS.STARTED);
+		section("CORE.10.8.2.1", RS.COMPLETED);
 
 		/* Secure Sockets Layer (SSL 3.0) */
 
@@ -2695,22 +2695,22 @@ public class ReadingJSR345 extends Reading {
 		/* SSL handshake layer */
 		/* SSL record layer */
 
-		section("CORE.10.8.2.2", RS.STARTED);
+		section("CORE.10.8.2.2", RS.COMPLETED);
 
 		/* TAG_CSI_SEC_MECH_LIST */
 		/* CSIIOP::CompoundSecMech */
 
-		section("CORE.10.8.2.3", RS.STARTED);
+		section("CORE.10.8.2.3", RS.COMPLETED);
 
-		section("CORE.10.8.2.4", RS.STARTED);
+		section("CORE.10.8.2.4", RS.COMPLETED);
 
-		section("CORE.10.8.2.5", RS.STARTED);
+		section("CORE.10.8.2.5", RS.COMPLETED);
 
-		section("CORE.11", RS.STARTED);
+		section("CORE.11", RS.COMPLETED);
 
-		section("CORE.11.1", RS.STARTED);
+		section("CORE.11.1", RS.COMPLETED);
 
-		section("CORE.11.2", RS.STARTED);
+		section("CORE.11.2", RS.COMPLETED);
 
 		dontRun(new NotRunnable() {
 			@Override
@@ -2719,7 +2719,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.2.1", RS.STARTED);
+		section("CORE.11.2.1", RS.COMPLETED);
 
 		/*
 		 * For enterprise beans packaged in a standalone ejb-jar file or in an
@@ -2749,7 +2749,7 @@ public class ReadingJSR345 extends Reading {
 		 * - objects intented to be shared (i.e. java:comp/ORB)
 		 */
 
-		section("CORE.11.2.2", RS.STARTED);
+		section("CORE.11.2.2", RS.COMPLETED);
 
 		/*
 		 * a field named myDatabase in the class MySessionBean in the package
@@ -2794,7 +2794,7 @@ public class ReadingJSR345 extends Reading {
 		 * specified
 		 */
 
-		section("CORE.11.2.3", RS.STARTED);
+		section("CORE.11.2.3", RS.COMPLETED);
 
 		/*
 		 * rules apply to how a deployment descriptor entry may override a
@@ -2813,9 +2813,9 @@ public class ReadingJSR345 extends Reading {
 		 * Services for Java EE specification
 		 */
 
-		section("CORE.11.3", RS.STARTED);
+		section("CORE.11.3", RS.COMPLETED);
 
-		section("CORE.11.3.1", RS.STARTED);
+		section("CORE.11.3.1", RS.COMPLETED);
 		/*
 		 * When using JNDI interfaces directly, an enterprise bean instance
 		 * creates a javax.naming.InitialContext object by using the constructor
@@ -2823,11 +2823,11 @@ public class ReadingJSR345 extends Reading {
 		 * InitialContext under the name java:comp/env
 		 */
 
-		section("CORE.11.3.2", RS.STARTED);
+		section("CORE.11.3.2", RS.COMPLETED);
 
-		section("CORE.11.3.3", RS.STARTED);
+		section("CORE.11.3.3", RS.COMPLETED);
 
-		section("CORE.11.3.4", RS.STARTED);
+		section("CORE.11.3.4", RS.COMPLETED);
 
 		/*-
 		 *  - java:comp/env
@@ -2843,9 +2843,9 @@ public class ReadingJSR345 extends Reading {
 
 		OperationNotSupportedException.class.getName();
 
-		section("CORE.11.4", RS.STARTED);
-		section("CORE.11.4.1", RS.STARTED);
-		section("CORE.11.4.1.1", RS.STARTED);
+		section("CORE.11.4", RS.COMPLETED);
+		section("CORE.11.4.1", RS.COMPLETED);
+		section("CORE.11.4.1.1", RS.COMPLETED);
 
 		/*
 		 * The authenticationType and shareable elements of the Resource
@@ -2862,7 +2862,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.4.1.2", RS.STARTED);
+		section("CORE.11.4.1.2", RS.COMPLETED);
 
 		dontRun(new NotRunnable() {
 			@Override
@@ -2873,7 +2873,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.4.1.3", RS.STARTED);
+		section("CORE.11.4.1.3", RS.COMPLETED);
 
 		/*
 		 * In XML: - env-entry - env-entry-value
@@ -2985,12 +2985,12 @@ public class ReadingJSR345 extends Reading {
 		 * to be specified for a given env-entry element.
 		 */
 
-		section("CORE.11.4.2", RS.STARTED);
-		section("CORE.11.4.3", RS.STARTED);
-		section("CORE.11.4.4", RS.STARTED);
-		section("CORE.11.5", RS.STARTED);
-		section("CORE.11.5.1", RS.STARTED);
-		section("CORE.11.5.1.1", RS.STARTED);
+		section("CORE.11.4.2", RS.COMPLETED);
+		section("CORE.11.4.3", RS.COMPLETED);
+		section("CORE.11.4.4", RS.COMPLETED);
+		section("CORE.11.5", RS.COMPLETED);
+		section("CORE.11.5.1", RS.COMPLETED);
+		section("CORE.11.5.1.1", RS.COMPLETED);
 
 		EJB.class.isAnnotation();
 		constructANewInstanceOf(EJB.class).name();
@@ -3020,7 +3020,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.5.1.2", RS.STARTED);
+		section("CORE.11.5.1.2", RS.COMPLETED);
 
 		/*
 		 * The EJB specification recommends, but does not require, that all
@@ -3055,7 +3055,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.5.1.3", RS.STARTED);
+		section("CORE.11.5.1.3", RS.COMPLETED);
 
 		/*
 		 * Although the EJB reference is an entry in the enterprise bean’s
@@ -3117,7 +3117,7 @@ public class ReadingJSR345 extends Reading {
 			</enterprise-beans>
 		 */
 
-		section("CORE.11.5.2", RS.STARTED);
+		section("CORE.11.5.2", RS.COMPLETED);
 
 		/*
 		 * The Application Assembler can use the ejb-link element in the
@@ -3183,9 +3183,9 @@ public class ReadingJSR345 extends Reading {
 			</ejb-ref>
 		 */
 
-		section("CORE.11.5.2.1", RS.STARTED);
+		section("CORE.11.5.2.1", RS.COMPLETED);
 
-		section("CORE.11.5.3", RS.STARTED);
+		section("CORE.11.5.3", RS.COMPLETED);
 
 		/*-
 			<ejb-ref>
@@ -3194,9 +3194,9 @@ public class ReadingJSR345 extends Reading {
 			</ejb-ref>
 		 */
 
-		section("CORE.11.5.4", RS.STARTED);
+		section("CORE.11.5.4", RS.COMPLETED);
 
-		section("CORE.11.6", RS.STARTED);
+		section("CORE.11.6", RS.COMPLETED);
 
 		/* Java API for XML Web Services (JAX-WS) */
 
@@ -3209,12 +3209,12 @@ public class ReadingJSR345 extends Reading {
 		 * context).
 		 */
 
-		section("CORE.11.7", RS.STARTED);
+		section("CORE.11.7", RS.COMPLETED);
 
 		/* manager connection factory references */
 
-		section("CORE.11.7.1", RS.STARTED);
-		section("CORE.11.7.1.1", RS.STARTED);
+		section("CORE.11.7.1", RS.COMPLETED);
+		section("CORE.11.7.1.1", RS.COMPLETED);
 
 		dontRun(new NotRunnable() {
 			@Override
@@ -3246,7 +3246,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.7.1.2", RS.STARTED);
+		section("CORE.11.7.1.2", RS.COMPLETED);
 
 		/*
 		 * The EJB specification recommends, but does not require, that all
@@ -3327,7 +3327,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.7.1.3", RS.STARTED);
+		section("CORE.11.7.1.3", RS.COMPLETED);
 
 		/*
 		 * the Bean Provider must not use an env-entry element to declare a
@@ -3377,7 +3377,7 @@ public class ReadingJSR345 extends Reading {
 			</enterprise-beans>
 		 */
 
-		section("CORE.11.7.1.4", RS.STARTED);
+		section("CORE.11.7.1.4", RS.COMPLETED);
 
 		/*-
 		 * - javax.sql.DataSource for JDBC connections in java:comp/env/jdbc
@@ -3394,10 +3394,10 @@ public class ReadingJSR345 extends Reading {
 		 * access to additional back-end systems.
 		 */
 
-		section("CORE.11.7.2", RS.STARTED);
-		section("CORE.11.7.3", RS.STARTED);
-		section("CORE.11.7.4", RS.STARTED);
-		section("CORE.11.8", RS.STARTED);
+		section("CORE.11.7.2", RS.COMPLETED);
+		section("CORE.11.7.3", RS.COMPLETED);
+		section("CORE.11.7.4", RS.COMPLETED);
+		section("CORE.11.8", RS.COMPLETED);
 
 		/* administered objects that are associated with resources */
 
@@ -3405,15 +3405,15 @@ public class ReadingJSR345 extends Reading {
 
 		/* resource environment references */
 
-		section("CORE.11.8.1", RS.STARTED);
-		section("CORE.11.8.1.1", RS.STARTED);
+		section("CORE.11.8.1", RS.COMPLETED);
+		section("CORE.11.8.1.1", RS.COMPLETED);
 
 		Resource.class.isAnnotation();
 		constructANewInstanceOf(Resource.class).authenticationType();
 		constructANewInstanceOf(Resource.class).shareable();
 
-		section("CORE.11.8.1.2", RS.STARTED);
-		section("CORE.11.8.1.3", RS.STARTED);
+		section("CORE.11.8.1.2", RS.COMPLETED);
+		section("CORE.11.8.1.3", RS.COMPLETED);
 
 		/*
 		 * the Bean Provider must not use a env-entry element to declare
@@ -3428,14 +3428,14 @@ public class ReadingJSR345 extends Reading {
 		 * the description of the resource-env-ref element
 		 */
 
-		section("CORE.11.8.2", RS.STARTED);
+		section("CORE.11.8.2", RS.COMPLETED);
 
 		/* JNDI LinkRef mechanism */
 
-		section("CORE.11.8.3", RS.STARTED);
-		section("CORE.11.9", RS.STARTED);
-		section("CORE.11.9.1", RS.STARTED);
-		section("CORE.11.9.1.1", RS.UNTOUCHED);
+		section("CORE.11.8.3", RS.COMPLETED);
+		section("CORE.11.9", RS.COMPLETED);
+		section("CORE.11.9.1", RS.COMPLETED);
+		section("CORE.11.9.1.1", RS.COMPLETED);
 
 		/*
 		 * A field or a method of a bean may be annotated with the Resource
@@ -3459,7 +3459,7 @@ public class ReadingJSR345 extends Reading {
 				}
 			}
 		});
-		section("CORE.11.9.1.2", RS.STARTED);
+		section("CORE.11.9.1.2", RS.COMPLETED);
 
 		dontRun(new NotRunnable() {
 			@Override
@@ -3491,7 +3491,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.9.1.3", RS.STARTED);
+		section("CORE.11.9.1.3", RS.COMPLETED);
 
 		/*
 		 * the Bean Provider must not use a env-entry element to declare message
@@ -3514,7 +3514,7 @@ public class ReadingJSR345 extends Reading {
 			</message-destination-ref>
 		 */
 
-		section("CORE.11.9.2", RS.STARTED);
+		section("CORE.11.9.2", RS.COMPLETED);
 
 		/* message-destination */
 		/* message-destination-link */
@@ -3571,9 +3571,9 @@ public class ReadingJSR345 extends Reading {
 				</message-destination-ref>
 			</session>
 		 */
-		section("CORE.11.9.3", RS.STARTED);
-		section("CORE.11.9.4", RS.STARTED);
-		section("CORE.11.10", RS.STARTED);
+		section("CORE.11.9.3", RS.COMPLETED);
+		section("CORE.11.9.4", RS.COMPLETED);
+		section("CORE.11.10", RS.COMPLETED);
 
 		/* persistence unit reference. */
 
@@ -3584,8 +3584,8 @@ public class ReadingJSR345 extends Reading {
 		 * Persistence API specification
 		 */
 
-		section("CORE.11.10.1", RS.STARTED);
-		section("CORE.11.10.1.1", RS.STARTED);
+		section("CORE.11.10.1", RS.COMPLETED);
+		section("CORE.11.10.1.1", RS.COMPLETED);
 
 		dontRun(new NotRunnable() {
 			@Override
@@ -3601,7 +3601,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.10.1.2", RS.STARTED);
+		section("CORE.11.10.1.2", RS.COMPLETED);
 
 		/*
 		 * The EJB specification recommends, but does not require, that all
@@ -3647,7 +3647,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.10.1.3", RS.STARTED);
+		section("CORE.11.10.1.3", RS.COMPLETED);
 
 		/*
 		 * the Bean Provider must not use an env-entry element to declare
@@ -3677,7 +3677,7 @@ public class ReadingJSR345 extends Reading {
 			</enterprise-beans>
 		 */
 
-		section("CORE.11.10.2", RS.STARTED);
+		section("CORE.11.10.2", RS.COMPLETED);
 
 		/*-
 			<enterprise-beans>
@@ -3695,17 +3695,17 @@ public class ReadingJSR345 extends Reading {
 				</session>
 			</enterprise-beans>
 		 */
-		section("CORE.11.10.2.1", RS.STARTED);
-		section("CORE.11.10.3", RS.STARTED);
-		section("CORE.11.10.4", RS.STARTED);
-		section("CORE.11.10.5", RS.STARTED);
+		section("CORE.11.10.2.1", RS.COMPLETED);
+		section("CORE.11.10.3", RS.COMPLETED);
+		section("CORE.11.10.4", RS.COMPLETED);
+		section("CORE.11.10.5", RS.COMPLETED);
 
-		section("CORE.11.11", RS.STARTED);
+		section("CORE.11.11", RS.COMPLETED);
 
 		/* persistence context reference */
 
-		section("CORE.11.11.1", RS.STARTED);
-		section("CORE.11.11.1.1", RS.STARTED);
+		section("CORE.11.11.1", RS.COMPLETED);
+		section("CORE.11.11.1.1", RS.COMPLETED);
 
 		dontRun(new NotRunnable() {
 			@Override
@@ -3718,7 +3718,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.11.1.2", RS.STARTED);
+		section("CORE.11.11.1.2", RS.COMPLETED);
 
 		/*
 		 * The EJB specification recommends, but does not require, that all
@@ -3758,7 +3758,7 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.11.11.1.3", RS.STARTED);
+		section("CORE.11.11.1.3", RS.COMPLETED);
 
 		/*
 		 * the Bean Provider must not use an env-entry element to declare
@@ -3791,7 +3791,7 @@ public class ReadingJSR345 extends Reading {
 			</enterprise-beans>
 		 */
 
-		section("CORE.11.11.2", RS.STARTED);
+		section("CORE.11.11.2", RS.COMPLETED);
 
 		/*-
 			...
@@ -3812,11 +3812,11 @@ public class ReadingJSR345 extends Reading {
 			...
 		 */
 
-		section("CORE.11.11.2.1", RS.STARTED);
-		section("CORE.11.11.3", RS.STARTED);
-		section("CORE.11.11.4", RS.STARTED);
-		section("CORE.11.11.5", RS.STARTED);
-		section("CORE.11.12", RS.STARTED);
+		section("CORE.11.11.2.1", RS.COMPLETED);
+		section("CORE.11.11.3", RS.COMPLETED);
+		section("CORE.11.11.4", RS.COMPLETED);
+		section("CORE.11.11.5", RS.COMPLETED);
+		section("CORE.11.12", RS.COMPLETED);
 		/*
 		 * The container must make the UserTransaction interface available to
 		 * the enterprise beans that are allowed to use this interface either
@@ -3882,10 +3882,10 @@ public class ReadingJSR345 extends Reading {
 		 * injection of a UserTransaction object.
 		 */
 
-		section("CORE.11.12.1", RS.STARTED);
-		section("CORE.11.12.2", RS.STARTED);
+		section("CORE.11.12.1", RS.COMPLETED);
+		section("CORE.11.12.2", RS.COMPLETED);
 
-		section("CORE.11.13", RS.STARTED);
+		section("CORE.11.13", RS.COMPLETED);
 		/*
 		 * Enterprise beans that need to make use of the CORBA ORB to perform
 		 * certain operations can find an appropriate object implementing the
@@ -3940,9 +3940,9 @@ public class ReadingJSR345 extends Reading {
 		 * instance
 		 */
 
-		section("CORE.11.13.1", RS.STARTED);
-		section("CORE.11.13.2", RS.STARTED);
-		section("CORE.11.14", RS.STARTED);
+		section("CORE.11.13.1", RS.COMPLETED);
+		section("CORE.11.13.2", RS.COMPLETED);
+		section("CORE.11.14", RS.COMPLETED);
 
 		/*
 		 * The container must make the TimerService interface available either
@@ -3959,9 +3959,9 @@ public class ReadingJSR345 extends Reading {
 		 * TimerService object
 		 */
 
-		section("CORE.11.14.1", RS.STARTED);
-		section("CORE.11.14.2", RS.STARTED);
-		section("CORE.11.15", RS.STARTED);
+		section("CORE.11.14.1", RS.COMPLETED);
+		section("CORE.11.14.2", RS.COMPLETED);
+		section("CORE.11.15", RS.COMPLETED);
 		/*
 		 * The container must make a component’s EJBContext interface available
 		 * either through injection using the Resource annotation or in JNDI
@@ -3973,14 +3973,14 @@ public class ReadingJSR345 extends Reading {
 		 * EJBContext object.
 		 */
 
-		section("CORE.11.15.1", RS.STARTED);
-		section("CORE.11.15.2", RS.STARTED);
+		section("CORE.11.15.1", RS.COMPLETED);
+		section("CORE.11.15.2", RS.COMPLETED);
 
 		SessionContext.class.getName();
 		MessageDrivenContext.class.getName();
 
-		section("CORE.11.16", RS.STARTED);
-		section("CORE.11.17", RS.STARTED);
+		section("CORE.11.16", RS.COMPLETED);
+		section("CORE.11.17", RS.COMPLETED);
 
 		dontRun(new NotRunnable() {
 			@SuppressWarnings("deprecation")
@@ -4009,8 +4009,8 @@ public class ReadingJSR345 extends Reading {
 			...
 		 */
 
-		section("CORE.12", RS.STARTED);
-		section("CORE.12.1", RS.STARTED);
+		section("CORE.12", RS.COMPLETED);
+		section("CORE.12.1", RS.COMPLETED);
 		/* security roles */
 		/* method permissions */
 		dontRun(new NotRunnable() {
@@ -4027,8 +4027,8 @@ public class ReadingJSR345 extends Reading {
 		/* use-caller-identity : security-identity */
 		/* run-as */
 
-		section("CORE.12.2", RS.STARTED);
-		section("CORE.12.2.1", RS.STARTED);
+		section("CORE.12.2", RS.COMPLETED);
+		section("CORE.12.2.1", RS.COMPLETED);
 
 		/*
 		 * The EJB architecture provides no programmatic interfaces for the
@@ -4041,16 +4041,16 @@ public class ReadingJSR345 extends Reading {
 		 * System Administrator in a container-specific way.
 		 */
 
-		section("CORE.12.2.2", RS.STARTED);
-		section("CORE.12.2.3", RS.STARTED);
+		section("CORE.12.2.2", RS.COMPLETED);
+		section("CORE.12.2.3", RS.COMPLETED);
 
 		/*
 		 * the Bean Provider cannot rely on a specific principal for accessing
 		 * the underlying OS resources, such as files
 		 */
 
-		section("CORE.12.2.4", RS.STARTED);
-		section("CORE.12.2.5", RS.STARTED);
+		section("CORE.12.2.4", RS.COMPLETED);
+		section("CORE.12.2.5", RS.COMPLETED);
 
 		/*
 		 * security management should be enforced by the container in a manner
@@ -4069,9 +4069,9 @@ public class ReadingJSR345 extends Reading {
 			}
 		});
 
-		section("CORE.12.2.5.1", RS.STARTED);
-		section("CORE.12.2.5.2", RS.STARTED);
-		section("CORE.12.2.5.3", RS.STARTED);
+		section("CORE.12.2.5.1", RS.COMPLETED);
+		section("CORE.12.2.5.2", RS.COMPLETED);
+		section("CORE.12.2.5.3", RS.COMPLETED);
 
 		RolesAllowed.class.isAnnotation();
 		DeclareRoles.class.isAnnotation();
@@ -4116,8 +4116,8 @@ public class ReadingJSR345 extends Reading {
 			</enterprise-beans>
 		 */
 
-		section("CORE.12.3", RS.STARTED);
-		section("CORE.12.3.1", RS.STARTED);
+		section("CORE.12.3", RS.COMPLETED);
+		section("CORE.12.3.1", RS.COMPLETED);
 
 		/*
 		 * A security role with the name “**” is defined by the Container, and
@@ -4149,8 +4149,8 @@ public class ReadingJSR345 extends Reading {
 			</assembly-descriptor>
 		 */
 
-		section("CORE.12.3.2", RS.STARTED);
-		section("CORE.12.3.2.1", RS.STARTED);
+		section("CORE.12.3.2", RS.COMPLETED);
+		section("CORE.12.3.2.1", RS.COMPLETED);
 
 		RolesAllowed.class.isAnnotation();
 		PermitAll.class.isAnnotation();
@@ -4186,7 +4186,7 @@ public class ReadingJSR345 extends Reading {
 
 		});
 
-		section("CORE.12.3.2.2", RS.STARTED);
+		section("CORE.12.3.2.2", RS.COMPLETED);
 
 		/*- method-permission
 		 * - ejb-name
@@ -4269,7 +4269,7 @@ public class ReadingJSR345 extends Reading {
 			...
 		 */
 
-		section("CORE.12.3.2.3", RS.STARTED);
+		section("CORE.12.3.2.3", RS.COMPLETED);
 
 		/* security-role-ref */
 		/* security-role */
@@ -4293,10 +4293,10 @@ public class ReadingJSR345 extends Reading {
 			</enterprise-beans>
 		 */
 
-		section("CORE.12.3.3", RS.STARTED);
+		section("CORE.12.3.3", RS.COMPLETED);
 
-		section("CORE.12.3.4", RS.STARTED);
-		section("CORE.12.3.4", RS.STARTED);
+		section("CORE.12.3.4", RS.COMPLETED);
+		section("CORE.12.3.4", RS.COMPLETED);
 
 		RunAs.class.isAnnotation();
 
@@ -4332,14 +4332,14 @@ public class ReadingJSR345 extends Reading {
 			</enterprise-beans>
 		 */
 
-		section("CORE.12.4", RS.STARTED);
-		section("CORE.12.4.1", RS.STARTED);
+		section("CORE.12.4", RS.COMPLETED);
+		section("CORE.12.4.1", RS.COMPLETED);
 
-		section("CORE.12.4.2", RS.STARTED);
-		section("CORE.12.4.3", RS.STARTED);
-		section("CORE.12.4.4", RS.STARTED);
-		section("CORE.12.4.5", RS.STARTED);
-		section("CORE.12.5", RS.STARTED);
+		section("CORE.12.4.2", RS.COMPLETED);
+		section("CORE.12.4.3", RS.COMPLETED);
+		section("CORE.12.4.4", RS.COMPLETED);
+		section("CORE.12.4.5", RS.COMPLETED);
+		section("CORE.12.5", RS.COMPLETED);
 
 		/*
 		 * A transactional client cannot change its principal association within
@@ -4357,10 +4357,10 @@ public class ReadingJSR345 extends Reading {
 		 * associated with the same security context.
 		 */
 
-		section("CORE.12.6", RS.STARTED);
-		section("CORE.12.6.1", RS.STARTED);
+		section("CORE.12.6", RS.COMPLETED);
+		section("CORE.12.6.1", RS.COMPLETED);
 
-		section("CORE.12.6.2", RS.STARTED);
+		section("CORE.12.6.2", RS.COMPLETED);
 
 		/*
 		 * The EJB container provides a security domain and one or more
@@ -4373,7 +4373,7 @@ public class ReadingJSR345 extends Reading {
 		 * security domain.
 		 */
 
-		section("CORE.12.6.3", RS.STARTED);
+		section("CORE.12.6.3", RS.COMPLETED);
 
 		/*
 		 * The EJB Container Provider must provide the security mechanisms
@@ -4382,26 +4382,26 @@ public class ReadingJSR345 extends Reading {
 		 * implemented and supported by the EJB server.
 		 */
 
-		section("CORE.12.6.4", RS.STARTED);
-		section("CORE.12.6.5", RS.STARTED);
-		section("CORE.12.6.6", RS.STARTED);
-		section("CORE.12.6.7", RS.STARTED);
-		section("CORE.12.6.8", RS.STARTED);
+		section("CORE.12.6.4", RS.COMPLETED);
+		section("CORE.12.6.5", RS.COMPLETED);
+		section("CORE.12.6.6", RS.COMPLETED);
+		section("CORE.12.6.7", RS.COMPLETED);
+		section("CORE.12.6.8", RS.COMPLETED);
 
 		/*
 		 * The EJB specification does not define the “system” principal under
 		 * which the JVM running an enterprise bean’s method executes.
 		 */
 
-		section("CORE.12.6.9", RS.STARTED);
-		section("CORE.12.6.10", RS.STARTED);
+		section("CORE.12.6.9", RS.COMPLETED);
+		section("CORE.12.6.10", RS.COMPLETED);
 
 		/* The EJB container may provide a security audit trail mechanism */
 
-		section("CORE.12.7", RS.STARTED);
-		section("CORE.12.7.1", RS.STARTED);
-		section("CORE.12.7.2", RS.STARTED);
-		section("CORE.12.7.3", RS.STARTED);
+		section("CORE.12.7", RS.COMPLETED);
+		section("CORE.12.7.1", RS.COMPLETED);
+		section("CORE.12.7.2", RS.COMPLETED);
+		section("CORE.12.7.3", RS.COMPLETED);
 
 		section("CORE.13", RS.UNTOUCHED);
 		section("CORE.13.1", RS.UNTOUCHED);
