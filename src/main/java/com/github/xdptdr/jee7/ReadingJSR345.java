@@ -4835,28 +4835,229 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.13.4.4", RS.COMPLETED);
 
 		section("CORE.14", RS.STARTED);
-		section("CORE.14.1", RS.UNTOUCHED);
-		section("CORE.14.2", RS.UNTOUCHED);
-		section("CORE.14.3", RS.UNTOUCHED);
-		section("CORE.14.4", RS.UNTOUCHED);
-		section("CORE.14.5", RS.UNTOUCHED);
 
-		section("CORE.15", RS.UNTOUCHED);
-		section("CORE.15.1", RS.UNTOUCHED);
-		section("CORE.15.2", RS.UNTOUCHED);
-		section("CORE.15.3", RS.UNTOUCHED);
-		section("CORE.15.4", RS.UNTOUCHED);
-		section("CORE.15.4.1", RS.UNTOUCHED);
-		section("CORE.15.4.2", RS.UNTOUCHED);
-		section("CORE.15.4.3", RS.UNTOUCHED);
-		section("CORE.15.4.4", RS.UNTOUCHED);
-		section("CORE.15.4.5", RS.UNTOUCHED);
-		section("CORE.15.5", RS.UNTOUCHED);
-		section("CORE.15.5.1", RS.UNTOUCHED);
-		section("CORE.15.5.2", RS.UNTOUCHED);
-		section("CORE.15.6", RS.UNTOUCHED);
-		section("CORE.15.7", RS.UNTOUCHED);
-		section("CORE.15.8", RS.UNTOUCHED);
+		/*
+		 * Entity beans elements are described in the EJB Optional Features
+		 * document [40].
+		 */
+
+		section("CORE.14.1", RS.STARTED);
+
+		/*
+		 * An ejb-jar file or .war file produced by the Bean Provider contains
+		 * one or more enterprise beans and typically does not contain
+		 * application assembly instructions.
+		 */
+
+		/*
+		 * An ejb-jar file or .war file produced by an Application Assembler
+		 * contains one or more enterprise beans, plus application assembly
+		 * information describing how the enterprise beans are combined into a
+		 * single application deployment unit
+		 */
+
+		/*
+		 * The role of the deployment descriptor is to capture declarative
+		 * information that is not included directly in the enterprise beans’
+		 * code
+		 */
+
+		/*-
+		 * - Enterprise beans’ structural information
+		 * - Application assembly information
+		 */
+
+		section("CORE.14.2", RS.STARTED);
+
+		/*
+		 * The Bean Provider uses the enterprise-beans element to list the
+		 * enterprise beans in the ejb-jar file or .war file.
+		 */
+
+		/*
+		 * Stateless, Stateful, Singleton and MessageDriven annotations cannot
+		 * be overridden by the deployment descriptor
+		 */
+
+		/*-
+		 * - Enterprise bean’s name ejb-name
+		 * - Enterprise bean’s class : ejb-class
+		 * - Enterprise bean’s local business interface : business-local
+		 * - Enterprise bean’s remote business interface : business-remote
+		 * - Enterprise bean’s remote home interface : home
+		 * - Enterprise bean’s remote component interface : remote
+		 * - Enterprise bean’s local home interface : local-home
+		 * - Enterprise bean’s local component interface : local
+		 * - Enterprise bean’s no-interface view : local-bean
+		 * - Enterprise bean’s web service endpoint interface : service-endpoint
+		 * - Enterprise bean’s type : session, or message-driven
+		 * - Session bean’s state management type : session-type : Stateful, Stateless, Singleton 
+		 * - Session or message-driven bean’s transaction demarcation type : transaction-type
+		 * - Session bean’s concurrency management type : concurrency-management-type
+		 * - Environment entries.
+		 * - Resource manager connection factory references
+		 * - Resource environment references
+		 * - EJB references
+		 * - EJB local references
+		 * - Web service references
+		 * - Persistence unit references
+		 * - Persistence context references
+		 * - Message destination references
+		 * - Security role references
+		 * - Message-driven bean’s configuration properties
+		 * - Message-driven bean’s destination
+		 * - Interceptors
+		 * - Schedule-based timers
+		 * - Asynchronous methods
+		 * - Singleton session bean initialization ordering dependencies
+		 */
+		section("CORE.14.3", RS.STARTED);
+
+		/*
+		 * The Application Assembler’s input is one or more enterprise beans,
+		 * un-assembled or contained in one or more ejb-jar and/or .war files
+		 * provided by one or more Bean Providers.
+		 */
+
+		/*
+		 * All of the input could be combined into a single output ejb-jar file
+		 * or .war file, or could be be split into multiple output ejb-jar
+		 * and/or .war files
+		 */
+
+		/*-
+		 * - Binding of enterprise bean references
+		 * - Linking of message destination references
+		 * - Security roles
+		 * - Method permissions
+		 * - Singleton session bean initialization ordering
+		 * - Stateful timeout
+		 * - Singleton session bean startup
+		 * - Access timeouts
+		 * - Linking of security role references
+		 * - Security identity
+		 * - Transaction attributes
+		 * - Interceptors
+		 */
+
+		section("CORE.14.4", RS.STARTED);
+		section("CORE.14.5", RS.STARTED);
+
+		section("CORE.15", RS.STARTED);
+
+		/*
+		 * The ejb-jar file is the standard format for the packaging of
+		 * enterprise beans.
+		 */
+
+		/*
+		 * Enterprise beans can also be packaged within a web application module
+		 * (.war file).
+		 */
+
+		section("CORE.15.1", RS.STARTED);
+
+		/*
+		 * An ejb-jar file produced by the Bean Provider contains one or more
+		 * enterprise beans that typically do not contain application assembly
+		 * instructions.
+		 */
+
+		/*
+		 * An ejb-jar file that is packaged stand-alone or within an .ear file
+		 * constitutes a Java EE module.
+		 */
+
+		section("CORE.15.2", RS.STARTED);
+
+		/*
+		 * The EJB deployment descriptor is optional in either packaging
+		 * scenario.
+		 */
+
+		/*
+		 * In a .war file, the deployment descriptor is stored with the name
+		 * WEB-INF/ejb-jar.xml.
+		 */
+
+		/*
+		 * In an ejb-jar file that is packaged stand-alone or within an .ear
+		 * file, the deployment descriptor is stored with the name
+		 * META-INF/ejb-jar.xml.
+		 */
+
+		/*
+		 * If the enterprise beans are contained in an ejb-jar file packaged
+		 * within a .war file, the deployment descriptor is stored with the name
+		 * WEB-INF/ejb-jar.xml.
+		 */
+
+		/*
+		 * When enterprise beans are packaged within a .war, the ejb-jar file
+		 * does not constitute a separate module, and there can portably be only
+		 * one ejb-jar.xml file.
+		 */
+
+		section("CORE.15.3", RS.STARTED);
+
+		/*
+		 * The Application Assembler must not package the stubs of the EJBHome
+		 * and EJBObject interfaces in the ejb-jar file or .war file.
+		 */
+
+		section("CORE.15.4", RS.STARTED);
+
+		/*
+		 * An enterprise bean class with a component-defining annotation defines
+		 * an enterprise bean component when packaged within the WEB-INF/classes
+		 * directory or within a jar file within the WEB-INF/lib directory.
+		 */
+
+		/*
+		 * An enterprise bean can also be defined via the
+		 * WEB-INF/ejb-jar.xmldeployment descriptor.
+		 */
+
+		/*
+		 * A “ejb-jar” file in the WEB-INF/lib directory that contains
+		 * enterprise beans is not considered an independent Java EE “module” in
+		 * the way that a .war file, stand-alone ejb-jar file, or an .ear-level
+		 * ejb-jar file is considered a module.
+		 */
+
+		/* All such namespaces are scoped to the enclosing .war file. */
+
+		section("CORE.15.4.1", RS.STARTED);
+
+		section("CORE.15.4.2", RS.STARTED);
+		section("CORE.15.4.3", RS.STARTED);
+
+		/*
+		 * The local client view (including the no-interface view) of an
+		 * enterprise bean component defined within a .war file is only required
+		 * to be accessible to components within the same .war file.
+		 * Applications needing access to the local client view of an enterprise
+		 * bean from a different module in the same application should use an
+		 * ejb-jar file outside the .war file to define the enterprise bean that
+		 * exposes the local client view.
+		 */
+
+		section("CORE.15.4.4", RS.STARTED);
+
+		/*
+		 * A .war file has a single namespace for the ejb-names of any
+		 * enterprise beans it defines.
+		 */
+
+		section("CORE.15.4.5", RS.STARTED);
+
+		section("CORE.15.5", RS.STARTED);
+		section("CORE.15.5.1", RS.STARTED);
+		section("CORE.15.5.2", RS.STARTED);
+		section("CORE.15.6", RS.STARTED);
+		section("CORE.15.7", RS.STARTED);
+
+		section("CORE.15.8", RS.STARTED);
 
 		section("CORE.16", RS.UNTOUCHED);
 		section("CORE.16.1", RS.UNTOUCHED);
