@@ -1,0 +1,304 @@
+ejb-jar : javaee:ejb-jarType
+- ??
+
+access-timeoutType : id,
+- timeout : integer  
+- unit : javaee:time-unit-typeType  
+
+async-methodType : id,
+- method-name : string  
+- method-params : javaee:method-paramsType
+
+activation-configType : id,
+- description : javaee:descriptionType
+- activation-config-property : javaee:activation-config-propertyType
+
+activation-config-propertyType : id,
+- activation-config-property-name : string
+- activation-config-property-value : string
+
+around-invokeType :
+- class : javaee:fully-qualified-classType
+- method-name : javaee:java-identifierType  
+
+around-timeoutType :
+- class : javaee:fully-qualified-classType
+- method-name : javaee:java-identifierType  
+
+assembly-descriptorType : id,
+- security-role : javaee:security-roleType
+- method-permission : javaee:method-permissionType
+- container-transaction : javaee:container-transactionType
+- interceptor-binding : javaee:interceptor-bindingType
+- message-destination : javaee:message-destinationType
+- exclude-list : javaee:exclude-listType
+- application-exception : javaee:application-exceptionType
+
+cmp-fieldType : id,
+- description : javaee:descriptionType
+- field-name : javaee:java-identifierType
+
+cmp-versionType : 1.x, 2.x
+
+cmr-fieldType : id,
+- description : javaee:descriptionType
+- cmr-field-name : string
+- cmr-field-type : javaee:cmr-field-typeType
+
+cmr-field-typeType : java.util.Collection, java.util.Set
+
+concurrency-management-typeType : Bean, Container
+
+concurrent-lock-typeType : Read, Write
+
+concurrent-methodType : id,
+- method : javaee:named-methodType
+- lock : javaee:concurrent-lock-typeType
+- access-timeout : javaee:access-timeoutType
+
+container-transactionType : id,
+- description : javaee:descriptionType
+- method : javaee:methodType
+- trans-attribute : javaee:trans-attributeType  
+
+depends-onType : id,
+- ejb-name : javaee:ejb-linkType
+
+ejb-classType : javaee:fully-qualified-classType
+
+ejb-jarType : id, version=3.2, metadata-complete : bool
+- module-name : string
+- javaee:descriptionGroup
+- enterprise-beans : javaee:enterprise-beansType
+- interceptors : javaee:interceptorsType
+- relationships : javaee:relationshipsType
+- assembly-descriptor : javaee:assembly-descriptorType
+- ejb-client-jar : javaee:pathType
+
+ejb-nameType : string
+
+ejb-relationType : id,
+- description : javaee:descriptionType
+- ejb-relation-name : string
+- ejb-relationship-role : javaee:ejb-relationship-roleType
+
+ejb-relationship-roleType : id,
+- description : javaee:descriptionType
+- ejb-relationship-role-name : string
+- multiplicity : javaee:multiplicityType  
+- cascade-delete" empty
+- relationship-role-source : javaee:relationship-role-sourceType  
+- cmr-field : javaee:cmr-fieldType"
+
+enterprise-beansType : id,
+/ session : javaee:session-beanType
+- or
+   - entity : javaee:entity-beanType
+   - or
+   \ message-driven : javaee:message-driven-beanType
+
+entity-beanType : id,
+- javaee:descriptionGroup
+- ejb-name : javaee:ejb-nameType  
+- mapped-name : string
+- home : javaee:homeType
+- remote : javaee:remoteType
+- local-home : javaee:local-homeType
+- local : javaee:localType
+- ejb-class : javaee:ejb-classType
+- persistence-type : javaee:persistence-typeType
+- prim-key-class : javaee:fully-qualified-classType
+- reentrant" bool
+- cmp-version : javaee:cmp-versionType
+- abstract-schema-name : javaee:java-identifierType
+- cmp-field : javaee:cmp-fieldType
+- primkey-field : string
+- javaee:jndiEnvironmentRefsGroup
+- security-role-ref : javaee:security-role-refType
+- security-identity : javaee:security-identityType
+- query : javaee:queryType
+
+exclude-listType : id,
+- description : javaee:descriptionType
+- method : javaee:methodType
+
+application-exceptionType : id,
+- exception-class : javaee:fully-qualified-classType  
+- rollback : bool
+- inherited : bool
+
+interceptorsType : id,
+- description : javaee:descriptionType"
+- interceptor : javaee:interceptorType"
+
+interceptorType : id,
+- description : javaee:descriptionType
+- interceptor-class : javaee:fully-qualified-classType  
+- around-invoke : javaee:around-invokeType
+- around-timeout : javaee:around-timeoutType
+- around-construct : javaee:lifecycle-callbackType
+- javaee:jndiEnvironmentRefsGroup
+- post-activate : javaee:lifecycle-callbackType
+- pre-passivate : javaee:lifecycle-callbackType
+
+interceptor-bindingType : id,
+- description : javaee:descriptionType"
+- ejb-name : string  
+/ interceptor-class : javaee:fully-qualified-classType
+- or
+\ interceptor-order : javaee:interceptor-orderType
+- exclude-default-interceptors" bool
+- exclude-class-interceptors" bool
+- method : javaee:named-methodType"
+
+interceptor-orderType : id,
+- interceptor-class : javaee:fully-qualified-classType
+
+named-methodType : id,
+- method-name : string  
+- method-params : javaee:method-paramsType
+
+init-methodType :; id,
+- create-method : javaee:named-methodType  
+- bean-method : javaee:named-methodType 
+
+remove-methodType : id,
+- bean-method : javaee:named-methodType  
+- retain-if-exception : bool
+
+message-driven-beanType : id,
+- javaee:descriptionGroup
+- ejb-name : javaee:ejb-nameType
+- mapped-name : string
+- ejb-class : javaee:ejb-classType
+- messaging-type : javaee:fully-qualified-classType
+- timeout-method : javaee:named-methodType
+- timer : javaee:timerType
+- transaction-type : javaee:transaction-typeType
+- message-destination-type : javaee:message-destination-typeType
+- message-destination-link : javaee:message-destination-linkTyp"
+- activation-config : javaee:activation-configType
+- around-invoke : javaee:around-invokeType
+- around-timeout : javaee:around-timeoutType
+- javaee:jndiEnvironmentRefsGroup
+- security-role-ref : javaee:security-role-refType
+- security-identity : javaee:security-identityType
+
+methodType : id,
+- description : javaee:descriptionType
+- ejb-name : javaee:ejb-nameType  
+- method-intf : javaee:method-intfType
+- method-name : javaee:method-nameType  
+- method-params : javaee:method-paramsType
+
+method-intfType : Home, Remote, LocalHome, Local, ServiceEndpoint, Timer, MessageEndpoint, LifecycleCallback
+
+method-nameType : string
+
+method-paramsType : id,
+- method-param : javaee:java-typeType
+
+method-permissionType : id,
+- description : javaee:descriptionType
+/ role-name : javaee:role-nameType
+- or
+\ unchecked : empty
+- method : javaee:methodType
+
+multiplicityType : One, Many
+
+persistence-typeType : Bean, Container
+
+queryType : id,
+- description : javaee:descriptionType
+- query-method : javaee:query-methodType  
+- result-type-mapping :  javaee:result-type-mappingType
+- ejb-ql string  
+
+query-methodType : id,
+- method-name : javaee:method-nameType" />
+- method-params : javaee:method-paramsType" />
+
+relationship-role-sourceType : id,
+- description : javaee:descriptionType
+- ejb-name : javaee:ejb-nameType
+
+relationshipsType : id,
+- description : javaee:descriptionType"
+- ejb-relation : javaee:ejb-relationType
+
+result-type-mappingType : Local, Remote
+
+security-identityType : id,
+- description : javaee:descriptionType"
+/ use-caller-identity : empty
+- or
+\ run-as : javaee:run-asType
+
+session-beanType : id,
+- javaee:descriptionGroup
+- ejb-name : javaee:ejb-nameType
+- mapped-name : string
+- home" : javaee:homeType
+- remote : javaee:remoteType
+- local-home : javaee:local-homeType
+- local : javaee:localType
+- business-local : javaee:fully-qualified-classType
+- business-remote : javaee:fully-qualified-classType
+- local-bean : empty
+- service-endpoint : javaee:fully-qualified-classType
+- ejb-class : javaee:ejb-classType
+- session-type : javaee:session-typeType
+- stateful-timeout : javaee:stateful-timeoutType
+- timeout-method : javaee:named-methodType
+- timer : javaee:timerType
+- init-on-startup : bool
+- concurrency-management-type : javaee:concurrency-management-typeType
+- concurrent-method : javaee:concurrent-methodType
+- depends-on : javaee:depends-onType
+- init-method : javaee:init-methodType
+- remove-method : javaee:remove-methodType
+- async-method : javaee:async-methodType
+- transaction-type : javaee:transaction-typeType
+- after-begin-method : javaee:named-methodType"
+- before-completion-method : javaee:named-methodType"
+- after-completion-method : javaee:named-methodType"
+- around-invoke : javaee:around-invokeType"
+- around-timeout : javaee:around-timeoutType"
+- javaee:jndiEnvironmentRefsGroup" />
+- post-activate : javaee:lifecycle-callbackType"
+- pre-passivate : javaee:lifecycle-callbackType"
+- security-role-ref : javaee:security-role-refType"
+- security-identity : javaee:security-identityType"
+- passivation-capable : xsd:boolean"
+
+session-typeType : Singleton, Stateful,	Stateless
+
+stateful-timeoutType : id,
+- timeout : integer
+- unit : javaee:time-unit-typeType
+
+time-unit-typeType : Days, Hours, Minutes, Seconds, Milliseconds, Microsecond,s Nanoseconds 
+
+timer-scheduleType : id,
+- second : string
+- minute : string
+- hour : string
+- day-of-month : string
+- month : string
+- day-of-week : string
+- year : string
+
+timerType : id,
+- description : javaee:descriptionType
+- schedule : javaee:timer-scheduleType
+- start : dateTime
+- end : dateTime
+- timeout-method : javaee:named-methodType
+- persistent : bool
+- timezone
+- info
+
+trans-attributeType : NotSupported, Supports, Required, RequiresNew, Mandatory, Never
+
+transaction-typeType : Bean, Container
