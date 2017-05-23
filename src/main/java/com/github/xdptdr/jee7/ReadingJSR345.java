@@ -126,6 +126,7 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.PortableServer.POA;
 
+@SuppressWarnings("deprecation")
 public class ReadingJSR345 extends Reading {
 
 	private Future<Object> future;
@@ -133,21 +134,31 @@ public class ReadingJSR345 extends Reading {
 	private SessionContext sessionContext;
 	private Identity identity;
 	private Identity roleName;
-	private Class businessInterface;
+	private Class<?> businessInterface;
 	private String name;
+	@SuppressWarnings("unused")
 	private Principal principal;
+	@SuppressWarnings("unused")
 	private boolean callerInRole;
+	@SuppressWarnings("unused")
 	private boolean rollbackOnly;
 	private UserTransaction userTransaction;
 	private TimerService timerService;
+	@SuppressWarnings("unused")
 	private Object businessObject;
-	private Class invokedBusinessInterface;
+	@SuppressWarnings("unused")
+	private Class<?> invokedBusinessInterface;
 	private EJBObject ejbObject;
 	private EJBHome ejbHome;
+	@SuppressWarnings("unused")
 	private EJBLocalObject ejbLocalObject;
+	@SuppressWarnings("unused")
 	private EJBLocalHome ejbLocalHome;
+	@SuppressWarnings("unused")
 	private Object object;
+	@SuppressWarnings("unused")
 	private boolean wasCancelled;
+	@SuppressWarnings("unused")
 	private Map<String, Object> contextData;
 	private SessionBean sessionBean;
 	private MessageDrivenContext messageDrivenContext;
@@ -162,10 +173,14 @@ public class ReadingJSR345 extends Reading {
 	private Timer timer;
 	private long duration;
 	private Serializable info;
+	@SuppressWarnings("unused")
 	private long timeRemaining;
+	@SuppressWarnings("unused")
 	private Date nextTimeout;
 	private TimerHandle timerHandle;
+	@SuppressWarnings("unused")
 	private boolean persistent;
+	@SuppressWarnings("unused")
 	private boolean isCalendarTimer;
 	private Date date;
 	private TimerConfig timerConfig;
@@ -173,9 +188,11 @@ public class ReadingJSR345 extends Reading {
 	private long intervalDuration;
 	private Date initialExpiration;
 	private ScheduleExpression scheduleExpression;
+	@SuppressWarnings("unused")
 	private Collection<Timer> timers;
 	private EJBContainer ejbContainer;
 
+	@SuppressWarnings("unused")
 	@Override
 	public void reading() throws Exception {
 
@@ -419,9 +436,8 @@ public class ReadingJSR345 extends Reading {
 				@Resource
 				SessionContext sessionContext;
 
-				@SuppressWarnings("unused")
 				public void foo() {
-					@SuppressWarnings({ "unused", "unchecked" })
+					@SuppressWarnings({  "unchecked" })
 					T myT = (T) sessionContext.lookup("myT");
 				}
 			}
@@ -494,6 +510,7 @@ public class ReadingJSR345 extends Reading {
 			// pattern for asynchronous methods :
 
 			try {
+				@SuppressWarnings("unused")
 				Future<String> future = myBeanRef.fetch();
 			} catch (EJBException ex) {
 				// may be thrown when application server does not have the
@@ -519,6 +536,7 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.3.4.8.1.2", RS.COMPLETED);
 
 		{ // retrieving the result
+			@SuppressWarnings("unused")
 			Object v = future.get();
 
 			// container may place timeouts to clear the results which have not
@@ -544,6 +562,7 @@ public class ReadingJSR345 extends Reading {
 			abstract class StockQuoteService {
 				public abstract StockQuoteProvider getStockQuoteProviderPort();
 			}
+			@SuppressWarnings("unused")
 			class Foo {
 				@WebServiceRef
 				public StockQuoteService stockQuoteService;
@@ -577,6 +596,7 @@ public class ReadingJSR345 extends Reading {
 		/* passivation and activation */
 
 		{
+			@SuppressWarnings("unused")
 			class MyBean {
 				@PrePassivate
 				public void prePassivate() {
@@ -765,6 +785,7 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.4.3.4", RS.COMPLETED);
 
 		{
+			@SuppressWarnings("unused")
 			class MyBean {
 
 				@AroundConstruct
@@ -830,6 +851,7 @@ public class ReadingJSR345 extends Reading {
 		/* three possibilities */
 
 		{ // interface
+			@SuppressWarnings("unused")
 			class MyBean implements SessionSynchronization {
 
 				@Override
@@ -851,6 +873,7 @@ public class ReadingJSR345 extends Reading {
 		}
 
 		{ // annotations
+			@SuppressWarnings("unused")
 			class MyBean {
 				@AfterBegin
 				public void afterBegin() {
@@ -870,6 +893,7 @@ public class ReadingJSR345 extends Reading {
 		}
 
 		{ // annotations
+			@SuppressWarnings("unused")
 			class MyBean {
 				public void afterBegin() {
 
@@ -915,6 +939,7 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.4.3.10", RS.COMPLETED);
 
 		{
+			@SuppressWarnings("unused")
 			class MyBean {
 
 				// several remove methods are possible
@@ -996,6 +1021,7 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.4.3.13.1", RS.COMPLETED);
 
 		{
+			@SuppressWarnings("unused")
 			class MyBean {
 				@AccessTimeout(value = -1)
 				public void foo() {
@@ -1124,6 +1150,7 @@ public class ReadingJSR345 extends Reading {
 		section("CORE.4.5.1", RS.COMPLETED);
 
 		{
+			@SuppressWarnings("unused")
 			class MyBean {
 				@Asynchronous
 				public void foo() {
@@ -1133,6 +1160,7 @@ public class ReadingJSR345 extends Reading {
 
 			@Asynchronous
 			class MyAsynchronousBean {
+				@SuppressWarnings("unused")
 				public void foo() {
 				}
 			}
@@ -1150,6 +1178,7 @@ public class ReadingJSR345 extends Reading {
 
 		section("CORE.4.5.2.1", RS.COMPLETED);
 		{ // these are the two possible return types
+			@SuppressWarnings("unused")
 			class MyBean {
 				@Asynchronous
 				public void foo() {
@@ -5228,8 +5257,7 @@ public class ReadingJSR345 extends Reading {
 				ejbContainer.close();
 			}
 		});
-		
-		
+
 		section("CORE.18.3", RS.STARTED);
 		section("CORE.18.3.1", RS.STARTED);
 		section("CORE.18.3.2", RS.STARTED);
