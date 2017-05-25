@@ -37,8 +37,39 @@ public class TestBasicSingletonServlet extends HttpServlet {
 		pw.println("Done.");
 	}
 
-	public void doStuff(HttpServletRequest req, HttpServletResponse resp) {
+	public void doStuff(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
+		PrintWriter pw = resp.getWriter();
+
+		mySingletonRemote.remoteIncrement();
+
+		printAll(pw);
+
+		mySingletonLocal.localIncrement();
+
+		printAll(pw);
+
+		mySingleton.noViewIncrement();
+
+		printAll(pw);
+
+		mySingletonRemote.remoteIncrement();
+
+		printAll(pw);
+
+		mySingletonLocal.localIncrement();
+
+		printAll(pw);
+
+		mySingleton.noViewIncrement();
+
+		printAll(pw);
 	}
 
+	private void printAll(PrintWriter pw) {
+		pw.println(mySingletonRemote.getRemoteCounter());
+		pw.println(mySingletonLocal.getLocalCounter());
+		pw.println(mySingleton.getNoViewCounter());
+		pw.println("---");
+	}
 }

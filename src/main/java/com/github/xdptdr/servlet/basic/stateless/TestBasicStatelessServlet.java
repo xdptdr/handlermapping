@@ -37,8 +37,39 @@ public class TestBasicStatelessServlet extends HttpServlet {
 		pw.println("Done.");
 	}
 
-	public void doStuff(HttpServletRequest req, HttpServletResponse resp) {
+	public void doStuff(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		PrintWriter pw = resp.getWriter();
 
+		myStatelessRemote.remoteIncrement();
+
+		printAll(pw);
+
+		myStatelessLocal.localIncrement();
+
+		printAll(pw);
+
+		myStateless.noViewIncrement();
+
+		printAll(pw);
+
+		myStatelessRemote.remoteIncrement();
+
+		printAll(pw);
+
+		myStatelessLocal.localIncrement();
+
+		printAll(pw);
+
+		myStateless.noViewIncrement();
+
+		printAll(pw);
+	}
+
+	private void printAll(PrintWriter pw) {
+		pw.println(myStatelessRemote.getRemoteCounter());
+		pw.println(myStatelessLocal.getLocalCounter());
+		pw.println(myStateless.getNoViewCounter());
+		pw.println("---");
 	}
 
 }
