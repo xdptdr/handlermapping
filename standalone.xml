@@ -122,6 +122,9 @@
 			<logger category="sun.rmi">
 				<level name="WARN" />
 			</logger>
+			<logger category="com.github.xdptdr">
+				<level name="ALL" />
+			</logger>
 			<root-logger>
 				<level name="INFO" />
 				<handlers>
@@ -356,7 +359,7 @@
 			<http-connector name="http-remoting-connector"
 				connector-ref="default" security-realm="ApplicationRealm" />
 		</subsystem>
-		<subsystem xmlns="urn:jboss:domain:resource-adapters:4.0"/>
+		<subsystem xmlns="urn:jboss:domain:resource-adapters:4.0" />
 		<subsystem xmlns="urn:jboss:domain:request-controller:1.0" />
 		<subsystem xmlns="urn:jboss:domain:sar:1.0" />
 		<subsystem xmlns="urn:jboss:domain:security-manager:1.0">
