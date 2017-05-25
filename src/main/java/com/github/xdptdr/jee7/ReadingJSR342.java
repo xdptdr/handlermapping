@@ -113,7 +113,15 @@ public class ReadingJSR342 extends Reading {
 		section("EE.5.1.2", RS.UNTOUCHED);
 		section("EE.5.2", RS.UNTOUCHED);
 		section("EE.5.2.1", RS.UNTOUCHED);
-		section("EE.5.2.2", RS.UNTOUCHED);
+		section("EE.5.2.2", RS.STARTED);
+
+		/*-
+		 * - java:comp : per-component
+		 * - java:module : module level
+		 * - java:app : deployment unit level
+		 * - java:global : shared by all applications (actual level may be server, cluster of servers or administrative domain)
+		 */
+
 		section("EE.5.2.3", RS.UNTOUCHED);
 		section("EE.5.2.4", RS.UNTOUCHED);
 		section("EE.5.2.5", RS.UNTOUCHED);
@@ -243,6 +251,7 @@ public class ReadingJSR342 extends Reading {
 		section("EE.7", RS.UNTOUCHED);
 		section("EE.7.1", RS.UNTOUCHED);
 		section("EE.7.2", RS.UNTOUCHED);
+		
 		section("EE.8", RS.UNTOUCHED);
 		section("EE.8.1", RS.UNTOUCHED);
 		section("EE.8.1.1", RS.UNTOUCHED);
@@ -270,6 +279,7 @@ public class ReadingJSR342 extends Reading {
 		section("EE.8.5.4", RS.UNTOUCHED);
 		section("EE.8.6", RS.UNTOUCHED);
 		section("EE.8.7", RS.UNTOUCHED);
+		
 		section("EE.9", RS.UNTOUCHED);
 		section("EE.9.1", RS.UNTOUCHED);
 		section("EE.9.2", RS.UNTOUCHED);
@@ -283,13 +293,20 @@ public class ReadingJSR342 extends Reading {
 		section("EE.10.5", RS.UNTOUCHED);
 		section("EE.10.6", RS.UNTOUCHED);
 		section("EE.10.7", RS.UNTOUCHED);
-		section("EE.11", RS.UNTOUCHED);
-		section("EE.11.1", RS.UNTOUCHED);
-		section("EE.11.2", RS.UNTOUCHED);
-		section("EE.11.3", RS.UNTOUCHED);
-		section("EE.11.4", RS.UNTOUCHED);
-		section("EE.11.5", RS.UNTOUCHED);
-		section("EE.11.6", RS.UNTOUCHED);
+		
+		section("EE.11", RS.COMPLETED);
+
+		/* service provider interfaces */
+
+		/*- poins to other specifications
+		 * - JCA (JDBC, JMS, JAXR)
+		 * - JACC
+		 * - JTA : javax.transaction.TransactionSynchronizationRegistry
+		 * - JPA : javax.persistence.spi
+		 * - JAX-WS : javax.xml.ws.spi
+		 * - JavaMail
+		 */
+
 		section("EE.12", RS.UNTOUCHED);
 		section("EE.12.1", RS.UNTOUCHED);
 		section("EE.12.2", RS.UNTOUCHED);
