@@ -1,10 +1,12 @@
 package com.github.xdptdr.mbwar.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -28,87 +30,25 @@ public class JDBCBeanServlet extends HttpServlet {
 
 		try {
 			DatabaseMetaData md = bean.getDatabaseMetaData();
-			req.setAttribute("md", md);
+
+			Map<String, String> props = new HashMap<>();
+
+			for (Method method : DatabaseMetaData.class.getMethods()) {
+				if (method.getParameterTypes().length == 0) {
+					if (method.getReturnType() == boolean.class) {
+						props.put(method.getName(), method.invoke(md).toString());
+					} else if (method.getReturnType() == String.class) {
+						props.put(method.getName(), method.invoke(md).toString());
+					}
+				}
+			}
+
+			req.setAttribute("props", props);
 			req.getRequestDispatcher("/WEB-INF/jsp/jdbc.jsp").forward(req, resp);
-		} catch (ServletException | SQLException e) {
+		} catch (ServletException | SQLException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
-
-		// PrintWriter pw = resp.getWriter();
-		//
-		// String[] booleanMethods = { "isReadOnly", "allProceduresAreCallable",
-		// "allTablesAreSelectable",
-		// "autoCommitFailureClosesAllResultSets",
-		// "dataDefinitionCausesTransactionCommit",
-		// "dataDefinitionIgnoredInTransactions", "doesMaxRowSizeIncludeBlobs",
-		// "generatedKeyAlwaysReturned",
-		// "isCatalogAtStart", "locatorsUpdateCopy", "nullPlusNonNullIsNull",
-		// "nullsAreSortedAtEnd",
-		// "nullsAreSortedAtStart", "nullsAreSortedHigh", "nullsAreSortedLow",
-		// "storesLowerCaseIdentifiers",
-		// "storesLowerCaseQuotedIdentifiers", "storesMixedCaseIdentifiers",
-		// "storesMixedCaseQuotedIdentifiers",
-		// "storesUpperCaseIdentifiers", "storesUpperCaseQuotedIdentifiers",
-		// "supportsANSI92EntryLevelSQL",
-		// "supportsANSI92FullSQL", "supportsANSI92IntermediateSQL",
-		// "supportsAlterTableWithAddColumn",
-		// "supportsAlterTableWithDropColumn", "supportsBatchUpdates",
-		// "supportsCatalogsInDataManipulation",
-		// "supportsCatalogsInIndexDefinitions",
-		// "supportsCatalogsInPrivilegeDefinitions",
-		// "supportsCatalogsInProcedureCalls",
-		// "supportsCatalogsInTableDefinitions", "supportsColumnAliasing",
-		// "supportsConvert", "supportsCoreSQLGrammar",
-		// "supportsCorrelatedSubqueries",
-		// "supportsDataDefinitionAndDataManipulationTransactions",
-		// "supportsDataManipulationTransactionsOnly",
-		// "supportsDifferentTableCorrelationNames",
-		// "supportsExpressionsInOrderBy", "supportsExtendedSQLGrammar",
-		// "supportsFullOuterJoins", "supportsGetGeneratedKeys",
-		// "supportsGroupBy", "supportsGroupByBeyondSelect",
-		// "supportsGroupByUnrelated", "supportsIntegrityEnhancementFacility",
-		// "supportsLikeEscapeClause",
-		// "supportsLimitedOuterJoins", "supportsMinimumSQLGrammar",
-		// "supportsMixedCaseIdentifiers",
-		// "supportsMixedCaseQuotedIdentifiers", "supportsMultipleOpenResults",
-		// "supportsMultipleResultSets",
-		// "supportsMultipleTransactions", "supportsNamedParameters",
-		// "supportsNonNullableColumns",
-		// "supportsOpenCursorsAcrossCommit",
-		// "supportsOpenCursorsAcrossRollback",
-		// "supportsOpenStatementsAcrossCommit",
-		// "supportsOpenStatementsAcrossRollback",
-		// "supportsOrderByUnrelated", "supportsOuterJoins",
-		// "supportsPositionedDelete",
-		// "supportsPositionedUpdate", "supportsRefCursors",
-		// "supportsSavepoints",
-		// "supportsSchemasInDataManipulation",
-		// "supportsSchemasInIndexDefinitions",
-		// "supportsSchemasInPrivilegeDefinitions",
-		// "supportsSchemasInProcedureCalls",
-		// "supportsSchemasInTableDefinitions", "supportsSelectForUpdate",
-		// "supportsStatementPooling",
-		// "supportsStoredFunctionsUsingCallSyntax", "supportsStoredProcedures",
-		// "supportsSubqueriesInComparisons",
-		// "supportsSubqueriesInExists", "supportsSubqueriesInIns",
-		// "supportsSubqueriesInQuantifieds",
-		// "supportsTableCorrelationNames", "supportsTransactions",
-		// "supportsUnion", "supportsUnionAll",
-		// "usesLocalFilePerTable", "usesLocalFiles" };
-		//
-		// try {
-		// DatabaseMetaData md = bean.getDatabaseMetaData();
-		// for (String booleanMethod : booleanMethods) {
-		// Object v =
-		// DatabaseMetaData.class.getMethod(booleanMethod).invoke(md);
-		// pw.println(booleanMethod + " : " + v);
-		// }
-		//
-		// } catch (SQLException | IllegalAccessException |
-		// IllegalArgumentException | InvocationTargetException
-		// | NoSuchMethodException | SecurityException e) {
-		// throw new RuntimeException(e);
-		// }
 
 	}
 }
