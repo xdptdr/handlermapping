@@ -45,6 +45,11 @@
 							<artifactId>mssql-jdbc</artifactId>
 							<bundleDir>lib</bundleDir>
 						</jarModule>
+						<jarModule>
+							<groupId>org.postgresql</groupId>
+							<artifactId>postgresql</artifactId>
+							<bundleDir>lib</bundleDir>
+						</jarModule>
 					</modules>
 				</configuration>
 			</plugin>
@@ -84,6 +89,10 @@
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 	</dependencies>
 </project>

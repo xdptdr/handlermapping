@@ -7,5 +7,7 @@ public interface JDBCBeanI {
 
 	public Connection getH2Connection() throws SQLException;
 	public Connection getMysqlConnection() throws SQLException;
+	public Connection getSqlServerConnection() throws SQLException;
+	public Connection getPostgresqlConnection() throws SQLException;
 
 }

@@ -22,7 +22,8 @@
 					<archive>
 						<manifestEntries>
 							<Class-Path>mbejb-api-1.0.jar h2-1.4.195.jar
-								mysql-connector-java-6.0.6.jar mssql-jdbc-6.1.7.jre8-preview.jar</Class-Path>
+								mysql-connector-java-6.0.6.jar mssql-jdbc-6.1.7.jre8-preview.jar
+								postgresql-42.1.1.jre7.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>

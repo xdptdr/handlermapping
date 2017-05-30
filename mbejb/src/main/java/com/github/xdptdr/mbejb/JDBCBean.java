@@ -17,6 +17,8 @@ public class JDBCBean implements JDBCBeanI {
 		try {
 			Class.forName("org.h2.Driver");
 			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("org.postgresql.Driver");
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -29,7 +31,19 @@ public class JDBCBean implements JDBCBeanI {
 
 	@Override
 	public Connection getMysqlConnection() throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql://localhost/foobar?user=foobar&password=foobar&&serverTimezone=UTC");
+		return DriverManager
+				.getConnection("jdbc:mysql://localhost/foobar?user=foobar&password=foobar&&serverTimezone=UTC");
+	}
+
+	@Override
+	public Connection getSqlServerConnection() throws SQLException {
+		return DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=foobar;password=foobar;userName=foobar;"
+);
+	}
+
+	@Override
+	public Connection getPostgresqlConnection() throws SQLException {
+		return DriverManager.getConnection("jdbc:postgresql:foobar", "foobar", "foobar");
 	}
 
 }
