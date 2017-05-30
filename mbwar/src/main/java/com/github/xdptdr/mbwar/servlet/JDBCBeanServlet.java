@@ -29,7 +29,7 @@ public class JDBCBeanServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 		try {
-			DatabaseMetaData md = bean.getDatabaseMetaData();
+			DatabaseMetaData md = bean.getMysqlConnection().getMetaData();
 
 			Map<String, String> props = new HashMap<>();
 
