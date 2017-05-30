@@ -40,6 +40,11 @@
 							<artifactId>mysql-connector-java</artifactId>
 							<bundleDir>lib</bundleDir>
 						</jarModule>
+						<jarModule>
+							<groupId>com.microsoft.sqlserver</groupId>
+							<artifactId>mssql-jdbc</artifactId>
+							<bundleDir>lib</bundleDir>
+						</jarModule>
 					</modules>
 				</configuration>
 			</plugin>
@@ -76,6 +81,9 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+		</dependency>
 	</dependencies>
 </project>

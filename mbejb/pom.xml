@@ -21,7 +21,8 @@
 					<ejbVersion>3.1</ejbVersion>
 					<archive>
 						<manifestEntries>
-							<Class-Path>mbejb-api-1.0.jar h2-1.4.195.jar mysql-connector-java-6.0.6.jar</Class-Path>
+							<Class-Path>mbejb-api-1.0.jar h2-1.4.195.jar
+								mysql-connector-java-6.0.6.jar mssql-jdbc-6.1.7.jre8-preview.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -33,16 +34,6 @@
 			<groupId>com.github.xdptdr</groupId>
 			<artifactId>mbejb-api</artifactId>
 			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
