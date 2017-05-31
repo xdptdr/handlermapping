@@ -8,18 +8,23 @@
 <title>Insert title here</title>
 </head>
 <body>
+
 	<table>
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Value</th>
+				<th>Property</th>
+				<c:forEach var="dbName" items="${dbNames}">
+					<th>${dbName}</th>
+				</c:forEach>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="prop" items="${props}">
+			<c:forEach var="propName" items="${propNames}">
 				<tr>
-					<td>${prop.key}</td>
-					<td>${prop.value}</td>
+					<td>${propName}</td>
+					<c:forEach var="dbName" items="${dbNames}">
+						<td>${allDbProps.get(dbName}.get(propName)</td>
+					</c:forEach>
 				</tr>
 			</c:forEach>
 		</tbody>
