@@ -37,8 +37,8 @@ public class JDBCBean implements JDBCBeanI {
 
 	@Override
 	public Connection getSqlServerConnection() throws SQLException {
-		return DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=foobar;password=foobar;userName=foobar;"
-);
+		return DriverManager
+				.getConnection("jdbc:sqlserver://localhost\\SQLExpress;databaseName=foobar;user=foobar;password=foobar;");
 	}
 
 	@Override

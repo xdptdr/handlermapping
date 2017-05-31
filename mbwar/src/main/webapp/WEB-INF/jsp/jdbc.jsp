@@ -6,6 +6,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+.T {
+	background: #44ab44;
+	color: white;
+	text-align: center;
+}
+
+.F {
+	background: #e11;
+	color: white;
+	text-align: center;
+}
+</style>
 </head>
 <body>
 
@@ -19,15 +32,21 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="propName" items="${propNames}">
+			<c:forEach var="booleanPropName" items="${booleanPropNames}">
 				<tr>
 					<td>${propName}</td>
 					<c:forEach var="dbName" items="${dbNames}">
-						<td>${allDbProps.get(dbName}.get(propName)</td>
+						<td class="${allBooleanDbProps.get(dbName).get(propName)}">${allDbProps.get(dbName).get(propName)}</td>
 					</c:forEach>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
+	<ul>
+		<c:forEach var="otherMethod" items="${otherMethods}">
+			<li>${otherMethod}</li>
+		</c:forEach>
+
+	</ul>
 </body>
 </html>

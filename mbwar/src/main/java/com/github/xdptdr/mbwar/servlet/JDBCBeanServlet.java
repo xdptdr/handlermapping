@@ -22,6 +22,10 @@ import com.github.xdptdr.mbejb.api.JDBCBeanI;
 @WebServlet("/jdbcServlet")
 public class JDBCBeanServlet extends HttpServlet {
 
+	public static enum DBNAME {
+		H2, PO, MY, SQ
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@EJB
@@ -32,13 +36,14 @@ public class JDBCBeanServlet extends HttpServlet {
 
 		try {
 
-			Map<String, Map<String, String>> allDbProps = new HashMap<>();
+			Map<String, Map<String, String>> allBooleanDbProps = new HashMap<>();
 
-			String[] dbNames = new String[] { "H2", "MySQL", "PostgreSQL", "SQLServer" };
-			List<String> propNames = new ArrayList<>();
-
-			for (String dbName : dbNames) {
-
+			List<String> booleanPropNames = new ArrayList<>();
+			List<String> otherMethods = new ArrayList<>();
+			List<String> dbNames = new ArrayList<>();
+			boolean first = true;
+			for (DBNAME dbName : DBNAME.values()) {
+				dbNames.add(dbName.toString());
 				DatabaseMetaData md = null;
 				try {
 					md = getConnection(dbName);
@@ -46,35 +51,34 @@ public class JDBCBeanServlet extends HttpServlet {
 
 				}
 
-				Map<String, String> props = new HashMap<>();
+				Map<String, String> booleanProps = new HashMap<>();
 
-				boolean first = true;
 				for (Method method : DatabaseMetaData.class.getMethods()) {
 					if (method.getParameterTypes().length == 0) {
 						if (method.getReturnType() == boolean.class) {
 							if (md != null) {
-								props.put(method.getName(), method.invoke(md).toString());
+								booleanProps.put(method.getName(), ((boolean) method.invoke(md)) ? "T" : "F");
 							} else {
-								props.put(method.getName(), "Error");
+								booleanProps.put(method.getName(), "Error");
 							}
 							if (first) {
-								propNames.add(method.getName());
+								booleanPropNames.add(method.getName());
+							}
+						} else {
+							if (first) {
+								otherMethods.add(method.toString());
 							}
 						}
-						// else if (method.getReturnType() == String.class) {
-						// props.put(method.getName(),
-						// method.invoke(md).toString());
-						// }
 					}
-					first = false;
 				}
-				allDbProps.put(dbName, props);
+				allBooleanDbProps.put(dbName.toString(), booleanProps);
+				first = false;
 			}
 
-			req.setAttribute("allDbProps", allDbProps);
+			req.setAttribute("allBooleanDbProps", allBooleanDbProps);
 			req.setAttribute("dbNames", dbNames);
-			req.setAttribute("propNames", propNames.toArray());
-
+			req.setAttribute("booleanPropNames", booleanPropNames);
+			req.setAttribute("otherMethods", otherMethods);
 			req.getRequestDispatcher("/WEB-INF/jsp/jdbc.jsp").forward(req, resp);
 		} catch (ServletException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new RuntimeException(e);
@@ -82,15 +86,15 @@ public class JDBCBeanServlet extends HttpServlet {
 
 	}
 
-	private DatabaseMetaData getConnection(String db) throws SQLException {
+	private DatabaseMetaData getConnection(DBNAME db) throws SQLException {
 		switch (db) {
-		case "H2":
+		case H2:
 			return bean.getH2Connection().getMetaData();
-		case "MySQL":
+		case MY:
 			return bean.getMysqlConnection().getMetaData();
-		case "PostgreSQL":
+		case PO:
 			return bean.getPostgresqlConnection().getMetaData();
-		case "SQLServer":
+		case SQ:
 			return bean.getSqlServerConnection().getMetaData();
 		}
 		return null;
