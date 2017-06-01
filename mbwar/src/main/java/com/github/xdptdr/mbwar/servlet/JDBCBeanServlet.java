@@ -37,8 +37,12 @@ public class JDBCBeanServlet extends HttpServlet {
 		try {
 
 			Map<String, Map<String, String>> allBooleanDbProps = new HashMap<>();
+			Map<String, Map<String, String>> allIntDbProps = new HashMap<>();
+			Map<String, Map<String, String>> allStringDbProps = new HashMap<>();
 
 			List<String> booleanPropNames = new ArrayList<>();
+			List<String> intPropNames = new ArrayList<>();
+			List<String> stringPropNames = new ArrayList<>();
 			List<String> otherMethods = new ArrayList<>();
 			List<String> dbNames = new ArrayList<>();
 			boolean first = true;
@@ -52,6 +56,8 @@ public class JDBCBeanServlet extends HttpServlet {
 				}
 
 				Map<String, String> booleanProps = new HashMap<>();
+				Map<String, String> intProps = new HashMap<>();
+				Map<String, String> stringProps = new HashMap<>();
 
 				for (Method method : DatabaseMetaData.class.getMethods()) {
 					if (method.getParameterTypes().length == 0) {
@@ -64,6 +70,24 @@ public class JDBCBeanServlet extends HttpServlet {
 							if (first) {
 								booleanPropNames.add(method.getName());
 							}
+						} else if (method.getReturnType() == int.class) {
+							if (md != null) {
+								intProps.put(method.getName(), Integer.toString((int) method.invoke(md)));
+							} else {
+								intProps.put(method.getName(), "Error");
+							}
+							if (first) {
+								intPropNames.add(method.getName());
+							}
+						} else if (method.getReturnType() == String.class) {
+							if (md != null) {
+								stringProps.put(method.getName(), (String) method.invoke(md));
+							} else {
+								stringProps.put(method.getName(), "Error");
+							}
+							if (first) {
+								stringPropNames.add(method.getName());
+							}
 						} else {
 							if (first) {
 								otherMethods.add(method.toString());
@@ -72,12 +96,18 @@ public class JDBCBeanServlet extends HttpServlet {
 					}
 				}
 				allBooleanDbProps.put(dbName.toString(), booleanProps);
+				allIntDbProps.put(dbName.toString(), intProps);
+				allStringDbProps.put(dbName.toString(), stringProps);
 				first = false;
 			}
 
 			req.setAttribute("allBooleanDbProps", allBooleanDbProps);
+			req.setAttribute("allIntDbProps", allIntDbProps);
+			req.setAttribute("allStringDbProps", allStringDbProps);
 			req.setAttribute("dbNames", dbNames);
 			req.setAttribute("booleanPropNames", booleanPropNames);
+			req.setAttribute("intPropNames", intPropNames);
+			req.setAttribute("stringPropNames", stringPropNames);
 			req.setAttribute("otherMethods", otherMethods);
 			req.getRequestDispatcher("/WEB-INF/jsp/jdbc.jsp").forward(req, resp);
 		} catch (ServletException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

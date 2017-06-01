@@ -32,11 +32,51 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="booleanPropName" items="${booleanPropNames}">
+			<c:forEach var="propName" items="${booleanPropNames}">
 				<tr>
 					<td>${propName}</td>
 					<c:forEach var="dbName" items="${dbNames}">
-						<td class="${allBooleanDbProps.get(dbName).get(propName)}">${allDbProps.get(dbName).get(propName)}</td>
+						<td class="${allBooleanDbProps.get(dbName).get(propName)}">${allBooleanDbProps.get(dbName).get(propName)}</td>
+					</c:forEach>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+	<table>
+		<thead>
+			<tr>
+				<th>Property</th>
+				<c:forEach var="dbName" items="${dbNames}">
+					<th>${dbName}</th>
+				</c:forEach>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach var="propName" items="${intPropNames}">
+				<tr>
+					<td>${propName}</td>
+					<c:forEach var="dbName" items="${dbNames}">
+						<td>${allIntDbProps.get(dbName).get(propName)}</td>
+					</c:forEach>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+	<table>
+		<thead>
+			<tr>
+				<th>Property</th>
+				<c:forEach var="dbName" items="${dbNames}">
+					<th>${dbName}</th>
+				</c:forEach>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach var="propName" items="${stringPropNames}">
+				<tr>
+					<td>${propName}</td>
+					<c:forEach var="dbName" items="${dbNames}">
+						<td>${allStringDbProps.get(dbName).get(propName)}</td>
 					</c:forEach>
 				</tr>
 			</c:forEach>
