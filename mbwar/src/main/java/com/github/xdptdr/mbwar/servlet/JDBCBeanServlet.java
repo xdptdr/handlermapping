@@ -6,9 +6,13 @@ import java.lang.reflect.Method;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -36,18 +40,28 @@ public class JDBCBeanServlet extends HttpServlet {
 
 		try {
 
-			Map<String, Map<String, String>> allBooleanDbProps = new HashMap<>();
-			Map<String, Map<String, String>> allIntDbProps = new HashMap<>();
-			Map<String, Map<String, String>> allStringDbProps = new HashMap<>();
-
-			List<String> booleanPropNames = new ArrayList<>();
-			List<String> intPropNames = new ArrayList<>();
-			List<String> stringPropNames = new ArrayList<>();
+			List<ColumnDescription> rowNames = new ArrayList<>();
+			List<String> columnNames = new ArrayList<>();
 			List<String> otherMethods = new ArrayList<>();
-			List<String> dbNames = new ArrayList<>();
-			boolean first = true;
+			Map<String, Map<String, Cell>> table = new HashMap<String, Map<String, Cell>>();
+			boolean methodsProcessed = false;
+
+			Map<String, Map<String, Set<String>>> commaSeparatedListValuesPerDb = new HashMap<>();
+			Map<String, Set<String>> allCommaSeparatedListSets = new HashMap<>();
+			Map<String, List<String>> allCommaSeparatedLists = new HashMap<>();
+
+			Set<String> commaSeparatedListGetters = new HashSet<>(Arrays.asList(new String[] { "getNumericFunctions",
+					"getSQLKeywords", "getStringFunctions", "getSystemFunctions", "getTimeDateFunctions" }));
+
+			Map<String, String> commaSeparatedListGettersTitles = new HashMap<>();
+			commaSeparatedListGettersTitles.put("getNumericFunctions", "Numeric functions");
+			commaSeparatedListGettersTitles.put("getSQLKeywords", "SQL Keywords");
+			commaSeparatedListGettersTitles.put("getStringFunctions", "String Functions");
+			commaSeparatedListGettersTitles.put("getSystemFunctions", "System Functions");
+			commaSeparatedListGettersTitles.put("getTimeDateFunctions", "Time and Date Functions");
+
 			for (DBNAME dbName : DBNAME.values()) {
-				dbNames.add(dbName.toString());
+
 				DatabaseMetaData md = null;
 				try {
 					md = getConnection(dbName);
@@ -55,60 +69,76 @@ public class JDBCBeanServlet extends HttpServlet {
 
 				}
 
-				Map<String, String> booleanProps = new HashMap<>();
-				Map<String, String> intProps = new HashMap<>();
-				Map<String, String> stringProps = new HashMap<>();
+				columnNames.add(dbName.toString());
+
+				Map<String, Cell> columnValues = new HashMap<>();
 
 				for (Method method : DatabaseMetaData.class.getMethods()) {
+
+					boolean methodProcessed = false;
+					String type = null;
+
 					if (method.getParameterTypes().length == 0) {
-						if (method.getReturnType() == boolean.class) {
-							if (md != null) {
-								booleanProps.put(method.getName(), ((boolean) method.invoke(md)) ? "T" : "F");
-							} else {
-								booleanProps.put(method.getName(), "Error");
+						if (commaSeparatedListGetters.contains(method.getName())) {
+							if (!methodsProcessed) {
+								allCommaSeparatedListSets.put(method.getName(), new HashSet<>());
+								commaSeparatedListValuesPerDb.put(method.getName(), new HashMap<>());
 							}
-							if (first) {
-								booleanPropNames.add(method.getName());
+							Set<String> commaSeparatedListValues = new HashSet<>();
+							for (String numericFunction : ((String) method.invoke(md)).split(",")) {
+								commaSeparatedListValues.add(numericFunction.trim().toUpperCase());
+								allCommaSeparatedListSets.get(method.getName())
+										.add(numericFunction.trim().toUpperCase());
 							}
+
+							commaSeparatedListValuesPerDb.get(method.getName()).put(dbName.toString(),
+									commaSeparatedListValues);
+						} else if (method.getReturnType() == boolean.class) {
+							boolean value = (boolean) method.invoke(md);
+							Cell cell = new Cell(value ? "T" : "F");
+							type = "boolean";
+							cell.setClassName(value ? "T" : "F");
+							columnValues.put(method.getName(), cell);
+							methodProcessed = true;
 						} else if (method.getReturnType() == int.class) {
-							if (md != null) {
-								intProps.put(method.getName(), Integer.toString((int) method.invoke(md)));
-							} else {
-								intProps.put(method.getName(), "Error");
-							}
-							if (first) {
-								intPropNames.add(method.getName());
-							}
+							columnValues.put(method.getName(), new Cell(Integer.toString((int) method.invoke(md))));
+							type = "integer";
+							methodProcessed = true;
 						} else if (method.getReturnType() == String.class) {
-							if (md != null) {
-								stringProps.put(method.getName(), (String) method.invoke(md));
-							} else {
-								stringProps.put(method.getName(), "Error");
-							}
-							if (first) {
-								stringPropNames.add(method.getName());
-							}
+							columnValues.put(method.getName(), new Cell((String) method.invoke(md)));
+							type = "string";
+							methodProcessed = true;
+						}
+					}
+
+					if (!methodsProcessed) {
+						if (!methodProcessed) {
+							otherMethods.add(method.toString());
 						} else {
-							if (first) {
-								otherMethods.add(method.toString());
-							}
+							rowNames.add(new ColumnDescription(method.getName(), type));
 						}
 					}
 				}
-				allBooleanDbProps.put(dbName.toString(), booleanProps);
-				allIntDbProps.put(dbName.toString(), intProps);
-				allStringDbProps.put(dbName.toString(), stringProps);
-				first = false;
+				methodsProcessed = true;
+
+				table.put(dbName.toString(), columnValues);
 			}
 
-			req.setAttribute("allBooleanDbProps", allBooleanDbProps);
-			req.setAttribute("allIntDbProps", allIntDbProps);
-			req.setAttribute("allStringDbProps", allStringDbProps);
-			req.setAttribute("dbNames", dbNames);
-			req.setAttribute("booleanPropNames", booleanPropNames);
-			req.setAttribute("intPropNames", intPropNames);
-			req.setAttribute("stringPropNames", stringPropNames);
+			for (String getter : commaSeparatedListGetters) {
+				allCommaSeparatedLists.put(getter, new ArrayList<>());
+				for (String nFn : allCommaSeparatedListSets.get(getter)) {
+					allCommaSeparatedLists.get(getter).add(nFn);
+				}
+				Collections.sort(allCommaSeparatedLists.get(getter));
+			}
+
+			req.setAttribute("rowNames", rowNames);
+			req.setAttribute("columnNames", columnNames);
+			req.setAttribute("table", table);
+			req.setAttribute("allCommaSeparatedLists", allCommaSeparatedLists);
+			req.setAttribute("commaSeparatedListValuesPerDb", commaSeparatedListValuesPerDb);
 			req.setAttribute("otherMethods", otherMethods);
+			req.setAttribute("commaSeparatedListGettersTitles", commaSeparatedListGettersTitles);
 			req.getRequestDispatcher("/WEB-INF/jsp/jdbc.jsp").forward(req, resp);
 		} catch (ServletException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new RuntimeException(e);
