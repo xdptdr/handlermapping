@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MailSessionDefinitions;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
@@ -28,6 +29,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.PersistenceException;
 
 public class Reading_JSR345_JPA extends Reading {
@@ -323,7 +325,400 @@ public class Reading_JSR345_JPA extends Reading {
 
 		section("2.4.1.3", RS.STARTED);
 
-		/* INTERESTING */
+		// 1.a
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@Entity
+				class Employee {
+					@Id
+					long empId;
+					String empName;
+				}
+
+				class DependentId {
+					String name;
+					long emp;
+				}
+
+				@Entity
+				@IdClass(DependentId.class)
+				class Dependent {
+					@Id
+					String name;
+					@Id
+					@ManyToOne
+					Employee emp;
+				}
+			}
+		});
+
+		// 1.b
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				@Entity
+				class Employee {
+					@Id
+					long empId;
+					String empName;
+				}
+
+				@Embeddable
+				class DependentId {
+					String name;
+					long empPK;
+				}
+
+				@Entity
+				class Dependent {
+
+					@EmbeddedId
+					DependentId id;
+
+					@MapsId("empPK")
+					@ManyToOne
+					Employee emp;
+				}
+			}
+		});
+
+		// 2.a
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				class EmployeeId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				@IdClass(EmployeeId.class)
+				class Employee {
+					@Id
+					String firstName;
+					@Id
+					String lastName;
+				}
+
+				class DependentId {
+					String name;
+					EmployeeId emp;
+				}
+
+				@Entity
+				@IdClass(DependentId.class)
+				class Dependent {
+					@Id
+					String name;
+
+					@Id
+					@JoinColumns({ @JoinColumn(name = "FK1", referencedColumnName = "firstName"),
+							@JoinColumn(name = "FK2", referencedColumnName = "lastName") })
+					@ManyToOne
+					Employee emp;
+				}
+			}
+		});
+
+		// 2.b
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				class EmployeeId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				@IdClass(EmployeeId.class)
+				class Employee {
+					@Id
+					String firstName;
+					@Id
+					String lastName;
+				}
+
+				@Embeddable
+				class DependentId {
+					String name;
+					EmployeeId empPK;
+				}
+
+				@Entity
+				class Dependent {
+
+					@EmbeddedId
+					DependentId id;
+
+					@MapsId("empPK")
+					@JoinColumns({ @JoinColumn(name = "FK1", referencedColumnName = "firstName"),
+							@JoinColumn(name = "FK2", referencedColumnName = "lastName") })
+					@ManyToOne
+					Employee emp;
+				}
+			}
+		});
+
+		// 3.a
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				@Embeddable
+				class EmployeeId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				class Employee {
+					@EmbeddedId
+					EmployeeId empId;
+				}
+
+				class DependentId {
+					String name;
+					EmployeeId emp;
+				}
+
+				@Entity
+				@IdClass(DependentId.class)
+				class Dependent {
+					@Id
+					String name;
+
+					@Id
+					@JoinColumns({ @JoinColumn(name = "FK1", referencedColumnName = "firstName"),
+							@JoinColumn(name = "FK2", referencedColumnName = "lastName") })
+					@ManyToOne
+					Employee emp;
+				}
+			}
+		});
+
+		// 3.b
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				@Embeddable
+				class EmployeeId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				class Employee {
+					@EmbeddedId
+					EmployeeId empId;
+				}
+
+				@Embeddable
+				class DependentId {
+					String name;
+					EmployeeId empPK;
+				}
+
+				@Entity
+				class Dependent {
+
+					@EmbeddedId
+					DependentId id;
+
+					@MapsId("empPK")
+					@JoinColumns({ @JoinColumn(name = "FK1", referencedColumnName = "firstName"),
+							@JoinColumn(name = "FK2", referencedColumnName = "lastName") })
+					@ManyToOne
+					Employee emp;
+				}
+			}
+		});
+
+		// 4.a
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				@Entity
+				class Person {
+					@Id
+					String ssn;
+				}
+
+				@Entity
+				class MedicalHistory {
+					@Id
+					@OneToOne
+					@JoinColumn(name = "FK")
+					Person patient;
+				}
+			}
+		});
+
+		// 4.b
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				@Entity
+				class Person {
+					@Id
+					String ssn;
+				}
+
+				@Entity
+				class MedicalHistory {
+
+					@Id
+					String id;
+
+					@MapsId
+					@JoinColumn(name = "FK")
+					@OneToOne
+					Person patient;
+				}
+			}
+		});
+
+		// 5.a
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				class PersonId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				@IdClass(PersonId.class)
+				class Person {
+					@Id
+					String firstName;
+					@Id
+					String lastName;
+				}
+
+				@Entity
+				class MedicalHistory {
+					@Id
+					@OneToOne
+					@JoinColumn(name = "FK")
+					Person patient;
+				}
+			}
+		});
+
+		// 5.b
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				class PersonId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				@IdClass(PersonId.class)
+				class Person {
+					@Id
+					String firstName;
+					@Id
+					String lastName;
+				}
+
+				@Entity
+				class MedicalHistory {
+					@EmbeddedId
+					PersonId id;
+
+					@MapsId
+					@JoinColumns({ @JoinColumn(name = "FK1", referencedColumnName = "firstName"),
+							@JoinColumn(name = "FK2", referencedColumnName = "lastName") })
+					@OneToOne
+					Person patient;
+				}
+			}
+		});
+
+		// 6.a
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				@Embeddable
+				class PersonId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				@IdClass(PersonId.class)
+				class Person {
+					@EmbeddedId
+					PersonId id;
+				}
+
+				@Entity
+				@IdClass(PersonId.class)
+				class MedicalHistory {
+					@Id
+					@OneToOne
+					@JoinColumns({ @JoinColumn(name = "FK1", referencedColumnName = "firstName"),
+							@JoinColumn(name = "FK2", referencedColumnName = "lastName") })
+					@JoinColumn(name = "FK")
+					Person patient;
+				}
+			}
+		});
+
+		// 6.b
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+
+				@Embeddable
+				class PersonId {
+					String firstName;
+					String lastName;
+				}
+
+				@Entity
+				@IdClass(PersonId.class)
+				class Person {
+					@EmbeddedId
+					PersonId id;
+				}
+
+				@Entity
+				class MedicalHistory {
+					@EmbeddedId
+					PersonId id;
+
+					@MapsId
+					@JoinColumns({ @JoinColumn(name = "FK1", referencedColumnName = "firstName"),
+							@JoinColumn(name = "FK2", referencedColumnName = "lastName") })
+					@OneToOne
+					Person patient;
+				}
+			}
+		});
 
 		section("2.5", RS.UNTOUCHED);
 		section("2.6", RS.UNTOUCHED);
