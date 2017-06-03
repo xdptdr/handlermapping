@@ -17,27 +17,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
+import javax.persistence.AttributeConverter;
+import javax.persistence.AttributeNode;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityGraph;
+import javax.persistence.EntityListeners;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityTransaction;
+import javax.persistence.ExcludeDefaultListeners;
+import javax.persistence.ExcludeSuperclassListeners;
+import javax.persistence.FetchType;
 import javax.persistence.FlushModeType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Inheritance;
@@ -45,7 +64,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.LockModeType;
+import javax.persistence.LockTimeoutException;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
@@ -55,14 +76,39 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.MapKeyJoinColumns;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.MapsId;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OptimisticLockException;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.PersistenceException;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.PersistenceUtil;
+import javax.persistence.PessimisticLockException;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostRemove;
+import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Query;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.RollbackException;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.StoredProcedureQuery;
+import javax.persistence.Subgraph;
+import javax.persistence.SynchronizationType;
 import javax.persistence.Table;
+import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -109,6 +155,8 @@ public class Reading_JSR345_JPA extends Reading {
 	private EntityGraph<?> entityGraph;
 	private String graphName;
 	private List<EntityGraph<? super Object>> entityGraphs;
+	private PersistenceUtil persistenceUtil;
+	private PersistenceUnitUtil persistenceUnitUtil;
 
 	@Override
 	public void reading() throws Exception {
@@ -1682,7 +1730,7 @@ public class Reading_JSR345_JPA extends Reading {
 		section("3.1.2", RS.STARTED);
 
 		dontRun(new NotRunnable() {
-			
+
 			@Entity
 			class Order {
 				Customer customer;
@@ -1723,87 +1771,947 @@ public class Reading_JSR345_JPA extends Reading {
 		});
 
 		section("3.2", RS.STARTED);
-		section("3.2.1", RS.UNTOUCHED);
-		section("3.2.2", RS.UNTOUCHED);
-		section("3.2.3", RS.UNTOUCHED);
-		section("3.2.4", RS.UNTOUCHED);
-		section("3.2.5", RS.UNTOUCHED);
-		section("3.2.6", RS.UNTOUCHED);
-		section("3.2.7", RS.UNTOUCHED);
-		section("3.2.7.1", RS.UNTOUCHED);
-		section("3.2.7.2", RS.UNTOUCHED);
-		section("3.2.8", RS.UNTOUCHED);
-		section("3.2.9", RS.UNTOUCHED);
-		section("3.3", RS.UNTOUCHED);
-		section("3.3.1", RS.UNTOUCHED);
-		section("3.3.2", RS.UNTOUCHED);
-		section("3.3.3", RS.UNTOUCHED);
-		section("3.4", RS.UNTOUCHED);
-		section("3.4.1", RS.UNTOUCHED);
-		section("3.4.2", RS.UNTOUCHED);
-		section("3.4.3", RS.UNTOUCHED);
-		section("3.4.4", RS.UNTOUCHED);
-		section("3.4.4.1", RS.UNTOUCHED);
-		section("3.4.4.2", RS.UNTOUCHED);
-		section("3.4.4.3", RS.UNTOUCHED);
-		section("3.4.5", RS.UNTOUCHED);
-		section("3.5", RS.UNTOUCHED);
-		section("3.5.1", RS.UNTOUCHED);
-		section("3.5.2", RS.UNTOUCHED);
-		section("3.5.3", RS.UNTOUCHED);
-		section("3.5.4", RS.UNTOUCHED);
-		section("3.5.5", RS.UNTOUCHED);
-		section("3.5.6", RS.UNTOUCHED);
-		section("3.5.7", RS.UNTOUCHED);
-		section("3.5.8", RS.UNTOUCHED);
-		section("3.5.8.1", RS.UNTOUCHED);
-		section("3.5.8.2", RS.UNTOUCHED);
-		section("3.6", RS.UNTOUCHED);
-		section("3.6.1", RS.UNTOUCHED);
-		section("3.6.1.1", RS.UNTOUCHED);
-		section("3.6.1.2", RS.UNTOUCHED);
-		section("", RS.UNTOUCHED);
-		section("3.6.2", RS.UNTOUCHED);
-		section("3.7", RS.UNTOUCHED);
-		section("3.7.1", RS.UNTOUCHED);
-		section("3.7.2", RS.UNTOUCHED);
-		section("3.7.3", RS.UNTOUCHED);
-		section("3.7.4", RS.UNTOUCHED);
-		section("3.7.4.1", RS.UNTOUCHED);
-		section("3.7.4.2", RS.UNTOUCHED);
-		section("3.8", RS.UNTOUCHED);
-		section("3.9", RS.UNTOUCHED);
-		section("3.9.1", RS.UNTOUCHED);
-		section("3.9.2", RS.UNTOUCHED);
-		section("3.10", RS.UNTOUCHED);
-		section("3.10.1", RS.UNTOUCHED);
-		section("3.10.2", RS.UNTOUCHED);
-		section("3.10.3", RS.UNTOUCHED);
-		section("3.10.", RS.UNTOUCHED);
-		section("3.10.5", RS.UNTOUCHED);
-		section("3.10.6", RS.UNTOUCHED);
-		section("3.10.7", RS.UNTOUCHED);
+
+		/*-
+		 * - new
+		 *   - no persistent identity
+		 *   - not yet associated with a persistence context
+		 * - managed
+		 *   - persistent identity
+		 *   - associated with a persistence context
+		 * - detached
+		 *   - persistent identity
+		 *   - not associated with a persistence context
+		 * - removed
+		 *   - persistent identity
+		 *   - scheduled for removal ; will be removed at next commit
+		 */
+
+		section("3.2.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+
+			@Entity
+			class MyEntity {
+
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+				MyEntity entity = new MyEntity();
+				/* entity is new */
+			}
+		});
+
+		section("3.2.2", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+
+			@Entity
+			class MyEntity {
+
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+				MyEntity entity = new MyEntity();
+				entityManager.persist(entity);
+				/* entity is now managed and persistent */
+
+			}
+		});
+
+		/*
+		 * new entity become managed when persisted ; they are synced with
+		 * database upon transaction commit or as a result of a flush operation
+		 */
+
+		/*
+		 * persisting managed entities has no effect on them, but they cause
+		 * referenced entities to be persisted too if cascade is PERSIST or ALL
+		 */
+
+		/* persisting removed entities make them managed */
+
+		/* detached entities should not be persisted */
+
+		section("3.2.3", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+
+			@Entity
+			class MyEntity {
+
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+				MyEntity entity = new MyEntity();
+				entityManager.persist(entity);
+				/* entity is now managed and persistent */
+				entityManager.remove(entity);
+				/* entity is removed */
+
+			}
+		});
+
+		/*
+		 * removing new entity has no effect, but the operation may be cascaded
+		 */
+
+		/* removing managed entities make them removed */
+
+		/* detached entities cannot be removed */
+
+		/* removing removed entities has no effect */
+
+		/* actual removal will be done on transaction commit or on flush */
+
+		section("3.2.4", RS.STARTED);
+
+		/*- the following require using joinTransaction to sync with the database
+		 * - persistence context of type SynchronizationType.UNSYNCHRONIZED
+		 * - application-managed persistence context created outside the scope of the current transaction
+		*/
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				entityManager.joinTransaction();
+			}
+		});
+
+		/* persistent entities are synced on transaction commit or flush */
+
+		/*
+		 * synchronization does not involve refresh unless cascade is REFRESH or
+		 * ALL
+		 */
+
+		/*
+		 * Bidirectional relationships between managed entities will be
+		 * persisted based on references held by the owning side of the
+		 * relationship.
+		 */
+
+		/*
+		 * It is the developer’s responsibility to keep the in-memory references
+		 * held on the owning side and those held on the inverse side consistent
+		 * with each other when they change.
+		 */
+
+		/*
+		 * It is particularly important to ensure that changes to the inverse
+		 * side of a relationship result in appropriate updates on the owning
+		 * side, so as to ensure the changes are not lost when they are
+		 * synchronized to the database.
+		 */
+
+		/* flushing can occur before transaction commit */
+		FlushModeType.AUTO.toString();
+		FlushModeType.COMMIT.toString();
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				entityManager.flush();
+			}
+		});
+
+		/*
+		 * upon flushing, managed entities are synced with the database, and
+		 * removed entities are removed from the database
+		 */
+
+		section("3.2.5", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				entityManager.refresh(entity);
+			}
+		});
+
+		/* only managed entities can be refreshed */
+
+		section("3.2.6", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				entityManager.flush();
+				entityManager.detach(entity);
+			}
+		});
+
+		/* better call flush before detach */
+
+		section("3.2.7", RS.STARTED);
+
+		/*- the following events cause an entity to become detached
+		 * - transaction commit
+		 * - transaction rollback
+		 * - detach()
+		 * - clearing the persistence context
+		 * - closing the entity manager
+		 * - serialization
+		 * - passing by value
+		 */
+
+		/*
+		 * detached entity contains only the part of the state that was
+		 * retrieved from the database
+		 */
+
+		section("3.2.7.1", RS.STARTED);
+
+		/* merging a managed entity has no effect */
+
+		/* merging a removed entity is illegal */
+
+		/*
+		 * merging a detached entity cause the state of the detached entity to
+		 * be copied to a preexisting or new managed copy of the entity
+		 */
+
+		/*
+		 * mergin a new entity cause a new managed instance to be created and
+		 * the state copied onto the new managed instance
+		 */
+
+		/* fields marked LAZY are not merged */
+
+		/* @Version fields are checked when merging */
+
+		section("3.2.7.2", RS.STARTED);
+
+		/*
+		 * Serializing entities and merging those entities back into a
+		 * persistence context may not be interoperable across vendors when lazy
+		 * properties or fields and/or relationships are used.
+		 */
+
+		/*
+		 * When interoperability across vendors is required, the application
+		 * must not use lazy loading.
+		 */
+
+		section("3.2.8", RS.STARTED);
+
+		/* an entity instance must be managed by only one persistence context */
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				entityManager.contains(entity);
+			}
+		});
+
+		/*- contains return:
+		 * - true if a new entity has been persisted
+		 * - true if the entity has been retrieved from the database or with getReference and has not been removed or detached
+		 * - false if the entity is detached
+		 * - false if the entity has been removed
+		 * - false if the entity is new and has not been persisted
+		 */
+
+		section("3.2.9", RS.STARTED);
+
+		/* an entity is loaded when all EAGER attributes have been fetched */
+
+		dontRun(new NotRunnable() {
+
+			@Override
+			public void dontRun() throws Exception {
+				persistenceUtil.isLoaded(entity);
+				persistenceUnitUtil.isLoaded(entity);
+			}
+		});
+
+		section("3.3", RS.STARTED);
+
+		/*-
+		 * - transaction-scoped presistence context
+		 * - extended persistence context
+		 */
+
+		PersistenceContextType.TRANSACTION.toString();
+		PersistenceContextType.EXTENDED.toString();
+
+		/*
+		 * The persistence context lifetime scope is defined when the
+		 * EntityManager instance is created
+		 */
+
+		/*
+		 * By default, the lifetime of the persistence context of a
+		 * container-managed entity manager corresponds to the scope of a
+		 * transaction
+		 */
+
+		/*
+		 * When an extended persistence context is used, the extended
+		 * persistence context exists from the time the EntityManager instance
+		 * is created until it is closed. This persistence context might span
+		 * multiple transactions and non-transactional invocations of the
+		 * EntityManager.
+		 */
+
+		/*
+		 * An EntityManager with an extended persistence context maintains its
+		 * references to the entity objects after a transaction has committed.
+		 * Those objects remain managed by the EntityManager, and they can be
+		 * updated as managed objects between transactions.[30] Navigation from
+		 * a managed object in an extended persistence context results in one or
+		 * more other managed objects regardless of whether a transaction is
+		 * active.
+		 */
+
+		/*
+		 * When an EntityManager with an extended persistence context is used,
+		 * the persist, remove, merge, and refresh operations can be called
+		 * regardless of whether a transaction is active. The effects of these
+		 * operations will be committed to the database when the extended
+		 * persistence context is enlisted in a transaction and the transaction
+		 * commits.
+		 */
+
+		/*
+		 * It is the responsibility of the application to manage the lifecycle
+		 * of the persistence context.
+		 */
+
+		section("3.3.1", RS.STARTED);
+
+		/*
+		 * By default, a container-managed persistence context is of
+		 * SynchronizationType.SYNCHRONIZED and is automatically joined to the
+		 * current transaction.
+		 */
+
+		/*
+		 * A persistence context of SynchronizationType. UNSYNCHRONIZED will not
+		 * be enlisted in the current transaction, unless the EntityManager
+		 * joinTransaction method is invoked.
+		 */
+
+		/*
+		 * By default, an application-managed persistence context that is
+		 * associated with a JTA entity manager and that is created within the
+		 * scope of an active transaction is automatically joined to that
+		 * transaction.
+		 */
+
+		/*
+		 * An application-managed JTA persistence context that is created
+		 * outside the scope of a transaction or an application-managed
+		 * persistence context of type SynchronizationType.UNSYNCHRONIZED will
+		 * not be joined to that transaction unless the EntityManager
+		 * joinTransaction method is invoked.
+		 */
+
+		/*
+		 * An application-managed persistence context associated with a
+		 * resource-local entity manager is always automatically joined to any
+		 * resource-local transaction that is begun for that entity manager.
+		 */
+
+		section("3.3.2", RS.STARTED);
+
+		/*
+		 * The managed entities of a transaction-scoped persistence context
+		 * become detached when the transaction commits.
+		 */
+
+		/*
+		 * The managed entities of an extended persistence context remain
+		 * managed when the transaction commits.
+		 */
+
+		section("3.3.3", RS.STARTED);
+
+		/*
+		 * For both transaction-scoped persistence contexts and for extended
+		 * persistence contexts that are joined to the current transaction,
+		 * transaction rollback causes all pre-existing managed instances and
+		 * removed instances to become detached.
+		 */
+
+		/*
+		 * Transaction rollback typically causes the persistence context to be
+		 * in an inconsistent state at the point of rollback.
+		 */
+
+		/*
+		 * The state of version attributes and generated primary keys may be
+		 * inconsistent.
+		 */
+
+		/*
+		 * Instances that were formerly managed by the persistence context,
+		 * including new instances that were made persistent in that
+		 * transaction, may therefore not be reusable in the same manner as
+		 * other detached objects, they may fail when passed to the merge
+		 * operation.
+		 */
+
+		/*
+		 * The container closes a transaction-scoped persistence context upon
+		 * transaction rollback.
+		 */
+
+		/*
+		 * An extended persistence context that is not joined to a transaction
+		 * is unaffected by transaction rollback
+		 */
+
+		section("3.4", RS.STARTED);
+
+		/*
+		 * This specification assumes the use of optimistic concurrency control.
+		 */
+
+		/*
+		 * It assumes that the databases to which persistence units are mapped
+		 * will be accessed by the implementation using read-committed
+		 * isolation,
+		 * 
+		 * and that writes to the database will typically occur only when the
+		 * flush method has been invoked.
+		 */
+
+		/*
+		 * both pessimistic and optimistic locking are supported for selected
+		 * entities by means of specified lock modes
+		 */
+
+		section("3.4.1", RS.STARTED);
+
+		/*
+		 * Optimistic locking is a technique that is used to insure that updates
+		 * to the database data corresponding to the state of an entity are made
+		 * only when no intervening transaction has updated that data since the
+		 * entity state was read.
+		 */
+
+		/*
+		 * This insures that updates or deletes to that data are consistent with
+		 * the current state of the database and that intervening updates are
+		 * not lost.
+		 */
+
+		/* OptimisticLockException may be thrown */
+
+		/*
+		 * optimistic locking requires Version attributes
+		 */
+
+		/*
+		 * Applications are strongly encouraged to enable optimistic locking for
+		 * all entities that may be concurrently accessed or that may be merged
+		 * from a disconnected state.
+		 */
+
+		/*
+		 * Failure to use optimistic locking may lead to inconsistent entity
+		 * state, lost updates and other state irregularities.
+		 */
+
+		section("3.4.2", RS.STARTED);
+
+		/*
+		 * An entity is automatically enabled for optimistic locking if it has a
+		 * property or field mapped with a Version mapping.
+		 */
+
+		/* An entity must not modify the version value. */
+
+		/*
+		 * only the persistence provider is permitted to set or update the value
+		 * of the version attribute in the object
+		 */
+
+		/*
+		 * The version attribute is updated by the persistence provider runtime
+		 * when the object is written to the database.
+		 */
+
+		/*
+		 * All non-relationship fields and properties and all relationships
+		 * owned by the entity are included in version checks.
+		 */
+
+		/*
+		 * The persistence provider's implementation of the merge operation must
+		 * examine the version attribute when an entity is being merged and
+		 * throw an OptimisticLockException if it is discovered that the object
+		 * being merged is a stale copy of the entity.
+		 */
+
+		/*
+		 * It is possible that this exception may not be thrown until flush is
+		 * called or commit time, whichever happens first.
+		 */
+
+		/*
+		 * The persistence provider runtime is required to use only the version
+		 * attribute when performing optimistic lock checking.
+		 */
+
+		/*
+		 * If only some entities contain version attributes, the persistence
+		 * provider runtime is required to check those entities for which
+		 * version attributes have been specified.
+		 */
+
+		section("3.4.3", RS.STARTED);
+
+		/*
+		 * Optimistic locking is typically appropriate in dealing with moderate
+		 * contention among concurrent transactions.
+		 */
+
+		/*
+		 * In some applications it may be useful to immediately obtain long-term
+		 * database locks for selected entities because of the often late
+		 * failure of optimistic transactions.
+		 */
+
+		/*
+		 * Pessimistic locking guarantees that once a transaction has obtained a
+		 * pessimistic lock on an entity instance, no other transaction may
+		 * successfully modify or delete that instance until the transaction
+		 * holding the lock has ended, and the transaction may modify or delete
+		 * that entity instance.
+		 */
+
+		/*
+		 * When an entity instance is locked using pessimistic locking, the
+		 * persistence provider must lock the database row(s) that correspond to
+		 * the non-collection-valued persistent state of that instance. If a
+		 * joined inheritance strategy is used, or if the entity is otherwise
+		 * mapped to a secondary table, this entails locking the row(s) for the
+		 * entity instance in the additional table(s). Entity relationships for
+		 * which the locked entity contains the foreign key will also be locked,
+		 * but not the state of the referenced entities (unless those entities
+		 * are explicitly locked). Element collections and relationships for
+		 * which the entity does not contain the foreign key (such as
+		 * relationships that are mapped to join tables or unidirectional
+		 * one-to-many relationships for which the target entity contains the
+		 * foreign key) will not be locked by default.
+		 */
+
+		/*
+		 * Element collections and relationships owned by the entity that are
+		 * contained in join tables will be locked if the
+		 * javax.persistence.lock.scope property is specified with a value of
+		 * PessimisticLockScope.EXTENDED. The state of entities referenced by
+		 * such relationships will not be locked (unless those entities are
+		 * explicitly locked). This property may be passed as an argument to the
+		 * methods of the EntityManager, Query, and TypedQuery interfaces that
+		 * allow lock modes to be specified or used with the NamedQuery
+		 * annotation.
+		 */
+
+		/*
+		 * Locking such a relationship or element collection generally locks
+		 * only the rows in the join table or collection table for that
+		 * relationship or collection. This means that phantoms will be
+		 * possible.
+		 */
+
+		section("3.4.4", RS.STARTED);
+
+		/*
+		 * Lock modes are intended to provide a facility that enables the effect
+		 * of “repeatable read” semantics for the items read.
+		 */
+
+		section("3.4.4.1", RS.STARTED);
+
+		LockModeType.OPTIMISTIC.toString();
+		LockModeType.OPTIMISTIC_FORCE_INCREMENT.toString();
+
+		LockModeType.READ.toString();
+		LockModeType.WRITE.toString();
+
+		/*
+		 * Insures against - dirty reads - non-repeatable reads
+		 */
+
+		/*
+		 * The persistence implementation is not required to support locing on a
+		 * non-versioned objectand can throw PersistenceException in this case.
+		 */
+
+		/* Locking cause a forced version update. */
+
+		section("3.4.4.2", RS.STARTED);
+
+		LockModeType.PESSIMISTIC_READ.toString();
+		LockModeType.PESSIMISTIC_WRITE.toString();
+		LockModeType.PESSIMISTIC_FORCE_INCREMENT.toString();
+
+		/* long-term database locks */
+
+		/*-
+		 * - dirty reads
+		 * - non-repeatable reads
+		 */
+
+		PessimisticLockException.class.getName();
+		LockTimeoutException.class.getName();
+		OptimisticLockException.class.getName();
+		PersistenceException.class.getName();
+
+		section("3.4.4.3", RS.STARTED);
+
+		/* javax.persistence.lock.scope */
+
+		/* javax.persistence.lock.timeout */
+
+		section("3.4.5", RS.STARTED);
+
+		section("3.5", RS.STARTED);
+
+		/*
+		 * Default entity listeners can be specified by means of the XML
+		 * descriptor.
+		 */
+
+		/*
+		 * If multiple entity listeners are defined, the order in which they are
+		 * invoked is determined by the order in which they are specified in the
+		 * EntityListeners annotation.
+		 */
+
+		dontRun(new NotRunnable() {
+
+			class MyEntityListener {
+				public MyEntityListener() {
+				}
+
+				@PostConstruct
+				public void postConstruct() {
+
+				}
+
+				@PreDestroy
+				public void preDestroy() {
+
+				}
+
+				@PrePersist
+				public void prePersist(MyEntity entity) {
+				}
+
+				@PostPersist
+				public void postPersist(MyEntity entity) {
+				}
+
+				@PreRemove
+				public void preRemove(MyEntity entity) {
+				}
+
+				@PostRemove
+				public void postRemove(MyEntity entity) {
+				}
+
+				@PreUpdate
+				public void preUpdate(MyEntity entity) {
+				}
+
+				@PostUpdate
+				public void postUpdate(MyEntity entity) {
+				}
+
+				@PostLoad
+				public void postLoad(MyEntity entity) {
+				}
+
+			}
+
+			@Entity
+			@EntityListeners(MyEntityListener.class)
+			class MyEntity {
+
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+			}
+		});
+
+		section("3.5.1", RS.STARTED);
+
+		section("3.5.2", RS.STARTED);
+
+		/*
+		 * Lifecycle callbacks can invoke JNDI, JDBC, JMS, and enterprise beans.
+		 */
+
+		section("3.5.3", RS.STARTED);
+
+		section("3.5.4", RS.STARTED);
+		section("3.5.5", RS.STARTED);
+
+		/*
+		 * default listeners are invoked first, and can be excluded for some
+		 * entities
+		 */
+
+		dontRun(new NotRunnable() {
+			@Entity
+			@ExcludeDefaultListeners
+			class MyEntity {
+
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+			}
+		});
+
+		/*
+		 * the listeners defined for a superclass are invoked before the
+		 * listeners defined for its subclasses
+		 */
+
+		dontRun(new NotRunnable() {
+			@Entity
+			@ExcludeSuperclassListeners
+			class MyEntity {
+
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+			}
+		});
+
+		section("3.5.6", RS.STARTED);
+		section("3.5.7", RS.STARTED);
+		section("3.5.8", RS.STARTED);
+		section("3.5.8.1", RS.STARTED);
+		section("3.5.8.2", RS.STARTED);
+		section("3.6", RS.STARTED);
+
+		section("3.6.1", RS.STARTED);
+		section("3.6.1.1", RS.STARTED);
+
+		/* validation-mode in persistence.xml */
+
+		/* javax.persistence.validation.mode */
+
+		section("3.6.1.2", RS.STARTED);
+
+		/* default bean validation group */
+
+		/*-
+		 * - javax.persistence.validation.group.pre-persist
+		 * - javax.persistence.validation.group.pre-update
+		 * - javax.persistence.validation.group.pre-remove
+		 */
+
+		section("3.6.2", RS.STARTED);
+		section("3.7", RS.STARTED);
+
+		EntityGraph.class.getName();
+		AttributeNode.class.getName();
+		Subgraph.class.getName();
+		NamedEntityGraph.class.isAnnotation();
+		NamedAttributeNode.class.isAnnotation();
+		NamedSubgraph.class.isAnnotation();
+
+		section("3.7.1", RS.STARTED);
+		section("3.7.2", RS.STARTED);
+		section("3.7.3", RS.STARTED);
+		section("3.7.4", RS.STARTED);
+
+		/*-
+		 * - javax.persistence.fetchgraph
+		 * - javax.persistence.loadgraph
+		 */
+
+		section("3.7.4.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			class PhoneTypeEnum {
+			}
+
+			@NamedEntityGraph
+			@Entity
+			class PhoneNumber {
+				@Id
+				protected String number;
+				protected PhoneTypeEnum type;
+			}
+
+			@Entity
+			class Dependent {
+			}
+
+			@Entity
+			class Approval {
+			}
+
+			@Entity
+			class Requirements {
+				@Id
+				protected long id;
+				@Lob
+				protected String descrition;
+				@OneToOne(fetch = FetchType.LAZY)
+				protected Approval approval;
+			}
+
+			@Entity
+			@Inheritance
+			class Project {
+				@Id
+				@GeneratedValue
+				protected long id;
+				String name;
+				@OneToOne(fetch = FetchType.EAGER)
+				Requirements doc;
+			}
+
+			@Entity
+			class LargeProject extends Project {
+				@OneToOne(fetch = FetchType.LAZY)
+				protected Employee approver;
+
+			}
+
+			@NamedEntityGraph(attributeNodes = { @NamedAttributeNode("projects") })
+			@Entity
+			class Employee {
+				@Id
+				@GeneratedValue
+				protected long id;
+				@Basic
+				protected String name;
+				@Basic
+				protected String employeeNumber;
+				@OneToMany
+				protected List<Dependent> dependents;
+				@OneToMany
+				protected List<Project> projects;
+				@OneToMany
+				protected List<PhoneNumber> phoneNumbers;
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+
+			}
+		});
+
+		section("3.7.4.2", RS.STARTED);
+
+		/* javax.persistence.loadgraph */
+
+		section("3.8", RS.STARTED);
+
+		AttributeConverter.class.isInterface();
+		Converter.class.isAnnotation();
+		Converter.class.newInstance().autoApply();
+		Convert.class.isAnnotation();
+
+		section("3.9", RS.STARTED);
+
+		/* second-level cache */
+
+		/* stale reads */
+
+		/*
+		 * shared-cache-mode : ALL, NONE, ENABLE_SELECTIVE, DISABLE_SELECTIVE,
+		 * UNSPECIFIED
+		 */
+
+		Cacheable.class.isAnnotation();
+
+		section("3.9.1", RS.STARTED);
+		section("3.9.2", RS.STARTED);
+
+		/* retrieveMode, storeMode */
+
+		section("3.10", RS.STARTED);
+		section("3.10.1", RS.STARTED);
+		section("3.10.2", RS.STARTED);
+		section("3.10.3", RS.STARTED);
+		section("3.10.4", RS.STARTED);
+		section("3.10.5", RS.STARTED);
+		section("3.10.6", RS.STARTED);
+		section("3.10.7", RS.STARTED);
+
+		query.getSingleResult();
+		query.getResultList();
+		query.executeUpdate();
+
 		section("3.10.7.1", RS.UNTOUCHED);
-		section("3.10.8", RS.UNTOUCHED);
-		section("3.10.9", RS.UNTOUCHED);
-		section("3.10.10", RS.UNTOUCHED);
-		section("3.10.11", RS.UNTOUCHED);
-		section("3.10.12", RS.UNTOUCHED);
-		section("3.10.13", RS.UNTOUCHED);
-		section("3.10.14", RS.UNTOUCHED);
-		section("3.10.15", RS.UNTOUCHED);
-		section("3.10.16", RS.UNTOUCHED);
-		section("3.10.16.1", RS.UNTOUCHED);
-		section("3.10.16.2", RS.UNTOUCHED);
+		section("3.10.8", RS.STARTED);
+
+		section("3.10.9", RS.STARTED);
+		section("3.10.10", RS.STARTED);
+
+		/* javax.persistence.query.timeout */
+
+		section("3.10.11", RS.STARTED);
+		section("3.10.12", RS.STARTED);
+		section("3.10.13", RS.STARTED);
+		section("3.10.14", RS.STARTED);
+		section("3.10.15", RS.STARTED);
+		section("3.10.16", RS.STARTED);
+		section("3.10.16.1", RS.STARTED);
+
+		SqlResultSetMapping.class.isAnnotation();
+
+		section("3.10.16.2", RS.STARTED);
+
 		section("3.10.16.2.1", RS.UNTOUCHED);
 		section("3.10.16.2.2", RS.UNTOUCHED);
-		section("3.10.16.3", RS.UNTOUCHED);
-		section("3.10.16.4", RS.UNTOUCHED);
-		section("3.10.17", RS.UNTOUCHED);
+
+		section("3.10.16.3", RS.STARTED);
+
+		section("3.10.16.4", RS.STARTED);
+		section("3.10.17", RS.STARTED);
+
 		section("3.10.17.1", RS.UNTOUCHED);
 		section("3.10.17.2", RS.UNTOUCHED);
 		section("3.10.17.3", RS.UNTOUCHED);
-		section("3.11", RS.UNTOUCHED);
+		section("3.11", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				Class<?>[] exceptions = new Class<?>[] {
+
+						PersistenceException.class,
+
+						TransactionRequiredException.class,
+
+						OptimisticLockException.class,
+
+						PessimisticLockException.class,
+
+						LockTimeoutException.class,
+
+						RollbackException.class,
+
+						EntityExistsException.class,
+
+						EntityNotFoundException.class,
+
+						NoResultException.class,
+
+						NonUniqueResultException.class,
+
+						QueryTimeoutException.class,
+
+				};
+			}
+		});
+
 		section("4", RS.UNTOUCHED);
 		section("4.1", RS.UNTOUCHED);
 		section("4.2", RS.UNTOUCHED);
@@ -1949,29 +2857,204 @@ public class Reading_JSR345_JPA extends Reading {
 		section("6.7", RS.UNTOUCHED);
 		section("6.8", RS.UNTOUCHED);
 		section("6.9", RS.UNTOUCHED);
-		section("7", RS.UNTOUCHED);
-		section("7.1", RS.UNTOUCHED);
-		section("7.2", RS.UNTOUCHED);
-		section("7.2.1", RS.UNTOUCHED);
-		section("7.2.2", RS.UNTOUCHED);
-		section("7.3", RS.UNTOUCHED);
-		section("7.3.1", RS.UNTOUCHED);
-		section("7.3.2", RS.UNTOUCHED);
-		section("7.4", RS.UNTOUCHED);
-		section("7.5", RS.UNTOUCHED);
-		section("7.5.1", RS.UNTOUCHED);
-		section("7.5.2", RS.UNTOUCHED);
-		section("7.5.3", RS.UNTOUCHED);
-		section("7.5.4", RS.UNTOUCHED);
-		section("7.6", RS.UNTOUCHED);
-		section("7.6.1", RS.UNTOUCHED);
-		section("7.6.2", RS.UNTOUCHED);
-		section("7.6.3", RS.UNTOUCHED);
-		section("7.6.4", RS.UNTOUCHED);
-		section("7.6.5", RS.UNTOUCHED);
-		section("7.6.5.1", RS.UNTOUCHED);
-		section("7.6.5.2", RS.UNTOUCHED);
-		section("7.7", RS.UNTOUCHED);
+		section("7", RS.STARTED);
+		section("7.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				entityManagerFactory.createEntityManager();
+			}
+		});
+
+		section("7.2", RS.STARTED);
+
+		/*
+		 * Entity managers and persistence contexts are not required to be
+		 * threadsafe.
+		 */
+
+		section("7.2.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Stateless
+			@PersistenceContext(name = "FooEM")
+			class MyBean {
+
+				@Resource
+				SessionContext ctx;
+
+				@PersistenceContext
+				EntityManager entityManager;
+
+				@PersistenceContext(type = PersistenceContextType.EXTENDED, synchronization = SynchronizationType.SYNCHRONIZED)
+				EntityManager entityManager2;
+
+				public void foo() {
+					EntityManager em = (EntityManager) ctx.lookup("FooEM");
+				}
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+			}
+		});
+
+		section("7.2.2", RS.STARTED);
+		section("7.3", RS.STARTED);
+		section("7.3.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+
+			@PersistenceUnit
+			EntityManagerFactory entityManagerFactory;
+
+			@Override
+			public void dontRun() throws Exception {
+
+			}
+		});
+
+		section("7.3.2", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+
+			@Override
+			public void dontRun() throws Exception {
+				EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("FooEM");
+				EntityManager em = entityManagerFactory.createEntityManager();
+			}
+		});
+
+		section("7.4", RS.STARTED);
+
+		section("7.5", RS.STARTED);
+
+		section("7.5.1", RS.STARTED);
+
+		section("7.5.2", RS.STARTED);
+		section("7.5.3", RS.STARTED);
+		section("7.5.4", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+			@Override
+			public void dontRun() throws Exception {
+				EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("TOTO");
+				EntityManager entityManager = entityManagerFactory.createEntityManager();
+				entityManager.getTransaction().begin();
+				// ...
+				entityManager.getTransaction().commit();
+				entityManager.close();
+				entityManagerFactory.close();
+
+			}
+		});
+
+		section("7.6", RS.STARTED);
+
+		/*
+		 * Persistence contexts are always associated with an entity manager
+		 * factory.
+		 */
+
+		section("7.6.1", RS.STARTED);
+
+		section("7.6.2", RS.STARTED);
+		section("7.6.3", RS.STARTED);
+
+		/*
+		 * A container-managed extended persistence context can only be
+		 * initiated within the scope of a stateful session bean.
+		 */
+
+		section("7.6.3.1", RS.STARTED);
+
+		/*
+		 * If a stateful session bean instantiates a stateful session bean which
+		 * also has such an extended persistence context with the same
+		 * synchronization type, the extended persistence context of the first
+		 * stateful session bean is inherited by the second stateful session
+		 * bean and bound to it. If the stateful session beans differ in
+		 * declared synchronization type, the EJBException is thrown by the
+		 * container.
+		 */
+
+		section("7.6.4", RS.STARTED);
+
+		/*
+		 * A single persistence context may correspond to one or more JTA entity
+		 * manager instances, all associated with the same entity manager
+		 * factory.
+		 */
+
+		/*
+		 * The persistence context is propagated across the entity manager
+		 * instances as the JTA transaction is propagated.
+		 */
+
+		/*
+		 * A persistence context of type SynchronizationType.UNSYNCHRONIZED is
+		 * propagated with the JTA transaction regardless of whether it has been
+		 * joined to the transaction.
+		 */
+
+		/*
+		 * Persistence contexts are not propagated to remote tiers.
+		 */
+		section("7.6.4.1", RS.STARTED);
+
+		section("7.6.5", RS.STARTED);
+
+		section("7.6.5.1", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+
+			@Entity
+			class Item {
+			}
+
+			@Stateless
+			class MyBean {
+				@PersistenceContext
+				EntityManager entityManager;
+
+				public Item foo() {
+					Item item = new Item();
+					entityManager.persist(item);
+					return item;
+				}
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+			}
+		});
+
+		section("7.6.5.2", RS.STARTED);
+
+		dontRun(new NotRunnable() {
+
+			@Entity
+			class Item {
+			}
+
+			@Stateful
+			@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+			class MyBean {
+				@PersistenceContext(type = PersistenceContextType.EXTENDED)
+				EntityManager entityManager;
+
+			}
+
+			@Override
+			public void dontRun() throws Exception {
+			}
+		});
+
+		section("7.7", RS.STARTED);
+		
+		
+		
 		section("7.7.1", RS.UNTOUCHED);
 		section("7.7.1.1", RS.UNTOUCHED);
 		section("7.7.1.2", RS.UNTOUCHED);
