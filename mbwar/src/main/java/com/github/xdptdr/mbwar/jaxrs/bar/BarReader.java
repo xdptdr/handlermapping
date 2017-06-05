@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs;
+package com.github.xdptdr.mbwar.jaxrs.bar;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,17 +13,19 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
+import com.github.xdptdr.mbwar.jaxrs.bar.BarBean;
+
 @Provider
 @Consumes(MediaType.TEXT_PLAIN)
-public class FooMBR implements MessageBodyReader<Foo> {
+public class BarReader implements MessageBodyReader<BarBean> {
 
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		return type == Foo.class && MediaType.TEXT_PLAIN_TYPE.equals(mediaType);
+		return type == BarBean.class && MediaType.TEXT_PLAIN_TYPE.equals(mediaType);
 	}
 
 	@Override
-	public Foo readFrom(Class<Foo> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public BarBean readFrom(Class<BarBean> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
 
@@ -34,9 +36,9 @@ public class FooMBR implements MessageBodyReader<Foo> {
 
 		String[] parts = str.split(" ");
 
-		Foo foo = new Foo();
-		foo.setFirstName(parts.length >= 1 ? parts[0] : "");
-		foo.setLastName(parts.length >= 2 ? parts[1] : "");
+		BarBean foo = new BarBean();
+		foo.setFirstname(parts.length >= 1 ? parts[0] : "");
+		foo.setLastname(parts.length >= 2 ? parts[1] : "");
 		return foo;
 	}
 

@@ -12,6 +12,7 @@
 		<module>mbwar</module>
 		<module>mbejb-api</module>
 		<module>mbear</module>
+		<module>standalones</module>
 	</modules>
 
 	<build>
