@@ -171,7 +171,7 @@ public class Notes {
 
 		/* 2.1 Writer */
 
-		n.s("We defined the writer first, since it will be used with GET request");
+		n.s("We define the writer first, since it will be used with GET request.");
 
 		n.k(BarWriter.class).s(" implements ").k(MessageBodyWriter.class).s(" and targets instances of ")
 				.k(BarBean.class);
