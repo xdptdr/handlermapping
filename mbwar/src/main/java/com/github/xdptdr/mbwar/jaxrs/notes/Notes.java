@@ -117,6 +117,8 @@ import com.github.xdptdr.mbwar.jaxrs.bar.BarWriter;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.InvokeAze;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBarGet;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBarPost;
+import com.github.xdptdr.mbwar.jaxrs.clients.cuk.InvokeCuk;
+import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 
 public class Notes {
 
@@ -212,6 +214,7 @@ public class Notes {
 		n.s("It is also annotated with ").k(Provider.class).s(" for automatic discovery");
 
 		/* 2.4 Reader endpoint */
+	
 
 		n.k(BarEndpoint.class).s(" defines a read method, which is annoated with ").k(POST.class)
 				.s(" to accept post requests, and with ").k(Consumes.class)
@@ -222,6 +225,20 @@ public class Notes {
 
 		n.s("The test program is ").k(InvokeBarPost.class).s(". Nothing fancy there, except the use of ")
 				.k(Entity.class).s(" to set the post data.");
+
+		/* 3. REST Endpoint */
+		
+		n.s("In this section, will create a REST client as prescribed by Wikipedia, to manage things called cuks.");
+
+		n.s("https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_Web_services");
+
+		n.s("This will make us use most of the HTTP methods annotations, ie ").k(GET.class, POST.class, PUT.class,
+				DELETE.class, HEAD.class);
+
+		n.s("We also use the ").k(PathParam.class).s(" annotation to match part of the request url, and the ")
+				.k(Response.class).s(" class for the responses");
+
+		n.k(CukEndpoint.class).s(" is the endpoint, and the test program is a little CLI called ").k(InvokeCuk.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);

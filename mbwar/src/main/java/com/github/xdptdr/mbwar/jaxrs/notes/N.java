@@ -8,9 +8,12 @@ public class N {
 	Set<Class<?>> covered = new HashSet<>();
 	Set<Class<?>> todo = new HashSet<>();
 
-	public N k(Class<?> clazz) {
-		covered.add(clazz);
+	public N k(Class<?>... classes) {
+		for (Class<?> clazz : classes) {
+			covered.add(clazz);
+		}
 		return this;
+
 	}
 
 	public N s(String string) {
