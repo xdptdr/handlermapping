@@ -5,6 +5,7 @@ import java.util.Scanner;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -40,6 +41,14 @@ public class InvokeCuk {
 						response = client.target(CUK + "/" + id).request().get();
 
 					}
+				} else if (match("head", args, 0)) {
+					if (match("all", args, 1)) {
+						response = client.target(CUK).request().head();
+					} else {
+						Integer id = Integer.valueOf(get(args, 1));
+						response = client.target(CUK + "/" + id).request().head();
+
+					}
 				} else if (match("put", args, 0)) {
 					if (match("all", args, 1)) {
 						StringBuffer content = new StringBuffer();
@@ -68,6 +77,12 @@ public class InvokeCuk {
 						Integer id = Integer.valueOf(get(args, 1));
 						response = client.target(CUK + "/" + id).request().delete();
 					}
+				} else if (match("options", args, 0)) {
+					response = client.target(CUK).request().options();
+				} else if (match("cuk", args, 0)) {
+					response = client.target(CUK).request()
+							.property("jersey.config.client.httpUrlConnection.setMethodWorkaround", true)
+							.accept(MediaType.TEXT_PLAIN_TYPE).method("CUK");
 				}
 
 				if (response != null) {

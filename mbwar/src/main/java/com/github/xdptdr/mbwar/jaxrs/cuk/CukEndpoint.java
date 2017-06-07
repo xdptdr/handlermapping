@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -42,6 +43,22 @@ public class CukEndpoint {
 	public Response get(@PathParam("id") int id) {
 		if (cuks.containsKey(id)) {
 			return Response.ok().entity(cuks.get(id)).build();
+		} else {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+	}
+
+	@HEAD
+	@Path("/")
+	public Response head() {
+		return Response.ok().build();
+	}
+
+	@HEAD
+	@Path("/{id}")
+	public Response head(@PathParam("id") int id) {
+		if (cuks.containsKey(id)) {
+			return Response.ok().build();
 		} else {
 			return Response.status(Status.NOT_FOUND).build();
 		}
@@ -100,6 +117,13 @@ public class CukEndpoint {
 		} else {
 			return Response.status(Status.NOT_FOUND).build();
 		}
+	}
+
+	@CUK
+	@Path("/")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response cuk() {
+		return Response.ok().entity("This endpoint has CUK power !").build();
 	}
 
 }
