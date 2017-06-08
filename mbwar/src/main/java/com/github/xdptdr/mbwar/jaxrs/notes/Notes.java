@@ -124,8 +124,19 @@ public class Notes {
 
 	public static void notes(N n) {
 
-		/* 1.1 Set up */
+		/* 1 Set up */
 
+		/* 1.1 JAX-RS application */
+
+		n.s("There are several ways to set up a JAX-RS application, which are described in Chapter 2 of the JSR 339 JAX-RS specification.");
+
+		n.s("In these examples, we will define everything JAX-RS related with annotations.");
+
+		n.s("To define the servlet mapping of JAX-RS endpoints to /rs, we use the ").k(ApplicationPath.class)
+				.s(" annotation on the class ").k(MyJAXRSApplication.class).s(" which extends ").k(Application.class);
+
+		/* 1.2 JAX-RS endpoint */
+		
 		n.s("Our first goal is to make a call to /rs/aze/get working");
 
 		n.s("One way of doing this is to extend ").k(Application.class).s(" and annotate it with ")
@@ -214,7 +225,6 @@ public class Notes {
 		n.s("It is also annotated with ").k(Provider.class).s(" for automatic discovery");
 
 		/* 2.4 Reader endpoint */
-	
 
 		n.k(BarEndpoint.class).s(" defines a read method, which is annoated with ").k(POST.class)
 				.s(" to accept post requests, and with ").k(Consumes.class)
@@ -227,7 +237,7 @@ public class Notes {
 				.k(Entity.class).s(" to set the post data.");
 
 		/* 3. REST Endpoint */
-		
+
 		n.s("In this section, will create a REST client as prescribed by Wikipedia, to manage things called cuks.");
 
 		n.s("https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_Web_services");
