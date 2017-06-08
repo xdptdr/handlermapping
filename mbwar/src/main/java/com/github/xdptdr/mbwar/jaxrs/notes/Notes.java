@@ -135,28 +135,27 @@ public class Notes {
 		n.s("To define the servlet mapping of JAX-RS endpoints to /rs, we use the ").k(ApplicationPath.class)
 				.s(" annotation on the class ").k(MyJAXRSApplication.class).s(" which extends ").k(Application.class);
 
-		/* 1.2 JAX-RS endpoint */
+		/* 1.2 Very simple JAX-RS endpoint */
+
+		n.s("Our first JAX-RS endpoint is ").k(AzeEndpoint.class);
+
+		n.s("It is accessible at /rs/aze/get, and will respond to GET HTTP requests.");
+
+		n.s("To create such an endpoint with annotations, we only need to use the ")
+				.k(Provider.class, Path.class, GET.class).s(" annotations");
+
+		n.k(Provider.class)
+				.s(" is used for autodiscovery, so that the JAX-RS framework can find the class automatically");
+
+		n.k(Path.class).s("is used to specify the path, both at the class and at the method level");
+
+		n.k(GET.class).s("is used to introduce a GET HTTP method");
+
+
+		/* 1.3 JAX-RS client */
 		
-		n.s("Our first goal is to make a call to /rs/aze/get working");
-
-		n.s("One way of doing this is to extend ").k(Application.class).s(" and annotate it with ")
-				.k(ApplicationPath.class).s(", setting its value to /rs");
-
-		n.s("This is done in ").k(MyJAXRSApplication.class).s(" for this project");
-
-		n.s("The next things is to set up an endpoint, such as ").k(AzeEndpoint.class);
-
-		n.s("At the class level, the endpoint has the ").k(Provider.class)
-				.s(" annotation, to advertise it for autodiscovery, and a ").k(Path.class)
-				.s(" annotation, set to /foo");
-
-		n.s("There's a single method 'get', which is annotated with ").k(GET.class)
-				.s(" so that it can answers HTTP GET requests, and a ").k(Path.class).s(" annotation, set to /get");
-
-		n.s("This method only returns a string, which will be transmitted as such in the response");
-
-		/* 1.2 Test */
-
+		
+		
 		n.s("GET requests are easy to test with a standard browser. Other types of requests are not so easy to test."
 				+ " Besides, JAX-RS also defines a client API that we will cover here too.");
 
