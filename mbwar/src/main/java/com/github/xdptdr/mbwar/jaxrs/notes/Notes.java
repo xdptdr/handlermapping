@@ -110,9 +110,12 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 
 import com.github.xdptdr.mbwar.jaxrs.MyJAXRSApplication;
 import com.github.xdptdr.mbwar.jaxrs.aze.AzeEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.bar.BAR;
+import com.github.xdptdr.mbwar.jaxrs.bar.BarBean;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.InvokeAze;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBar;
+import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
 
@@ -157,13 +160,25 @@ public class Notes {
 
 		/* 2 REST Endpoint */
 
-		n.s("JAX-RS is the Java API for RESTful Web Services");
+		n.s("JAX-RS is the Java API for RESTful Web Services.");
 
-		/* 3. REST Endpoint */
-
-		n.s("In this section, will create a REST client as prescribed by Wikipedia, to manage things called cuks.");
+		n.s("Unfortunately, no specification defines what a RESTful web service actually is, but some guidelines are outlined in the wikipedia article about Representational state transfer.");
 
 		n.s("https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_Web_services");
+
+		n.s("We will follow these guidelines in this section, and create a 'bar' manager ").k(BarEndpoint.class);
+
+		n.s("A bar ").k(BarBean.class).s(" is a simple entity which contains a single string property.");
+
+		n.s("Methods are defined at two level : the root level defines GET, PUT, POST and DELETE methods, and the entity level defines only GET, PUT and DELETE");
+
+		n.s("HTTP methods are specified with the ").k(GET.class, PUT.class, POST.class, DELETE.class).s(" annotations");
+
+		/* 3. RESTfulness */
+
+		/* 3.1 RESTful endpoint */
+
+		n.s("In this section, will create a REST client as prescribed by Wikipedia, to manage things called cuks.");
 
 		n.s("This will make us use most of the HTTP methods annotations, ie ").k(GET.class, POST.class, PUT.class,
 				DELETE.class, HEAD.class);
@@ -172,6 +187,31 @@ public class Notes {
 				.k(Response.class).s(" class for the responses");
 
 		n.k(BarEndpoint.class).s(" is the endpoint, and the test program is a little CLI called ").k(InvokeBar.class);
+
+		n.k(Produces.class, Consumes.class)
+				.s(" are used to specify the mediatypes for requests and/or responses which have a body");
+
+		n.k(MediaType.class)
+				.s(" is used to reference the media types, but in most cases, using plain strings would work equally");
+
+		n.s("All methods return an instance of ").k(Response.class);
+
+		n.k(PathParam.class).s(" is used to get the id of entity-level methods");
+
+		n.k(Status.class).s(" is used when setting HTTP statuses on responses");
+
+		n.s("Input is plain text, and output is JSON");
+
+		n.s("Besides standard methods, the endpoint defines a custom HTTP 'BAR' method, which is introduced with the help of the ")
+				.k(HttpMethod.class).s(" annotation in ").k(BAR.class);
+
+		/* 3.2 RESTful client */
+
+		n.k(InvokeBar.class).s(" is a CLI that can interact with ").k(BarEndpoint.class);
+
+		n.s("It's a simple read-eval-print loop which expects its arguments to conform to some very precise and simple syntax.");
+
+		n.s("Besides the use of ").k(Entity.class).s(", it does not introduce new JAX-RS objects");
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
