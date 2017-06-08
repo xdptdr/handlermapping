@@ -110,15 +110,9 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 
 import com.github.xdptdr.mbwar.jaxrs.MyJAXRSApplication;
 import com.github.xdptdr.mbwar.jaxrs.aze.AzeEndpoint;
-import com.github.xdptdr.mbwar.jaxrs.bar.BarBean;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarEndpoint;
-import com.github.xdptdr.mbwar.jaxrs.bar.BarReader;
-import com.github.xdptdr.mbwar.jaxrs.bar.BarWriter;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.InvokeAze;
-import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBarGet;
-import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBarPost;
-import com.github.xdptdr.mbwar.jaxrs.clients.cuk.InvokeCuk;
-import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBar;
 
 public class Notes {
 
@@ -151,89 +145,19 @@ public class Notes {
 
 		n.k(GET.class).s("is used to introduce a GET HTTP method");
 
-
 		/* 1.3 JAX-RS client */
-		
-		
-		
-		n.s("GET requests are easy to test with a standard browser. Other types of requests are not so easy to test."
-				+ " Besides, JAX-RS also defines a client API that we will cover here too.");
 
-		n.s("In this project, testing the examples is done with small Java programs that have been bundled in the 'standalones' subproject, "
-				+ "because a dependency on 'jersey' must be introduced");
+		n.s("The JAX-RS specification also defines a client API, which we will use in small programs to interact with our endpoints.");
 
-		n.k(InvokeAze.class).s(" invokes ").k(AzeEndpoint.class);
+		n.s("Because these programs require an actual implementation of JAX-RS, and not only the JAX-RS API, they are located in the 'standalones' maven module.");
 
-		n.s("Just open it and run it's main method");
+		n.k(InvokeAze.class).s(" is the client for this section.");
 
-		n.s("It uses ").k(ClientBuilder.class).s(" to get a new instance of ").k(Client.class)
-				.s(", then it targets the full URL and retrieves an instance of ").k(Response.class)
-				.s(" which is then read as a String and dumped to the console");
+		n.s("It uses ").k(ClientBuilder.class).s(" to obtain an instance of ").k(Client.class);
 
-		n.k(InvokeAze.class).s(" requires a running server to work successfully");
+		/* 2 REST Endpoint */
 
-		/* 2 MessageBodyWriters and MessageBodyReaders */
-
-		n.s("In this second example, we will use message body writers and readers to transmit data in a custom way.");
-
-		n.k(BarBean.class).s(
-				" has a firstname and a lastname, and we want them to be transmitted in plain text firstname first, then a space, then lastname");
-
-		n.s("This is a terrible idea in practice, but good for an example");
-
-		/* 2.1 Writer */
-
-		n.s("We define the writer first, since it will be used with GET request.");
-
-		n.k(BarWriter.class).s(" implements ").k(MessageBodyWriter.class).s(" and targets instances of ")
-				.k(BarBean.class);
-
-		n.s("It checks that the given object is of the correct type, and also that the ").k(MediaType.class)
-				.s(" is text/plain");
-
-		n.s("The getSize function is deprecated, and should always return -1 in new developments");
-
-		n.s("Then writing is a matter of piping strings into an OutputStream");
-
-		n.s("Last but not least, ").k(BarWriter.class).s(" is annotated with ").k(Provider.class)
-				.s(" for automatic discovery");
-
-		/* 2.2 Writer endpoint */
-
-		n.k(BarEndpoint.class).s(" is the endpoint associated with this example.");
-
-		n.s("The first difference here is that the get method returns an instance of ").k(BarBean.class);
-
-		n.s("The second difference is that the method is annotated with ").k(Produces.class)
-				.s(" so that it is configured to send back text/plain data");
-
-		n.s("The test program is ").k(InvokeBarGet.class);
-
-		/* 2.3 Reader */
-
-		n.s("Creating a reader is similar to creating a reader, but implements ").k(MessageBodyReader.class)
-				.s(" instead.");
-
-		n.s("The difficulty is more about parsing the content, but this is not the topic here");
-
-		n.k(BarReader.class).s(" is the reader for ").k(BarBean.class).s(" in this example.");
-
-		n.s("It takes as input two words separated by a space, and produces the corresponding instance of ")
-				.k(BarBean.class);
-
-		n.s("It is also annotated with ").k(Provider.class).s(" for automatic discovery");
-
-		/* 2.4 Reader endpoint */
-
-		n.k(BarEndpoint.class).s(" defines a read method, which is annoated with ").k(POST.class)
-				.s(" to accept post requests, and with ").k(Consumes.class)
-				.s(" to specify it accepts only text/plain as input");
-
-		n.s("The read method sets the instance of the endpoint to what was given, so that we can check that the input has been correctly by running ")
-				.k(InvokeBarGet.class);
-
-		n.s("The test program is ").k(InvokeBarPost.class).s(". Nothing fancy there, except the use of ")
-				.k(Entity.class).s(" to set the post data.");
+		n.s("JAX-RS is the Java API for RESTful Web Services");
 
 		/* 3. REST Endpoint */
 
@@ -247,7 +171,7 @@ public class Notes {
 		n.s("We also use the ").k(PathParam.class).s(" annotation to match part of the request url, and the ")
 				.k(Response.class).s(" class for the responses");
 
-		n.k(CukEndpoint.class).s(" is the endpoint, and the test program is a little CLI called ").k(InvokeCuk.class);
+		n.k(BarEndpoint.class).s(" is the endpoint, and the test program is a little CLI called ").k(InvokeBar.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);

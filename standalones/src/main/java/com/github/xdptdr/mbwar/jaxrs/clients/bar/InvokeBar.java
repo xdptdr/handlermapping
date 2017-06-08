@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.cuk;
+package com.github.xdptdr.mbwar.jaxrs.clients.bar;
 
 import java.util.Scanner;
 
@@ -9,9 +9,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-public class InvokeCuk {
+public class InvokeBar {
 
-	private static final String CUK = "http://localhost:8080/mbwar/rs/cuk";
+	private static final String BAR = "http://localhost:8080/mbwar/rs/bar";
 
 	public static void main(String[] args) {
 
@@ -35,18 +35,18 @@ public class InvokeCuk {
 
 				} else if (match("get", args, 0)) {
 					if (match("all", args, 1)) {
-						response = client.target(CUK).request().get();
+						response = client.target(BAR).request().get();
 					} else {
 						Integer id = Integer.valueOf(get(args, 1));
-						response = client.target(CUK + "/" + id).request().get();
+						response = client.target(BAR + "/" + id).request().get();
 
 					}
 				} else if (match("head", args, 0)) {
 					if (match("all", args, 1)) {
-						response = client.target(CUK).request().head();
+						response = client.target(BAR).request().head();
 					} else {
 						Integer id = Integer.valueOf(get(args, 1));
-						response = client.target(CUK + "/" + id).request().head();
+						response = client.target(BAR + "/" + id).request().head();
 
 					}
 				} else if (match("put", args, 0)) {
@@ -61,28 +61,28 @@ public class InvokeCuk {
 							content.append(get(args, i));
 							sep = true;
 						}
-						response = client.target(CUK).request().put(Entity.text(content.toString()));
+						response = client.target(BAR).request().put(Entity.text(content.toString()));
 					} else {
 						Integer id = Integer.valueOf(get(args, 1));
 						String content = get(args, 2);
-						response = client.target(CUK + "/" + id).request().put(Entity.text(content));
+						response = client.target(BAR + "/" + id).request().put(Entity.text(content));
 					}
 				} else if (match("post", args, 0)) {
 					String content = get(args, 1);
-					response = client.target(CUK).request().post(Entity.text(content));
+					response = client.target(BAR).request().post(Entity.text(content));
 				} else if (match("delete", args, 0)) {
 					if (match("all", args, 1)) {
-						response = client.target(CUK).request().delete();
+						response = client.target(BAR).request().delete();
 					} else {
 						Integer id = Integer.valueOf(get(args, 1));
-						response = client.target(CUK + "/" + id).request().delete();
+						response = client.target(BAR + "/" + id).request().delete();
 					}
 				} else if (match("options", args, 0)) {
-					response = client.target(CUK).request().options();
-				} else if (match("cuk", args, 0)) {
-					response = client.target(CUK).request()
+					response = client.target(BAR).request().options();
+				} else if (match("bar", args, 0)) {
+					response = client.target(BAR).request()
 							.property("jersey.config.client.httpUrlConnection.setMethodWorkaround", true)
-							.accept(MediaType.TEXT_PLAIN_TYPE).method("CUK");
+							.accept(MediaType.TEXT_PLAIN_TYPE).method("BAR");
 				}
 
 				if (response != null) {

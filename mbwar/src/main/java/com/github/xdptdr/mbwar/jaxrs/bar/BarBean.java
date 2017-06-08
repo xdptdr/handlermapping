@@ -2,31 +2,18 @@ package com.github.xdptdr.mbwar.jaxrs.bar;
 
 public class BarBean {
 
-	private String firstname;
-	private String lastname;
+	private String content;
 
-	public BarBean() {
+	public BarBean(String content) {
+		this.content = content;
 	}
 
-	public BarBean(String firstname, String lastname) {
-		this.firstname = firstname;
-		this.lastname = lastname;
+	public String getContent() {
+		return content;
 	}
 
-	public String getFirstname() {
-		return firstname;
-	}
-
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-
-	public String getLastname() {
-		return lastname;
-	}
-
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 }

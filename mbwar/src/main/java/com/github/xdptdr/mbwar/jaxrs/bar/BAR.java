@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.cuk;
+package com.github.xdptdr.mbwar.jaxrs.bar;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,7 @@ import javax.ws.rs.HttpMethod;
 
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@HttpMethod("CUK")
-public @interface CUK {
+@HttpMethod("BAR")
+public @interface BAR {
 
 }

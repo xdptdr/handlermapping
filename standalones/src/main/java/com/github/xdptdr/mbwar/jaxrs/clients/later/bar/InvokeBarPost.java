@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.bar;
+package com.github.xdptdr.mbwar.jaxrs.clients.later.bar;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
