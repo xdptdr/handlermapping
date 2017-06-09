@@ -213,6 +213,14 @@ public class Notes {
 
 		n.s("Besides the use of ").k(Entity.class).s(", it does not introduce new JAX-RS objects");
 
+		/* 4. Misc */
+
+		n.k(Consumes.class, CookieParam.class, DefaultValue.class, Encoded.class, FormParam.class, GET.class,
+				HeaderParam.class, MatrixParam.class, POST.class, Path.class, PathParam.class, Produces.class,
+				QueryParam.class, ResourceContext.class, Application.class, Configuration.class, Context.class,
+				HttpHeaders.class, MediaType.class, Request.class, Response.class, SecurityContext.class, UriInfo.class,
+				Provider.class, Providers.class);
+
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
