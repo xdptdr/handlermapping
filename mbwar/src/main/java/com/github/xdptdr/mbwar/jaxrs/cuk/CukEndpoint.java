@@ -84,7 +84,7 @@ public class CukEndpoint {
 	}
 
 	@GET
-	@Path("/get/matrixparam/defaultValue")
+	@Path("/get/matrixparam/defaultvalue")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getMatrixParamDefaultValue(@MatrixParam("p") @DefaultValue("cuk") String p) {
 		return Response.ok(p).build();
@@ -98,7 +98,7 @@ public class CukEndpoint {
 	}
 
 	@GET
-	@Path("/get/cookieparam/defaultValue")
+	@Path("/get/cookieparam/defaultvalue")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getCookieParamDefaultValue(@CookieParam("p") @DefaultValue("cuk") String p) {
 		return Response.ok(p).build();
