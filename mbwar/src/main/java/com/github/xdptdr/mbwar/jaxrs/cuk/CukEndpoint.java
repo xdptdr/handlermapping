@@ -217,4 +217,31 @@ public class CukEndpoint {
 	public Response getContextHttpServletResponse(@Context HttpServletResponse httpServletResponse) {
 		return Response.ok("something").build();
 	}
+	
+//	Accept
+//	Accept-Charset
+//	Accept-Encoding
+//	Accept-Language
+//	Allow
+//	Authorization
+//	Cache-Control
+//	Content-Encoding
+//	Content-Language
+//	Content-Length
+//	Content-Type
+//	Cookie
+//	Date
+//	ETag
+//	Expect
+//	Expires
+//	If-Match
+//	If-Modified-Since
+//	If-Unmodified-Since
+//	Last-Modified
+//	Location
+//	Set-Cookie
+//	Transfer-Encoding
+//	Vary
+//	WWW-Authenticate
+	
 }
