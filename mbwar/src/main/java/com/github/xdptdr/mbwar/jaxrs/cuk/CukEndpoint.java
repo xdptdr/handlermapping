@@ -1,6 +1,13 @@
 package com.github.xdptdr.mbwar.jaxrs.cuk;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -19,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.RuntimeType;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Configuration;
@@ -189,7 +197,42 @@ public class CukEndpoint {
 	@Path("/get/context/configuration")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextConfiguration(@Context Configuration configuration) {
-		return Response.ok(configuration.getRuntimeType().name()).build();
+
+		Map<String, Object> configurationMap = new HashMap<>();
+		Map<String, Object> infos = new HashMap<>();
+		List<String> configurationClasses = new ArrayList<>();
+		List<String> configurationInstances = new ArrayList<>();
+
+		Set<Class<?>> classes = configuration.getClasses();
+		for (Class<?> clazz : classes) {
+			configurationClasses.add(clazz.getName());
+		}
+		Set<Object> instances = configuration.getInstances();
+		for (Object instance : instances) {
+			configurationInstances.add(instance.getClass().getName());
+		}
+		Map<String, Object> properties = configuration.getProperties();
+		Map<String, String> configurationProperties = new HashMap<>();
+		for (Entry<String, Object> entry : properties.entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+			if (value == null) {
+				configurationProperties.put(key, "n$");
+
+			} else if (value instanceof String) {
+				configurationProperties.put(key, "s$" + value);
+			} else {
+				configurationProperties.put(key, "c$" + value.getClass().getName());
+			}
+		}
+		RuntimeType runtimeType = configuration.getRuntimeType();
+
+		infos.put("classes", configurationClasses);
+		infos.put("instances", configurationInstances);
+		infos.put("runtimeType", runtimeType);
+		infos.put("clazz", configuration.getClass().getName());
+		configurationMap.put("configuration", infos);
+		return Response.ok(configurationMap).build();
 	}
 
 	@GET
@@ -208,9 +251,70 @@ public class CukEndpoint {
 
 	@GET
 	@Path("/get/context/httpservletrequest")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getContextHttpServletRequest(@Context HttpServletRequest httpServletRequest) {
-		return Response.ok(httpServletRequest.getRequestURI()).build();
+
+		Map<String, Object> infos = new HashMap<>();
+		{
+			Map<String, List<String>> headers = new HashMap<>();
+			Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+			while (headerNames.hasMoreElements()) {
+				String headerName = headerNames.nextElement();
+				Enumeration<String> headerValues = httpServletRequest.getHeaders(headerName);
+				while (headerValues.hasMoreElements()) {
+					String headerValue = headerValues.nextElement();
+					if (!headers.containsKey(headerName)) {
+						headers.put(headerName, new ArrayList<>());
+					}
+					headers.get(headerName).add(headerValue);
+				}
+			}
+			infos.put("headers", headers);
+		}
+
+		{
+			Map<String, String> attributes = new HashMap<>();
+			Enumeration<String> attributeNames = httpServletRequest.getAttributeNames();
+			while (attributeNames.hasMoreElements()) {
+				String attributeName = attributeNames.nextElement();
+				Object attributeValue = httpServletRequest.getAttribute(attributeName);
+				if (attributeValue == null) {
+					attributes.put(attributeName, "n$");
+				} else if (attributeValue instanceof String) {
+					attributes.put(attributeName, "s$" + (String) attributeValue);
+				} else {
+					attributes.put(attributeName, "c$" + attributeValue.getClass().getName());
+				}
+			}
+			infos.put("attributes", attributes);
+		}
+
+		{
+			Map<String, List<String>> parameters = new HashMap<>();
+			Enumeration<String> parameterNames = httpServletRequest.getParameterNames();
+			while (parameterNames.hasMoreElements()) {
+				String parameterName = parameterNames.nextElement();
+				for (String parameterValue : httpServletRequest.getParameterValues(parameterName)) {
+					if (!parameters.containsKey(parameterName)) {
+						parameters.put(parameterName, new ArrayList<>());
+					}
+					parameters.get(parameterName).add(parameterValue);
+				}
+			}
+			infos.put("parameters", parameters);
+		}
+
+		infos.put("authType", httpServletRequest.getAuthType());
+		infos.put("characterEncoding", httpServletRequest.getCharacterEncoding());
+		infos.put("contentLength", httpServletRequest.getContentLength());
+		infos.put("contentLengthLong", httpServletRequest.getContentLengthLong());
+		infos.put("contentType", httpServletRequest.getContentType());
+		infos.put("contextPath", httpServletRequest.getContextPath());
+
+		Map<String, Object> hsr = new HashMap<>();
+		hsr.put("httpServletRequest", infos);
+
+		return Response.ok(hsr).build();
 	}
 
 	@GET

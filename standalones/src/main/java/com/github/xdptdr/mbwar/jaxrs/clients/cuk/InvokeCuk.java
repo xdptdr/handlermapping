@@ -6,8 +6,6 @@ import java.util.Scanner;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -99,6 +97,12 @@ public class InvokeCuk {
 						} else {
 							String p = get(args, 2);
 							response = client.target(CUK + "/get/cookieparam").request().cookie("p", p).get();
+						}
+					} else if (match("c", args, 1)) {
+						if (match("hsr", args, 2)) {
+							response = client.target(CUK + "/get/context/httpservletrequest").request().get();
+						} else if (match("c", args, 2)) {
+							response = client.target(CUK + "/get/context/configuration").request().get();
 						}
 					}
 				}
