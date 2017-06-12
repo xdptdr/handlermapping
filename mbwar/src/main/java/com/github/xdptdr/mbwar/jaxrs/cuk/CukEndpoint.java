@@ -1,5 +1,7 @@
 package com.github.xdptdr.mbwar.jaxrs.cuk;
 
+import java.io.IOException;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -166,82 +168,84 @@ public class CukEndpoint {
 	@Path("/get/context/securitycontext")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextSecurityContext(@Context SecurityContext securityContext) {
-		return Response.ok("something").build();
+		return Response.ok(securityContext.getAuthenticationScheme()).build();
 	}
 
 	@GET
 	@Path("/get/context/providers")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextProviders(@Context Providers providers) {
-		return Response.ok("something").build();
+		return Response.ok(providers.getClass().getName()).build();
 	}
 
 	@GET
 	@Path("/get/context/resourcecontext")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextResourceContext(@Context ResourceContext resourceContext) {
-		return Response.ok("something").build();
+		return Response.ok(resourceContext.getClass().getName()).build();
 	}
 
 	@GET
 	@Path("/get/context/configuration")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextConfiguration(@Context Configuration configuration) {
-		return Response.ok("something").build();
+		return Response.ok(configuration.getRuntimeType().name()).build();
 	}
 
 	@GET
 	@Path("/get/context/servletconfig")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextServletConfig(@Context ServletConfig servletConfig) {
-		return Response.ok("something").build();
+		return Response.ok(servletConfig.getServletName()).build();
 	}
 
 	@GET
 	@Path("/get/context/servletcontext")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextServletContext(@Context ServletContext servletContext) {
-		return Response.ok("something").build();
+		return Response.ok(servletContext.getContextPath()).build();
 	}
 
 	@GET
 	@Path("/get/context/httpservletrequest")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextHttpServletRequest(@Context HttpServletRequest httpServletRequest) {
-		return Response.ok("something").build();
+		return Response.ok(httpServletRequest.getRequestURI()).build();
 	}
 
 	@GET
 	@Path("/get/context/httpservletresponse")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response getContextHttpServletResponse(@Context HttpServletResponse httpServletResponse) {
-		return Response.ok("something").build();
+	public void getContextHttpServletResponse(@Context HttpServletResponse httpServletResponse) throws IOException {
+		httpServletResponse.setContentType(MediaType.TEXT_PLAIN);
+		httpServletResponse.getWriter()
+				.print("This response was generated directly with javax.servlet.http.HttpServletResponse");
 	}
-	
-//	Accept
-//	Accept-Charset
-//	Accept-Encoding
-//	Accept-Language
-//	Allow
-//	Authorization
-//	Cache-Control
-//	Content-Encoding
-//	Content-Language
-//	Content-Length
-//	Content-Type
-//	Cookie
-//	Date
-//	ETag
-//	Expect
-//	Expires
-//	If-Match
-//	If-Modified-Since
-//	If-Unmodified-Since
-//	Last-Modified
-//	Location
-//	Set-Cookie
-//	Transfer-Encoding
-//	Vary
-//	WWW-Authenticate
-	
+
+	// Accept
+	// Accept-Charset
+	// Accept-Encoding
+	// Accept-Language
+	// Allow
+	// Authorization
+	// Cache-Control
+	// Content-Encoding
+	// Content-Language
+	// Content-Length
+	// Content-Type
+	// Cookie
+	// Date
+	// ETag
+	// Expect
+	// Expires
+	// If-Match
+	// If-Modified-Since
+	// If-Unmodified-Since
+	// Last-Modified
+	// Location
+	// Set-Cookie
+	// Transfer-Encoding
+	// Vary
+	// WWW-Authenticate
+
 }
