@@ -121,11 +121,13 @@ import com.github.xdptdr.mbwar.jaxrs.clients.aze.InvokeAze;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBar;
 import com.github.xdptdr.mbwar.jaxrs.clients.cuk.InvokeCuk;
 import com.github.xdptdr.mbwar.jaxrs.clients.gok.InvokeGok;
+import com.github.xdptdr.mbwar.jaxrs.clients.hej.InvokeHej;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.foo.FooEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.gok.GokEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.gok.HejEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -243,9 +245,9 @@ public class Notes {
 						ServletContext.class, HttpServletRequest.class, HttpServletResponse.class)
 				.s(" and dumps some information about these objects");
 
-		n.k(GokEndpoint.class).s(" illustrates the use of ").k(Link.class);
+		n.k(GokEndpoint.class, InvokeGok.class).s(" illustrates the use of ").k(Link.class);
 
-		n.k(InvokeGok.class).s(" is the CLI for ").k(GokEndpoint.class);
+		n.k(HejEndpoint.class, InvokeHej.class).s(" illustrates the use of ").k(Form.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
