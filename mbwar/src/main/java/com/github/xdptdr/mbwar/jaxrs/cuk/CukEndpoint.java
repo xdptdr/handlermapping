@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -26,19 +25,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.RuntimeType;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
+
+import com.github.xdptdr.mbwar.utils.Infos;
 
 @Provider
 @Path("/cuk")
@@ -146,16 +148,121 @@ public class CukEndpoint {
 
 	@GET
 	@Path("/get/context/application")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getContextApplication(@Context Application application) {
-		return Response.ok("something").build();
+
+		Map<String, Object> infos = new HashMap<>();
+
+		List<String> classes = new ArrayList<>();
+		for (Class<?> clazz : application.getClasses()) {
+			classes.add(clazz.getName());
+		}
+		infos.put("classes", classes);
+
+		Map<String, String> propertiesMap = new HashMap<>();
+		for (Entry<String, Object> entry : application.getProperties().entrySet()) {
+			propertiesMap.put(entry.getKey(), Infos.stringify(entry.getValue()));
+
+		}
+		infos.put("properties", propertiesMap);
+
+		List<String> singletons = new ArrayList<>();
+		for (Object singleton : application.getSingletons()) {
+			singletons.add(Infos.stringify(singleton));
+		}
+		infos.put("singletons", singletons);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("application", infos);
+		return Response.ok(map).build();
 	}
 
 	@GET
 	@Path("/get/context/uriinfo")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getContextUriInfo(@Context UriInfo uriInfo) {
-		return Response.ok("something").build();
+
+		Map<String, Object> UriInfoMap = new HashMap<>();
+		Map<String, Object> infos = new HashMap<>();
+
+		{
+			List<Object> matchedResources = uriInfo.getMatchedResources();
+			List<String> list = new ArrayList<>();
+			for (Object r : matchedResources) {
+				list.add(Infos.stringify(r));
+			}
+		}
+
+		{
+			List<String> matchedURIs = uriInfo.getMatchedURIs();
+			infos.put("matchedURIs", matchedURIs);
+		}
+
+		{
+			String path = uriInfo.getPath();
+			infos.put("path", path);
+		}
+
+		{
+			MultivaluedMap<String, String> pathParameters = uriInfo.getPathParameters();
+			Map<String, List<String>> map = new HashMap<>();
+			for (Entry<String, List<String>> entry : pathParameters.entrySet()) {
+				String key = entry.getKey();
+				for (String value : entry.getValue()) {
+					if (!map.containsKey(key)) {
+						map.put(key, new ArrayList<>());
+					}
+					map.get(key).add(value);
+				}
+			}
+			infos.put("pathParameters", map);
+		}
+
+		{
+			List<PathSegment> pathSegments = uriInfo.getPathSegments();
+			List<Map<String, Object>> list = new ArrayList<>();
+			for (PathSegment pathSegment : pathSegments) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("path", pathSegment.getPath());
+
+				Map<String, List<String>> mmap = new HashMap<>();
+				for (Entry<String, List<String>> entry : pathSegment.getMatrixParameters().entrySet()) {
+					for (String value : entry.getValue()) {
+						String key = entry.getKey();
+						if (!mmap.containsKey(key)) {
+							mmap.put(key, new ArrayList<>());
+						}
+						mmap.get(key).add(value);
+					}
+				}
+				map.put("matriParameters", mmap);
+				list.add(map);
+			}
+			infos.put("pathSegments", list);
+		}
+
+		{
+			MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+			Map<String, List<String>> map = new HashMap<>();
+			for (Entry<String, List<String>> entry : queryParameters.entrySet()) {
+				String key = entry.getKey();
+				for (String value : entry.getValue()) {
+					if (!map.containsKey(key)) {
+						map.put(key, new ArrayList<>());
+					}
+					map.get(key).add(value);
+				}
+			}
+			infos.put("queryParameters", map);
+		}
+
+		infos.put("absolutePath", Infos.get(uriInfo.getAbsolutePath()));
+		infos.put("baseUri", Infos.get(uriInfo.getBaseUri()));
+		infos.put("requestUri", Infos.get(uriInfo.getRequestUri()));
+
+		UriInfoMap.put("uriInfo", infos);
+		return Response.ok(UriInfoMap).build();
+
 	}
 
 	@GET
@@ -174,9 +281,15 @@ public class CukEndpoint {
 
 	@GET
 	@Path("/get/context/securitycontext")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getContextSecurityContext(@Context SecurityContext securityContext) {
-		return Response.ok(securityContext.getAuthenticationScheme()).build();
+		Map<String, Object> securityContextMap = new HashMap<>();
+		Map<String, Object> infos = new HashMap<>();
+		infos.put("authenticationScheme", securityContext.getAuthenticationScheme());
+		infos.put("isSecure", securityContext.isSecure());
+		infos.put("principalName", securityContext.getUserPrincipal().getName());
+		securityContextMap.put("securityContext", infos);
+		return Response.ok(securityContextMap).build();
 	}
 
 	@GET
@@ -197,42 +310,9 @@ public class CukEndpoint {
 	@Path("/get/context/configuration")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getContextConfiguration(@Context Configuration configuration) {
-
-		Map<String, Object> configurationMap = new HashMap<>();
-		Map<String, Object> infos = new HashMap<>();
-		List<String> configurationClasses = new ArrayList<>();
-		List<String> configurationInstances = new ArrayList<>();
-
-		Set<Class<?>> classes = configuration.getClasses();
-		for (Class<?> clazz : classes) {
-			configurationClasses.add(clazz.getName());
-		}
-		Set<Object> instances = configuration.getInstances();
-		for (Object instance : instances) {
-			configurationInstances.add(instance.getClass().getName());
-		}
-		Map<String, Object> properties = configuration.getProperties();
-		Map<String, String> configurationProperties = new HashMap<>();
-		for (Entry<String, Object> entry : properties.entrySet()) {
-			String key = entry.getKey();
-			Object value = entry.getValue();
-			if (value == null) {
-				configurationProperties.put(key, "n$");
-
-			} else if (value instanceof String) {
-				configurationProperties.put(key, "s$" + value);
-			} else {
-				configurationProperties.put(key, "c$" + value.getClass().getName());
-			}
-		}
-		RuntimeType runtimeType = configuration.getRuntimeType();
-
-		infos.put("classes", configurationClasses);
-		infos.put("instances", configurationInstances);
-		infos.put("runtimeType", runtimeType);
-		infos.put("clazz", configuration.getClass().getName());
-		configurationMap.put("configuration", infos);
-		return Response.ok(configurationMap).build();
+		Map<String, Object> map = new HashMap<>();
+		map.put("configuration", Infos.get(configuration));
+		return Response.ok(map).build();
 	}
 
 	@GET
@@ -276,15 +356,9 @@ public class CukEndpoint {
 			Map<String, String> attributes = new HashMap<>();
 			Enumeration<String> attributeNames = httpServletRequest.getAttributeNames();
 			while (attributeNames.hasMoreElements()) {
-				String attributeName = attributeNames.nextElement();
-				Object attributeValue = httpServletRequest.getAttribute(attributeName);
-				if (attributeValue == null) {
-					attributes.put(attributeName, "n$");
-				} else if (attributeValue instanceof String) {
-					attributes.put(attributeName, "s$" + (String) attributeValue);
-				} else {
-					attributes.put(attributeName, "c$" + attributeValue.getClass().getName());
-				}
+				String name = attributeNames.nextElement();
+				Object value = httpServletRequest.getAttribute(name);
+				attributes.put(name, Infos.stringify(value));
 			}
 			infos.put("attributes", attributes);
 		}

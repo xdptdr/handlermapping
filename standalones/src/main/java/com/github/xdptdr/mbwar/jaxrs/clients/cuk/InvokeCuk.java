@@ -103,6 +103,10 @@ public class InvokeCuk {
 							response = client.target(CUK + "/get/context/httpservletrequest").request().get();
 						} else if (match("c", args, 2)) {
 							response = client.target(CUK + "/get/context/configuration").request().get();
+						} else if (match("ui", args, 2)) {
+							response = client.target(CUK + "/get/context/uriinfo").request().get();
+						} else if (match("a", args, 2)) {
+							response = client.target(CUK + "/get/context/application").request().get();
 						}
 					}
 				}
