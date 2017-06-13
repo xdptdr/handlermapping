@@ -1,5 +1,9 @@
 package com.github.xdptdr.mbwar.jaxrs.notes;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.BeanParam;
@@ -115,6 +119,13 @@ import com.github.xdptdr.mbwar.jaxrs.bar.BarBean;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.InvokeAze;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBar;
+import com.github.xdptdr.mbwar.jaxrs.clients.cuk.InvokeCuk;
+import com.github.xdptdr.mbwar.jaxrs.clients.gok.InvokeGok;
+import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.foo.FooEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.gok.GokEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -215,11 +226,26 @@ public class Notes {
 
 		/* 4. Misc */
 
-		n.k(Consumes.class, CookieParam.class, DefaultValue.class, Encoded.class, FormParam.class, GET.class,
-				HeaderParam.class, MatrixParam.class, POST.class, Path.class, PathParam.class, Produces.class,
-				QueryParam.class, ResourceContext.class, Application.class, Configuration.class, Context.class,
-				HttpHeaders.class, MediaType.class, Request.class, Response.class, SecurityContext.class, UriInfo.class,
-				Provider.class, Providers.class);
+		n.k(CukEndpoint.class).s(" illustrates the uses of ").k(QueryParam.class, PathParam.class, MatrixParam.class,
+				CookieParam.class, FormParam.class, HeaderParam.class);
+
+		n.k(InvokeCuk.class).s(" is the CLI to ").k(CukEndpoint.class);
+
+		n.k(DalEndpoint.class).s(" illustrates the use of ").k(Encoded.class).s(" for ").k(QueryParam.class,
+				PathParam.class, MatrixParam.class);
+
+		n.k(EtaEndpoint.class).s("illustrates the use of ").k(DefaultValue.class).s(" for ").k(QueryParam.class,
+				MatrixParam.class, CookieParam.class, FormParam.class, HeaderParam.class);
+
+		n.k(FooEndpoint.class).s(" illustrate the use of ").k(Context.class).s(" to retrieved ")
+				.k(Application.class, UriInfo.class, HttpHeaders.class, Request.class, SecurityContext.class,
+						Providers.class, ResourceContext.class, Configuration.class, ServletConfig.class,
+						ServletContext.class, HttpServletRequest.class, HttpServletResponse.class)
+				.s(" and dumps some information about these objects");
+
+		n.k(GokEndpoint.class).s(" illustrates the use of ").k(Link.class);
+
+		n.k(InvokeGok.class).s(" is the CLI for ").k(GokEndpoint.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);

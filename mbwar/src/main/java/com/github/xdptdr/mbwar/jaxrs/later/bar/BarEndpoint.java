@@ -6,10 +6,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Provider;
 
-@Provider
-@Path("/bar")
+//@Provider
+//@Path("/bar")
 public class BarEndpoint {
 
 	private BarBean barBean = new BarBean("Aze", "Bar");
