@@ -270,7 +270,7 @@ public class FooEndpoint {
 		infos.put("authType", httpServletRequest.getAuthType());
 		infos.put("characterEncoding", httpServletRequest.getCharacterEncoding());
 		infos.put("contentLength", httpServletRequest.getContentLength());
-		infos.put("contentLengthLong", httpServletRequest.getContentLengthLong());
+		infos.put("contentLengthLong", httpServletRequest.getContentLength());
 		infos.put("contentType", httpServletRequest.getContentType());
 		infos.put("contextPath", httpServletRequest.getContextPath());
 
