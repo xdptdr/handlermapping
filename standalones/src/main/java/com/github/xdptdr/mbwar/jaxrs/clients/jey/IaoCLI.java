@@ -1,8 +1,8 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.hej;
+package com.github.xdptdr.mbwar.jaxrs.clients.jey;
 
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Map.Entry;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -14,9 +14,9 @@ import javax.ws.rs.core.Response.Status;
 
 import com.github.xdptdr.utils.CLI;
 
-public class InvokeHej {
+public class IaoCLI {
 
-	private static final String HEJ = "http://localhost:8080/mbwar/rs/hej";
+	private static final String IAO = "http://localhost:8080/mbwar/rs/iao";
 
 	/**
 	 * @param args
@@ -40,12 +40,8 @@ public class InvokeHej {
 				if (CLI.match("quit", args, 0)) {
 					System.out.println("Done.");
 					running = false;
-				} else if (CLI.match("post", args, 0)) {
-					Form form = new Form();
-					form.param("p", "aze");
-					form.param("p", "bar");
-					form.param("q", "cuk");
-					response = client.target(HEJ + "/post").request().post(Entity.form(form));
+				} else if (CLI.match("get", args, 0)) {
+					response = client.target(IAO + "/get").request().get();
 				}
 
 				if (response != null) {

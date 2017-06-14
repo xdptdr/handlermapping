@@ -10,7 +10,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-public class InvokeCuk {
+public class CukCLI {
 
 	private static final String CUK = "http://localhost:8080/mbwar/rs/cuk";
 

@@ -10,8 +10,8 @@ import javax.ws.rs.core.Variant;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-@Path("/jey")
-public class JeyEndpoint {
+@Path("/iao")
+public class IaoEndpoint {
 
 	@GET
 	@Path("/get")

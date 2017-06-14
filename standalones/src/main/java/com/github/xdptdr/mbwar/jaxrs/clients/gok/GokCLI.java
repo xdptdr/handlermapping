@@ -1,22 +1,19 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.jey;
+package com.github.xdptdr.mbwar.jaxrs.clients.gok;
 
 import java.util.List;
-import java.util.Scanner;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.github.xdptdr.utils.CLI;
 
-public class InvokeJey {
-
-	private static final String JEY = "http://localhost:8080/mbwar/rs/jey";
+public class GokCLI {
+	private static final String GOK = "http://localhost:8080/mbwar/rs/gok";
 
 	/**
 	 * @param args
@@ -41,7 +38,7 @@ public class InvokeJey {
 					System.out.println("Done.");
 					running = false;
 				} else if (CLI.match("get", args, 0)) {
-					response = client.target(JEY + "/get").request().get();
+					response = client.target(GOK + "/get").request().get();
 				}
 
 				if (response != null) {

@@ -117,19 +117,19 @@ import com.github.xdptdr.mbwar.jaxrs.aze.AzeEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.bar.BAR;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarBean;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarEndpoint;
-import com.github.xdptdr.mbwar.jaxrs.clients.aze.InvokeAze;
-import com.github.xdptdr.mbwar.jaxrs.clients.bar.InvokeBar;
-import com.github.xdptdr.mbwar.jaxrs.clients.cuk.InvokeCuk;
-import com.github.xdptdr.mbwar.jaxrs.clients.gok.InvokeGok;
-import com.github.xdptdr.mbwar.jaxrs.clients.hej.InvokeHej;
-import com.github.xdptdr.mbwar.jaxrs.clients.jey.InvokeJey;
+import com.github.xdptdr.mbwar.jaxrs.clients.aze.AzeCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.bar.BarCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.cuk.CukCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.gok.GokCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.hej.HejCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.jey.IaoCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.foo.FooEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.gok.GokEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.gok.HejEndpoint;
-import com.github.xdptdr.mbwar.jaxrs.jey.JeyEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.jey.IaoEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -169,7 +169,7 @@ public class Notes {
 
 		n.s("Because these programs require an actual implementation of JAX-RS, and not only the JAX-RS API, they are located in the 'standalones' maven module.");
 
-		n.k(InvokeAze.class).s(" is the client for this section.");
+		n.k(AzeCLI.class).s(" is the client for this section.");
 
 		n.s("It uses ").k(ClientBuilder.class).s(" to obtain an instance of ").k(Client.class);
 
@@ -201,7 +201,7 @@ public class Notes {
 		n.s("We also use the ").k(PathParam.class).s(" annotation to match part of the request url, and the ")
 				.k(Response.class).s(" class for the responses");
 
-		n.k(BarEndpoint.class).s(" is the endpoint, and the test program is a little CLI called ").k(InvokeBar.class);
+		n.k(BarEndpoint.class).s(" is the endpoint, and the test program is a little CLI called ").k(BarCLI.class);
 
 		n.k(Produces.class, Consumes.class)
 				.s(" are used to specify the mediatypes for requests and/or responses which have a body");
@@ -222,7 +222,7 @@ public class Notes {
 
 		/* 3.2 RESTful client */
 
-		n.k(InvokeBar.class).s(" is a CLI that can interact with ").k(BarEndpoint.class);
+		n.k(BarCLI.class).s(" is a CLI that can interact with ").k(BarEndpoint.class);
 
 		n.s("It's a simple read-eval-print loop which expects its arguments to conform to some very precise and simple syntax.");
 
@@ -233,7 +233,7 @@ public class Notes {
 		n.k(CukEndpoint.class).s(" illustrates the uses of ").k(QueryParam.class, PathParam.class, MatrixParam.class,
 				CookieParam.class, FormParam.class, HeaderParam.class);
 
-		n.k(InvokeCuk.class).s(" is the CLI to ").k(CukEndpoint.class);
+		n.k(CukCLI.class).s(" is the CLI to ").k(CukEndpoint.class);
 
 		n.k(DalEndpoint.class).s(" illustrates the use of ").k(Encoded.class).s(" for ").k(QueryParam.class,
 				PathParam.class, MatrixParam.class);
@@ -247,14 +247,11 @@ public class Notes {
 						ServletContext.class, HttpServletRequest.class, HttpServletResponse.class)
 				.s(" and dumps some information about these objects");
 
-		n.k(GokEndpoint.class, InvokeGok.class).s(" illustrates the use of ").k(Link.class);
+		n.k(GokEndpoint.class, GokCLI.class).s(" illustrates the use of ").k(Link.class);
 
-		n.k(HejEndpoint.class, InvokeHej.class).s(" illustrates the use of ").k(Form.class);
+		n.k(HejEndpoint.class, HejCLI.class).s(" illustrates the use of ").k(Form.class);
 		
-		n.k(JeyEndpoint.class, InvokeJey.class).s(" illustrates the use of ").k(Variant.class);
-
-		
-		
+		n.k(IaoEndpoint.class, IaoCLI.class).s(" illustrates the use of ").k(Variant.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);

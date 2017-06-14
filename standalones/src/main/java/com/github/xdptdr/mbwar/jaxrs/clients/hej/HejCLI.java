@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.gok;
+package com.github.xdptdr.mbwar.jaxrs.clients.hej;
 
 import java.util.List;
 import java.util.Map.Entry;
@@ -6,14 +6,17 @@ import java.util.Scanner;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.github.xdptdr.utils.CLI;
 
-public class InvokeGok {
-	private static final String GOK = "http://localhost:8080/mbwar/rs/gok";
+public class HejCLI {
+
+	private static final String HEJ = "http://localhost:8080/mbwar/rs/hej";
 
 	/**
 	 * @param args
@@ -37,8 +40,12 @@ public class InvokeGok {
 				if (CLI.match("quit", args, 0)) {
 					System.out.println("Done.");
 					running = false;
-				} else if (CLI.match("get", args, 0)) {
-					response = client.target(GOK + "/get").request().get();
+				} else if (CLI.match("post", args, 0)) {
+					Form form = new Form();
+					form.param("p", "aze");
+					form.param("p", "bar");
+					form.param("q", "cuk");
+					response = client.target(HEJ + "/post").request().post(Entity.form(form));
 				}
 
 				if (response != null) {

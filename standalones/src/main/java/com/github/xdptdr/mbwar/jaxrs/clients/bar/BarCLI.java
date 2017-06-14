@@ -12,7 +12,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-public class InvokeBar {
+public class BarCLI {
 
 	private static final String BAR = "http://localhost:8080/mbwar/rs/bar";
 
