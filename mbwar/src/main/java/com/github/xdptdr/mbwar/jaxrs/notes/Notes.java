@@ -122,14 +122,14 @@ import com.github.xdptdr.mbwar.jaxrs.clients.bar.BarCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.cuk.CukCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.gok.GokCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.hej.HejCLI;
-import com.github.xdptdr.mbwar.jaxrs.clients.jey.IaoCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.iao.IaoCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.foo.FooEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.gok.GokEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.gok.HejEndpoint;
-import com.github.xdptdr.mbwar.jaxrs.jey.IaoEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.iao.IaoEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {

@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.jey;
+package com.github.xdptdr.mbwar.jaxrs.iao;
 
 import java.util.Locale;
 

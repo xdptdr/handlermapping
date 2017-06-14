@@ -1,13 +1,11 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.jey;
+package com.github.xdptdr.mbwar.jaxrs.clients.iao;
 
 import java.util.List;
-import java.util.Scanner;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
