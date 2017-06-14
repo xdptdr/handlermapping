@@ -15,7 +15,7 @@ public class IaoEndpoint {
 
 	@GET
 	@Path("/get")
-	public Response jey() {
+	public Response get() {
 		return Response.ok().variant(new Variant(MediaType.APPLICATION_SVG_XML_TYPE, Locale.GERMAN, "UTF-8")).build();
 	}
 }
