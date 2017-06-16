@@ -39,7 +39,8 @@ public class KolCLI {
 					System.out.println("Done.");
 					running = false;
 				} else if (CLI.match("get", args, 0)) {
-					response = client.target(KOL + "/get").request().header("If-Match", "toto").get();
+					response = client.target(KOL + "/get").request().header("If-Match", "toto")
+							.header("If-None-Match", "toto").get();
 				}
 
 				if (response != null) {

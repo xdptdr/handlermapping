@@ -18,7 +18,7 @@ public class KolEndpoint {
 	@Path("/get")
 	public Response get(@Context Request request) {
 
-		EntityTag eTag = new EntityTag("toto", true);
+		EntityTag eTag = new EntityTag("toto", false);
 		ResponseBuilder rb = request.evaluatePreconditions(eTag);
 		if (rb != null) {
 			return rb.build();
