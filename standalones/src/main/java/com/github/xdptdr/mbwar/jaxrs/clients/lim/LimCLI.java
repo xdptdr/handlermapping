@@ -46,64 +46,31 @@ public class LimCLI {
 					running = false;
 
 				} else if (CLI.match("get", args, 0)) {
-					if (CLI.match("all", args, 1)) {
-						response = client.target(LIM).request().get();
-					} else {
-						Integer id = Integer.valueOf(CLI.get(args, 1));
-						EntityTag etag = etags.get(id);
-						Builder rb = client.target(LIM + "/" + id).request();
-						if (etag != null) {
-							rb = rb.header(HttpHeaders.IF_NONE_MATCH, etag.toString());
-						}
-						response = rb.get();
-						etag = response.getEntityTag();
-						if (etag != null) {
-							etags.put(id, etag);
-						}
-
+					if (CLI.match("u", args, 1)) {
+						response = client.target(LIM + "/get/unset").request().get();
+					} else if (CLI.match("ma", args, 1)) {
+						response = client.target(LIM + "/get/maxAge").request().get();
+					} else if (CLI.match("sma", args, 1)) {
+						response = client.target(LIM + "/get/sMaxAge").request().get();
+					} else if (CLI.match("mr", args, 1)) {
+						response = client.target(LIM + "/get/mustRevalidate").request().get();
+					} else if (CLI.match("nc", args, 1)) {
+						response = client.target(LIM + "/get/noCache").request().get();
+					} else if (CLI.match("ns", args, 1)) {
+						response = client.target(LIM + "/get/noStore").request().get();
+					} else if (CLI.match("nt", args, 1)) {
+						response = client.target(LIM + "/get/noTransform").request().get();
+					} else if (CLI.match("p", args, 1)) {
+						response = client.target(LIM + "/get/private").request().get();
+					} else if (CLI.match("pr", args, 1)) {
+						response = client.target(LIM + "/get/proxyRevalidate").request().get();
+					} else if (CLI.match("ce", args, 1)) {
+						response = client.target(LIM + "/get/cacheExtension").request().get();
+					} else if (CLI.match("ncf", args, 1)) {
+						response = client.target(LIM + "/get/noCacheFields").request().get();
+					} else if (CLI.match("pf", args, 1)) {
+						response = client.target(LIM + "/get/privateFields").request().get();
 					}
-				} else if (CLI.match("head", args, 0)) {
-					if (CLI.match("all", args, 1)) {
-						response = client.target(LIM).request().head();
-					} else {
-						Integer id = Integer.valueOf(CLI.get(args, 1));
-						response = client.target(LIM + "/" + id).request().head();
-
-					}
-				} else if (CLI.match("put", args, 0)) {
-					if (CLI.match("all", args, 1)) {
-						StringBuffer content = new StringBuffer();
-						boolean sep = false;
-						for (int i = 2; i < args.length; ++i) {
-							if (sep) {
-								content.append(" ");
-
-							}
-							content.append(CLI.get(args, i));
-							sep = true;
-						}
-						response = client.target(LIM).request().put(Entity.text(content.toString()));
-					} else {
-						Integer id = Integer.valueOf(CLI.get(args, 1));
-						String content = CLI.get(args, 2);
-						response = client.target(LIM + "/" + id).request().put(Entity.text(content));
-					}
-				} else if (CLI.match("post", args, 0)) {
-					String content = CLI.get(args, 1);
-					response = client.target(LIM).request().post(Entity.text(content));
-				} else if (CLI.match("delete", args, 0)) {
-					if (CLI.match("all", args, 1)) {
-						response = client.target(LIM).request().delete();
-					} else {
-						Integer id = Integer.valueOf(CLI.get(args, 1));
-						response = client.target(LIM + "/" + id).request().delete();
-					}
-				} else if (CLI.match("options", args, 0)) {
-					response = client.target(LIM).request().options();
-				} else if (CLI.match("bar", args, 0)) {
-					response = client.target(LIM).request()
-							.property("jersey.config.client.httpUrlConnection.setMethodWorkaround", true)
-							.accept(MediaType.TEXT_PLAIN_TYPE).method("BAR");
 				}
 
 				if (response != null) {
