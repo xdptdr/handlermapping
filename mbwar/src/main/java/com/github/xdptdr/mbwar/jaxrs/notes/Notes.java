@@ -124,6 +124,8 @@ import com.github.xdptdr.mbwar.jaxrs.clients.gok.GokCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.hej.HejCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.iao.IaoCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.jey.JeyCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.kol.KolCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.lim.LimCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -132,6 +134,8 @@ import com.github.xdptdr.mbwar.jaxrs.gok.GokEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.gok.HejEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.iao.IaoEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.jey.JeyEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.kol.KolEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.lim.LimEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -252,11 +256,15 @@ public class Notes {
 		n.k(GokEndpoint.class, GokCLI.class).s(" illustrates the use of ").k(Link.class);
 
 		n.k(HejEndpoint.class, HejCLI.class).s(" illustrates the use of ").k(Form.class);
-		
+
 		n.k(IaoEndpoint.class, IaoCLI.class).s(" illustrates the use of ").k(Variant.class);
-		
+
 		n.k(JeyEndpoint.class, JeyCLI.class).s(" illustrates the use of ").k(NewCookie.class);
-		
+
+		n.k(KolEndpoint.class, KolCLI.class).s(" illustrates how to use ").k(EntityTag.class)
+				.s(" with versioning, which is the simplest way of implementing etags.");
+
+		n.k(LimEndpoint.class, LimCLI.class).s(" illustrates how to use ").k(CacheControl.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
