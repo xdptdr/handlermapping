@@ -3,8 +3,8 @@ package com.github.xdptdr.mbwar.jaxrs.mux;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 @Provider
@@ -13,9 +13,8 @@ public class MuxEndpoint {
 
 	@GET
 	@Path("/get")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String get(@BeanParam MuxBean muxBean) {
-		return muxBean.getParam();
+	public Response get(@BeanParam MuxBean muxBean) {
+		return Response.ok().entity(Entity.text(muxBean.getParam())).build();
 	}
 
 }
