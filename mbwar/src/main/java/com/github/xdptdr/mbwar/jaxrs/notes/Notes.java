@@ -126,6 +126,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.iao.IaoCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.jey.JeyCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.kol.KolCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.lim.LimCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.mux.MuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -136,6 +137,7 @@ import com.github.xdptdr.mbwar.jaxrs.iao.IaoEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.jey.JeyEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.kol.KolEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.lim.LimEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.mux.MuxEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -265,6 +267,8 @@ public class Notes {
 				.s(" with versioning, which is the simplest way of implementing etags.");
 
 		n.k(LimEndpoint.class, LimCLI.class).s(" illustrates how to use ").k(CacheControl.class);
+		
+		n.k(MuxEndpoint.class, MuxCLI.class).s(" illustrates how to use ").k(BeanParam.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
