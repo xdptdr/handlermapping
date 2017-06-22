@@ -128,6 +128,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.kol.KolCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.lim.LimCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.mux.MuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.nak.NakCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.ort.OrtCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
