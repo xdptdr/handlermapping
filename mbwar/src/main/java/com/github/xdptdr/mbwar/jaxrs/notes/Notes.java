@@ -140,6 +140,7 @@ import com.github.xdptdr.mbwar.jaxrs.kol.KolEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.lim.LimEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.mux.MuxEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.nak.NakEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.ort.OrtEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -273,6 +274,12 @@ public class Notes {
 		n.k(MuxEndpoint.class, MuxCLI.class).s(" illustrates how to use ").k(BeanParam.class);
 
 		n.k(NakEndpoint.class, NakCLI.class).s(" illustrates how to use ").k(PathSegment.class);
+
+		n.k(OrtEndpoint.class, OrtCLI.class).s(" illustrates how to use ").k(InterceptorContext.class,
+				ReaderInterceptorContext.class, WriterInterceptorContext.class, ReaderInterceptor.class,
+				WriterInterceptor.class, ClientRequestFilter.class, ClientResponseFilter.class,
+				ContainerRequestFilter.class, ContainerResponseFilter.class, ReaderInterceptor.class,
+				WriterInterceptor.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
