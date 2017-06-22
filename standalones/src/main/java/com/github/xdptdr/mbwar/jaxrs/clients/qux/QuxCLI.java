@@ -37,7 +37,7 @@ public class QuxCLI {
 					running = false;
 
 				} else if (CLI.match("options", args, 0)) {
-					response = client.target(QUX + "/options").request().options();
+					response = client.target(QUX).request().options();
 				}
 
 				if (response != null) {

@@ -14,7 +14,6 @@ public class QuxEndpoint {
 	private static final String TEXT = "HTTP does not define what OPTIONS is supposed to answer, but most implementations answer with a comma separated list of HTTP methods";
 
 	@OPTIONS
-	@Path("/options")
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response get() {
 		return Response.ok(TEXT).build();
