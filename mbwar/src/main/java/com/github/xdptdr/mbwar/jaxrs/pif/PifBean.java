@@ -1,14 +1,14 @@
-package com.github.xdptdr.mbwar.jaxrs.later.bar;
+package com.github.xdptdr.mbwar.jaxrs.pif;
 
-public class BarBean {
+public class PifBean {
 
 	private String firstname;
 	private String lastname;
 
-	public BarBean() {
+	public PifBean() {
 	}
 
-	public BarBean(String firstname, String lastname) {
+	public PifBean(String firstname, String lastname) {
 		this.firstname = firstname;
 		this.lastname = lastname;
 	}

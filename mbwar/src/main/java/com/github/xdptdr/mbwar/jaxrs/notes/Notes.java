@@ -129,6 +129,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.lim.LimCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.mux.MuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.nak.NakCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.ort.OrtCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.pif.PifCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -142,6 +143,7 @@ import com.github.xdptdr.mbwar.jaxrs.lim.LimEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.mux.MuxEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.nak.NakEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.ort.OrtEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.pif.PifEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -276,11 +278,20 @@ public class Notes {
 
 		n.k(NakEndpoint.class, NakCLI.class).s(" illustrates how to use ").k(PathSegment.class);
 
-		n.k(OrtEndpoint.class, OrtCLI.class).s(" illustrates how to use ").k(InterceptorContext.class,
-				ReaderInterceptorContext.class, WriterInterceptorContext.class, ReaderInterceptor.class,
-				WriterInterceptor.class, ClientRequestFilter.class, ClientResponseFilter.class,
-				ContainerRequestFilter.class, ContainerResponseFilter.class, ReaderInterceptor.class,
-				WriterInterceptor.class);
+		n.k(OrtEndpoint.class, OrtCLI.class).s(" illustrates how to use ").k(ClientRequestFilter.class,
+				ClientResponseFilter.class, ClientRequestContext.class, ClientResponseContext.class,
+				ContainerRequestFilter.class, ContainerResponseFilter.class, ContainerRequestContext.class,
+				ContainerResponseContext.class, PreMatching.class, ReaderInterceptor.class, WriterInterceptor.class,
+				WriterInterceptorContext.class, ReaderInterceptorContext.class, InterceptorContext.class);
+
+		n.k(BadRequestException.class, ClientErrorException.class, ForbiddenException.class,
+				InternalServerErrorException.class, NotAcceptableException.class, NotAllowedException.class,
+				NotAuthorizedException.class, NotFoundException.class, NotSupportedException.class,
+				ProcessingException.class, RedirectionException.class, ServerErrorException.class,
+				ServiceUnavailableException.class, WebApplicationException.class, ResponseProcessingException.class,
+				NoContentException.class, UriBuilderException.class).s(" will are not covered here");
+		
+		n.k(PifEndpoint.class, PifCLI.class).s(" illustrates how to use ").k(MessageBodyReader.class, MessageBodyWriter.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
