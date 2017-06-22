@@ -130,6 +130,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.mux.MuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.nak.NakCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.ort.OrtCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.pif.PifCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.qux.QuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -144,6 +145,7 @@ import com.github.xdptdr.mbwar.jaxrs.mux.MuxEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.nak.NakEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.ort.OrtEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.pif.PifEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.qux.QuxEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -292,6 +294,8 @@ public class Notes {
 				NoContentException.class, UriBuilderException.class).s(" will are not covered here");
 		
 		n.k(PifEndpoint.class, PifCLI.class).s(" illustrates how to use ").k(MessageBodyReader.class, MessageBodyWriter.class);
+		
+		n.k(QuxEndpoint.class, QuxCLI.class).s(" illustrates how to use ").k(OPTIONS.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
