@@ -132,6 +132,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.ort.OrtCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.pif.PifCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.qux.QuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.reb.RebCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.sog.SogCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -148,6 +149,7 @@ import com.github.xdptdr.mbwar.jaxrs.ort.OrtEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.pif.PifEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.qux.QuxEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.reb.RebEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.sog.SogEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -301,6 +303,8 @@ public class Notes {
 		n.k(QuxEndpoint.class, QuxCLI.class).s(" illustrates how to use ").k(OPTIONS.class);
 
 		n.k(RebEndpoint.class, RebCLI.class).s(" illustrates how to use ").k(Cookie.class);
+		
+		n.k(SogEndpoint.class, SogCLI.class).s(" illustrates how to use ").k(Invocation.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
