@@ -156,6 +156,7 @@ import com.github.xdptdr.mbwar.jaxrs.tad.TadEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UBIFeature;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UbiDynamicFeature;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UbiEndpoint;
+import com.github.xdptdr.notes.N;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {

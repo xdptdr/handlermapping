@@ -56,7 +56,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.TreeWalker;
 
-import com.github.xdptdr.mbwar.jaxrs.notes.N;
+import com.github.xdptdr.notes.N;
 
 public class Notes {
 	public static void notes(N n) {

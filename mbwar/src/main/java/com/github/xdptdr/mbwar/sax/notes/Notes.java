@@ -1,6 +1,6 @@
 package com.github.xdptdr.mbwar.sax.notes;
 
-import com.github.xdptdr.mbwar.jaxrs.notes.N;
+import com.github.xdptdr.notes.N;
 
 public class Notes {
 	public static void notes(N n) {

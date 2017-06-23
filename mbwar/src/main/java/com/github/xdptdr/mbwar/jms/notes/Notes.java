@@ -69,7 +69,7 @@ import javax.jms.XATopicConnection;
 import javax.jms.XATopicConnectionFactory;
 import javax.jms.XATopicSession;
 
-import com.github.xdptdr.mbwar.jaxrs.notes.N;
+import com.github.xdptdr.notes.N;
 
 public class Notes {
 

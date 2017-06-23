@@ -79,7 +79,7 @@ import javax.xml.bind.util.JAXBResult;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.bind.util.ValidationEventCollector;
 
-import com.github.xdptdr.mbwar.jaxrs.notes.N;
+import com.github.xdptdr.notes.N;
 
 @SuppressWarnings("deprecation")
 public class Notes {

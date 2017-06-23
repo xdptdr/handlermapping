@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.notes;
+package com.github.xdptdr.notes;
 
 import java.util.HashSet;
 import java.util.Set;
