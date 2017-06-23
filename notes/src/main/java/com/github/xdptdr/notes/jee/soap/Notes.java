@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.soap;
+package com.github.xdptdr.notes.jee.soap;
 
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.Detail;

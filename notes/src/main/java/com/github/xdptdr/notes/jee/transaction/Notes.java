@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.transaction;
+package com.github.xdptdr.notes.jee.transaction;
 
 import javax.transaction.HeuristicCommitException;
 import javax.transaction.HeuristicMixedException;

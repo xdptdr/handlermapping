@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.xmlschema;
+package com.github.xdptdr.notes.jee.xmlschema;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;

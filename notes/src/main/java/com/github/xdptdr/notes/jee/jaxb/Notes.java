@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.jaxb;
+package com.github.xdptdr.notes.jee.jaxb;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.DataBindingException;

@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.ws;
+package com.github.xdptdr.notes.jee.ws;
 
 import javax.xml.ws.Action;
 import javax.xml.ws.AsyncHandler;

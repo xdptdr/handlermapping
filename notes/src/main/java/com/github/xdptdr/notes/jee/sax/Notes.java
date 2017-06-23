@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.sax;
+package com.github.xdptdr.notes.jee.sax;
 
 import org.xml.sax.AttributeList;
 import org.xml.sax.Attributes;

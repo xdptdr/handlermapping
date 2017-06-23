@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.jaxrs;
+package com.github.xdptdr.notes.jee.jaxrs;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;

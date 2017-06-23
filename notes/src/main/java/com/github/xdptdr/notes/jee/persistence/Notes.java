@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.persistence;
+package com.github.xdptdr.notes.jee.persistence;
 
 import javax.persistence.*;
 import javax.persistence.criteria.AbstractQuery;

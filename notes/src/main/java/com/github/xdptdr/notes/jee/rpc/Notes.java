@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.rpc;
+package com.github.xdptdr.notes.jee.rpc;
 
 import javax.xml.rpc.Call;
 import javax.xml.rpc.JAXRPCException;

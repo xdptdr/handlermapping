@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.dom;
+package com.github.xdptdr.notes.jee.dom;
 
 import java.util.EventListener;
 

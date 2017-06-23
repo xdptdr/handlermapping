@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.xslt;
+package com.github.xdptdr.notes.jee.xslt;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;

@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.jms;
+package com.github.xdptdr.notes.jee.jms;
 
 import javax.jms.BytesMessage;
 import javax.jms.CompletionListener;

@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.xpath;
+package com.github.xdptdr.notes.jee.xpath;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;

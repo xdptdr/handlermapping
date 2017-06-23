@@ -1,4 +1,4 @@
-package com.github.xdptdr.notes.stream;
+package com.github.xdptdr.notes.jee.stream;
 
 import javax.xml.stream.EventFilter;
 import javax.xml.stream.FactoryConfigurationError;
