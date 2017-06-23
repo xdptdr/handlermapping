@@ -1,6 +1,5 @@
 package com.github.xdptdr.mbwar.soap.notes;
 
-import javax.faces.FactoryFinder;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.Detail;
 import javax.xml.soap.DetailEntry;
@@ -38,7 +37,6 @@ public class Notes {
 		n.todo(AttachmentPart.class);
 		n.todo(Detail.class);
 		n.todo(DetailEntry.class);
-		n.todo(FactoryFinder.class);
 		n.todo(MessageFactory.class);
 		n.todo(MimeHeader.class);
 		n.todo(MimeHeaders.class);
