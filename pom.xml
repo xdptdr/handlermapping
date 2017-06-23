@@ -13,6 +13,7 @@
 		<module>mbejb-api</module>
 		<module>mbear</module>
 		<module>standalones</module>
+		<module>notes</module>
 	</modules>
 
 	<build>
