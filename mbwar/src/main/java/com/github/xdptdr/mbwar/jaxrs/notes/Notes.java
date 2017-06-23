@@ -134,6 +134,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.qux.QuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.reb.RebCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.sog.SogCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.sog.TadCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.ubi.UbiCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -152,6 +153,9 @@ import com.github.xdptdr.mbwar.jaxrs.qux.QuxEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.reb.RebEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.sog.SogEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.tad.TadEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.ubi.UBIFeature;
+import com.github.xdptdr.mbwar.jaxrs.ubi.UbiDynamicFeature;
+import com.github.xdptdr.mbwar.jaxrs.ubi.UbiEndpoint;
 import com.sun.mail.imap.protocol.Status;
 
 public class Notes {
@@ -309,12 +313,14 @@ public class Notes {
 		n.k(SogEndpoint.class, SogCLI.class).s(" illustrates how to use ").k(Invocation.class);
 
 		n.k(TadEndpoint.class, TadCLI.class).s(" illustrates how to use ").k(Suspended.class, AsyncResponse.class,
-				TimeoutHandler.class, WebTarget.class, AsyncInvoker.class, InvocationCallback.class)
-				.k(SyncInvoker.class);
+				TimeoutHandler.class, WebTarget.class, AsyncInvoker.class, InvocationCallback.class);
 
 		n.k(SyncInvoker.class).s("is already covered, because implemented by ").k(Invocation.Builder.class)
 				.s(" which is returned by the request() method of ").k(WebTarget.class)
 				.s(" which is itself returned by the target(...) method of ").k(Client.class);
+
+		n.k(UbiEndpoint.class, UbiCLI.class, UbiDynamicFeature.class, UBIFeature.class).s(" illustrates how to use ")
+				.k(DynamicFeature.class, ResourceInfo.class, FeatureContext.class, Feature.class, Configurable.class, Configuration.class);
 
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
