@@ -1,6 +1,5 @@
 package com.github.xdptdr.mbwar.ws.notes;
 
-import javax.faces.FactoryFinder;
 import javax.xml.ws.Action;
 import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.Binding;
@@ -115,7 +114,6 @@ public class Notes {
 		n.todo(SOAPBinding.class);
 		n.todo(SOAPFaultException.class);
 
-		n.todo(FactoryFinder.class);
 		n.todo(Invoker.class);
 		n.todo(Provider.class);
 		n.todo(ServiceDelegate.class);
