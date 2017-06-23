@@ -27,6 +27,12 @@ public class TadEndpoint {
 	@Path("/{timeout}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public void get(@Suspended AsyncResponse ar, @PathParam("timeout") int timeout) {
+		setTimeout(ar);
+		mes.submit(getRunnable(ar, timeout));
+
+	}
+
+	private void setTimeout(AsyncResponse ar) {
 		ar.setTimeoutHandler(new TimeoutHandler() {
 			@Override
 			public void handleTimeout(AsyncResponse ar) {
@@ -35,7 +41,10 @@ public class TadEndpoint {
 			}
 		});
 		ar.setTimeout(1, TimeUnit.SECONDS);
-		mes.submit(new Runnable() {
+	}
+
+	private Runnable getRunnable(AsyncResponse ar, int timeout) {
+		return new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -47,6 +56,6 @@ public class TadEndpoint {
 					ar.resume(response);
 				}
 			}
-		});
+		};
 	}
 }
