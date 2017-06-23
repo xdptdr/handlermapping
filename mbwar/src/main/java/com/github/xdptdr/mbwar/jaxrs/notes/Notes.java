@@ -312,6 +312,10 @@ public class Notes {
 				TimeoutHandler.class, WebTarget.class, AsyncInvoker.class, InvocationCallback.class)
 				.k(SyncInvoker.class);
 
+		n.k(SyncInvoker.class).s("is already covered, because implemented by ").k(Invocation.Builder.class)
+				.s(" which is returned by the request() method of ").k(WebTarget.class)
+				.s(" which is itself returned by the target(...) method of ").k(Client.class);
+
 		n.todo(Provider.class);
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
