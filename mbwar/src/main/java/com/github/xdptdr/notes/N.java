@@ -21,6 +21,9 @@ public class N {
 	}
 
 	public void todo(Class<?> clazz) {
+		if (todo.contains(clazz)) {
+			throw new RuntimeException("Duplicate class " + clazz.getName());
+		}
 		todo.add(clazz);
 	}
 
