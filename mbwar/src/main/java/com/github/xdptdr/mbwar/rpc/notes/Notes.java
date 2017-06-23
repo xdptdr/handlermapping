@@ -1,6 +1,5 @@
 package com.github.xdptdr.mbwar.rpc.notes;
 
-import javax.faces.FactoryFinder;
 import javax.xml.rpc.Call;
 import javax.xml.rpc.JAXRPCException;
 import javax.xml.rpc.NamespaceConstants;
@@ -57,7 +56,6 @@ public class Notes {
 
 	private static void notes(N n) {
 		n.todo(Call.class);
-		n.todo(FactoryFinder.class);
 		n.todo(JAXRPCException.class);
 		n.todo(NamespaceConstants.class);
 		n.todo(ParameterMode.class);
