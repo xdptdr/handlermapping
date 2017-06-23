@@ -115,7 +115,7 @@ public class Notes {
 		n.todo(SOAPFaultException.class);
 
 		n.todo(Invoker.class);
-		n.todo(Provider.class);
+		n.todo(javax.xml.ws.spi.Provider.class);
 		n.todo(ServiceDelegate.class);
 		n.todo(WebServiceFeatureAnnotation.class);
 
