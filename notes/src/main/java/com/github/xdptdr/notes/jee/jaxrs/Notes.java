@@ -156,6 +156,7 @@ import com.github.xdptdr.mbwar.jaxrs.tad.TadEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UBIFeature;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UbiDynamicFeature;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UbiEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.vej.VejEndpoint;
 import com.github.xdptdr.notes.N;
 import com.sun.mail.imap.protocol.Status;
 
@@ -320,8 +321,11 @@ public class Notes {
 				.s(" which is returned by the request() method of ").k(WebTarget.class)
 				.s(" which is itself returned by the target(...) method of ").k(Client.class);
 
-		n.k(UbiEndpoint.class, UbiCLI.class, UbiDynamicFeature.class, UBIFeature.class).s(" illustrates how to use ")
-				.k(DynamicFeature.class, ResourceInfo.class, FeatureContext.class, Feature.class, Configurable.class, Configuration.class);
+		n.k(UbiEndpoint.class, UbiCLI.class, UbiDynamicFeature.class, UBIFeature.class).s(" illustrates how to use ").k(
+				DynamicFeature.class, ResourceInfo.class, FeatureContext.class, Feature.class, Configurable.class,
+				Configuration.class);
+
+		n.k(VejEndpoint.class).s(" illustrates how to use ").k(NameBinding.class);
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
