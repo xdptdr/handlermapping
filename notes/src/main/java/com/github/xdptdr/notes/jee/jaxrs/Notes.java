@@ -328,6 +328,9 @@ public class Notes {
 
 		n.k(VejEndpoint.class).s(" illustrates how to use ").k(NameBinding.class);
 
+		ParamConverter.class.getName();
+		ParamConverterProvider.class.getName();
+		
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
 		n.todo(BeanParam.class);
