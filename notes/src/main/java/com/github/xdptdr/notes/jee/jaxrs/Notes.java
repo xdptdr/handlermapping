@@ -315,7 +315,8 @@ public class Notes {
 		n.k(SogEndpoint.class, SogCLI.class).s(" illustrates how to use ").k(Invocation.class);
 
 		n.k(TadEndpoint.class, TadCLI.class).s(" illustrates how to use ").k(Suspended.class, AsyncResponse.class,
-				TimeoutHandler.class, WebTarget.class, AsyncInvoker.class, InvocationCallback.class);
+				TimeoutHandler.class, WebTarget.class, AsyncInvoker.class, InvocationCallback.class,
+				CompletionCallback.class, ConnectionCallback.class);
 
 		n.k(SyncInvoker.class).s("is already covered, because implemented by ").k(Invocation.Builder.class)
 				.s(" which is returned by the request() method of ").k(WebTarget.class)

@@ -3,6 +3,7 @@ package com.github.xdptdr.mbwar.jaxrs.tad;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,12 +24,23 @@ public class TadEndpoint {
 	@Resource
 	ManagedExecutorService mes;
 
+	@EJB
+	private TadSingleton tadSingleton;
+
 	@GET
 	@Path("/{timeout}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public void get(@Suspended AsyncResponse ar, @PathParam("timeout") int timeout) {
 		setTimeout(ar);
+		ar.register(new TadCallbacks(tadSingleton));
 		mes.submit(getRunnable(ar, timeout));
+
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getLog() {
+		return Response.ok(tadSingleton.getLog()).build();
 
 	}
 

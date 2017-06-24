@@ -93,6 +93,8 @@ public class TadCLI {
 					if (response == null) {
 						System.out.println("No last response.");
 					}
+				} else if (CLI.match("logs", args, 0)) {
+					response = client.target(TAD).request().get();
 				}
 
 				if (response != null) {
