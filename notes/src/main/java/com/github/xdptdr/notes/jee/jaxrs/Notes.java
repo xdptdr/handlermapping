@@ -115,11 +115,13 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 import com.github.xdptdr.mbwar.jaxrs.MyJAXRSApplication;
 import com.github.xdptdr.mbwar.jaxrs.aboo.AbooEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.aze.AzeEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.baby.BabyEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.bar.BAR;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarBean;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.clients.aboo.AbooCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.AzeCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.baby.BabyCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.BarCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.cuk.CukCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.gok.GokCLI;
@@ -345,8 +347,10 @@ public class Notes {
 		n.k(ZyxEndpoint.class, ZyxCLI.class).s(" illustrates how to use ").k(ContextResolver.class);
 		
 		n.k(AbooEndpoint.class, AbooCLI.class).s(" illustrates how to use ").k(ExceptionMapper.class);
-
-		ExceptionMapper.class.getName();
+		
+		n.k(RuntimeDelegate.class).s(" is reserved for JAX-RS implementations.");
+		
+		n.k(BabyEndpoint.class, BabyCLI.class).s(" illustrates how to use ").k(Priorities.class);
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
