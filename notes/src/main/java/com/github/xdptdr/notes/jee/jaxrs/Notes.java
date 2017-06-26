@@ -137,6 +137,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.sog.TadCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.ubi.UbiCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.vej.VejCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.vej.WuxCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.vej.YzeCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -160,6 +161,7 @@ import com.github.xdptdr.mbwar.jaxrs.ubi.UbiDynamicFeature;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UbiEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.vej.VejEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.wux.WuxEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.yze.YzeEndpoint;
 import com.github.xdptdr.notes.N;
 import com.sun.mail.imap.protocol.Status;
 
@@ -333,8 +335,11 @@ public class Notes {
 
 		n.k(WuxEndpoint.class, WuxCLI.class).s(" illustrates how to use ").k(ParamConverter.class,
 				ParamConverterProvider.class);
+
+		n.k(YzeEndpoint.class, YzeCLI.class).s(" illustrates how to use ").k(StreamingOutput.class);
 		
-		StreamingOutput.class.getName();
+		n.k(ZyxEndpoint.class, ZyxCLI.class).s(" illustrates how to use ").k(ContextResolver.class);
+		
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
