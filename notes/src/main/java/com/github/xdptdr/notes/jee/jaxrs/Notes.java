@@ -138,6 +138,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.ubi.UbiCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.vej.VejCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.vej.WuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.vej.YzeCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.vej.ZyxCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -162,6 +163,7 @@ import com.github.xdptdr.mbwar.jaxrs.ubi.UbiEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.vej.VejEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.wux.WuxEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.yze.YzeEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.zyx.ZyxEndpoint;
 import com.github.xdptdr.notes.N;
 import com.sun.mail.imap.protocol.Status;
 
