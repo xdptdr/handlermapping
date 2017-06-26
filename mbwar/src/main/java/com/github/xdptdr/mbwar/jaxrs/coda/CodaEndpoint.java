@@ -16,4 +16,5 @@ public class CodaEndpoint {
 	public Response get() {
 		return Response.ok().build();
 	}
+	
 }

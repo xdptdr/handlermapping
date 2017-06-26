@@ -51,6 +51,7 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.SyncInvoker;
@@ -353,8 +354,26 @@ public class Notes {
 		n.k(RuntimeDelegate.class).s(" is reserved for JAX-RS implementations.");
 
 		n.k(BabyEndpoint.class, BabyCLI.class).s(" illustrates how to use ").k(Priorities.class);
-		
+
 		n.k(CodaEndpoint.class, CodaCLI.class).s(" illustrates how to use ").k(UriBuilder.class);
+
+		n.k(MultivaluedMap.class).s(" is the interface for a map of list of object.");
+		n.k(AbstractMultivaluedMap.class).s(" implements most of the functionality");
+		n.k(MultivaluedHashMap.class).s(" is the main implemention, which is used for Http Headers for example");
+		
+		
+
+		GenericType.class.getName();
+		GenericEntity.class.getName();
+		try {
+			Client client = Client.class.newInstance();
+			WebTarget target = client.target("link");
+			Builder request = target.request();
+			Response response = request.get();
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		}
+		
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
