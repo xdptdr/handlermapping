@@ -51,7 +51,6 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.SyncInvoker;
@@ -126,6 +125,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.baby.BabyCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.BarCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.coda.CodaCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.cuk.CukCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.dime.DimeCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.gok.GokCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.hej.HejCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.iao.IaoCLI;
@@ -148,6 +148,8 @@ import com.github.xdptdr.mbwar.jaxrs.clients.zyx.ZyxCLI;
 import com.github.xdptdr.mbwar.jaxrs.coda.CodaEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.dime.DimeEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.elym.ElymEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.foo.FooEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.gok.GokEndpoint;
@@ -360,20 +362,10 @@ public class Notes {
 		n.k(MultivaluedMap.class).s(" is the interface for a map of list of object.");
 		n.k(AbstractMultivaluedMap.class).s(" implements most of the functionality");
 		n.k(MultivaluedHashMap.class).s(" is the main implemention, which is used for Http Headers for example");
-		
-		
 
-		GenericType.class.getName();
-		GenericEntity.class.getName();
-		try {
-			Client client = Client.class.newInstance();
-			WebTarget target = client.target("link");
-			Builder request = target.request();
-			Response response = request.get();
-		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
-		}
-		
+		n.k(DimeEndpoint.class, DimeCLI.class).s(" illustrates how to use ").k(GenericType.class, GenericEntity.class);
+
+		n.k(ElymEndpoint.class, DimeCLI.class).s(" illustrates how to use ").k(ConstrainedTo.class, RuntimeType.class);
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
