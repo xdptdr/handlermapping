@@ -366,6 +366,8 @@ public class Notes {
 		n.k(DimeEndpoint.class, DimeCLI.class).s(" illustrates how to use ").k(GenericType.class, GenericEntity.class);
 
 		n.k(ElymEndpoint.class, DimeCLI.class).s(" illustrates how to use ").k(ConstrainedTo.class, RuntimeType.class);
+		
+		
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
