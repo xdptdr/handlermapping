@@ -123,6 +123,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.aboo.AbooCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.AzeCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.baby.BabyCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.BarCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.coda.CodaCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.cuk.CukCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.gok.GokCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.hej.HejCLI;
@@ -143,6 +144,7 @@ import com.github.xdptdr.mbwar.jaxrs.clients.vej.VejCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.wux.WuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.yze.YzeCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.zyx.ZyxCLI;
+import com.github.xdptdr.mbwar.jaxrs.coda.CodaEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -345,12 +347,14 @@ public class Notes {
 		n.k(YzeEndpoint.class, YzeCLI.class).s(" illustrates how to use ").k(StreamingOutput.class);
 
 		n.k(ZyxEndpoint.class, ZyxCLI.class).s(" illustrates how to use ").k(ContextResolver.class);
-		
+
 		n.k(AbooEndpoint.class, AbooCLI.class).s(" illustrates how to use ").k(ExceptionMapper.class);
-		
+
 		n.k(RuntimeDelegate.class).s(" is reserved for JAX-RS implementations.");
-		
+
 		n.k(BabyEndpoint.class, BabyCLI.class).s(" illustrates how to use ").k(Priorities.class);
+		
+		n.k(CodaEndpoint.class, CodaCLI.class).s(" illustrates how to use ").k(UriBuilder.class);
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
