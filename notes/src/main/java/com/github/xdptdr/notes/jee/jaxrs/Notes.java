@@ -113,10 +113,12 @@ import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
 import com.github.xdptdr.mbwar.jaxrs.MyJAXRSApplication;
+import com.github.xdptdr.mbwar.jaxrs.aboo.AbooEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.aze.AzeEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.bar.BAR;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarBean;
 import com.github.xdptdr.mbwar.jaxrs.bar.BarEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.clients.aboo.AbooCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.AzeCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.bar.BarCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.cuk.CukCLI;
@@ -133,12 +135,12 @@ import com.github.xdptdr.mbwar.jaxrs.clients.pif.PifCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.qux.QuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.reb.RebCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.sog.SogCLI;
-import com.github.xdptdr.mbwar.jaxrs.clients.sog.TadCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.tad.TadCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.ubi.UbiCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.vej.VejCLI;
-import com.github.xdptdr.mbwar.jaxrs.clients.vej.WuxCLI;
-import com.github.xdptdr.mbwar.jaxrs.clients.vej.YzeCLI;
-import com.github.xdptdr.mbwar.jaxrs.clients.vej.ZyxCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.wux.WuxCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.yze.YzeCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.zyx.ZyxCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -339,9 +341,12 @@ public class Notes {
 				ParamConverterProvider.class);
 
 		n.k(YzeEndpoint.class, YzeCLI.class).s(" illustrates how to use ").k(StreamingOutput.class);
-		
+
 		n.k(ZyxEndpoint.class, ZyxCLI.class).s(" illustrates how to use ").k(ContextResolver.class);
 		
+		n.k(AbooEndpoint.class, AbooCLI.class).s(" illustrates how to use ").k(ExceptionMapper.class);
+
+		ExceptionMapper.class.getName();
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);

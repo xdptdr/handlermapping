@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.vej;
+package com.github.xdptdr.mbwar.jaxrs.clients.yze;
 
 import java.io.InputStream;
 import java.util.Scanner;

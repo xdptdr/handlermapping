@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.vej;
+package com.github.xdptdr.mbwar.jaxrs.clients.zyx;
 
 import java.util.List;
 import java.util.Map.Entry;
@@ -12,8 +12,8 @@ import javax.ws.rs.core.Response.Status;
 
 import com.github.xdptdr.utils.CLI;
 
-public class WuxCLI {
-	private static final String WUX = "http://localhost:8080/mbwar/rs/wux";
+public class ZyxCLI {
+	private static final String ZYX = "http://localhost:8080/mbwar/rs/zyx";
 
 	public static void main(String[] args) {
 
@@ -36,8 +36,7 @@ public class WuxCLI {
 					running = false;
 
 				} else if (CLI.match("get", args, 0)) {
-					String p = CLI.get(args, 1);
-					response = client.target(WUX).queryParam("p", p).request().get();
+					response = client.target(ZYX).request().get();
 				}
 
 				if (response != null) {

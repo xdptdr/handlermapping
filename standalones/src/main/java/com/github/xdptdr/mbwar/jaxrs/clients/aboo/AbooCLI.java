@@ -1,8 +1,8 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.vej;
+package com.github.xdptdr.mbwar.jaxrs.clients.aboo;
 
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Map.Entry;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -12,8 +12,9 @@ import javax.ws.rs.core.Response.Status;
 
 import com.github.xdptdr.utils.CLI;
 
-public class ZyxCLI {
-	private static final String ZYX = "http://localhost:8080/mbwar/rs/zyx";
+public class AbooCLI {
+
+	private static final String ABOO = "http://localhost:8080/mbwar/rs/aboo";
 
 	public static void main(String[] args) {
 
@@ -36,7 +37,7 @@ public class ZyxCLI {
 					running = false;
 
 				} else if (CLI.match("get", args, 0)) {
-					response = client.target(ZYX).request().get();
+					response = client.target(ABOO).request().get();
 				}
 
 				if (response != null) {
@@ -62,5 +63,6 @@ public class ZyxCLI {
 		command.close();
 
 	}
+
 
 }

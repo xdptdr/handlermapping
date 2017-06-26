@@ -1,4 +1,4 @@
-package com.github.xdptdr.mbwar.jaxrs.clients.sog;
+package com.github.xdptdr.mbwar.jaxrs.clients.tad;
 
 import java.util.List;
 import java.util.Map.Entry;
