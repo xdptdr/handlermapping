@@ -333,6 +333,8 @@ public class Notes {
 
 		n.k(WuxEndpoint.class, WuxCLI.class).s(" illustrates how to use ").k(ParamConverter.class,
 				ParamConverterProvider.class);
+		
+		StreamingOutput.class.getName();
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
