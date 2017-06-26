@@ -135,6 +135,8 @@ import com.github.xdptdr.mbwar.jaxrs.clients.reb.RebCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.sog.SogCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.sog.TadCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.ubi.UbiCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.vej.VejCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.vej.WuxCLI;
 import com.github.xdptdr.mbwar.jaxrs.cuk.CukEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.dal.DalEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.eta.EtaEndpoint;
@@ -157,6 +159,7 @@ import com.github.xdptdr.mbwar.jaxrs.ubi.UBIFeature;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UbiDynamicFeature;
 import com.github.xdptdr.mbwar.jaxrs.ubi.UbiEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.vej.VejEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.wux.WuxEndpoint;
 import com.github.xdptdr.notes.N;
 import com.sun.mail.imap.protocol.Status;
 
@@ -326,11 +329,11 @@ public class Notes {
 				DynamicFeature.class, ResourceInfo.class, FeatureContext.class, Feature.class, Configurable.class,
 				Configuration.class);
 
-		n.k(VejEndpoint.class).s(" illustrates how to use ").k(NameBinding.class);
+		n.k(VejEndpoint.class, VejCLI.class).s(" illustrates how to use ").k(NameBinding.class);
 
-		ParamConverter.class.getName();
-		ParamConverterProvider.class.getName();
-		
+		n.k(WuxEndpoint.class, WuxCLI.class).s(" illustrates how to use ").k(ParamConverter.class,
+				ParamConverterProvider.class);
+
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
 		n.todo(BeanParam.class);
