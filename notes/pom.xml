@@ -10,17 +10,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.github.xdptdr</groupId>
-			<artifactId>mbwar</artifactId>
+			<artifactId>mbjaxrs</artifactId>
 			<version>1.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.xdptdr</groupId>
 			<artifactId>standalones</artifactId>
 			<version>1.0</version>
-			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -116,7 +114,7 @@
 			<artifactId>spring-websocket</artifactId>
 			<version>4.3.9.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>

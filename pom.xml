@@ -14,6 +14,7 @@
 		<module>mbear</module>
 		<module>standalones</module>
 		<module>notes</module>
+		<module>mbjaxrs</module>
 	</modules>
 
 	<build>
