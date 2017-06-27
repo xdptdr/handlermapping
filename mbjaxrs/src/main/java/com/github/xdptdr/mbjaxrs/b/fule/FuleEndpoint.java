@@ -16,7 +16,7 @@ public class FuleEndpoint {
 	@FULEUTF8
 	@Path("/utf8")
 	public Response getUTF8() {
-		return Response.ok().build();
+		return Response.ok("\u00E9toile").build();
 	}
 
 	@GET
@@ -24,7 +24,7 @@ public class FuleEndpoint {
 	@FULELATIN9
 	@Path("/latin9")
 	public Response getLATIN9() {
-		return Response.ok().build();
+		return Response.ok("\u00E9toile").build();
 	}
 
 }
