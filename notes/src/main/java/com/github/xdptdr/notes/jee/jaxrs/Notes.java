@@ -112,6 +112,10 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
+import org.jboss.resteasy.annotations.ContentEncoding;
+import org.jboss.resteasy.plugins.interceptors.encoding.ServerContentEncodingAnnotationFeature;
+import org.jboss.resteasy.plugins.interceptors.encoding.ServerContentEncodingAnnotationFilter;
+
 import com.github.xdptdr.mbjaxrs.a.MyJAXRSApplication;
 import com.github.xdptdr.mbjaxrs.a.aze.AzeEndpoint;
 import com.github.xdptdr.mbjaxrs.a.bar.BAR;
@@ -147,6 +151,7 @@ import com.github.xdptdr.mbjaxrs.b.baby.BabyEndpoint;
 import com.github.xdptdr.mbjaxrs.b.coda.CodaEndpoint;
 import com.github.xdptdr.mbjaxrs.b.dime.DimeEndpoint;
 import com.github.xdptdr.mbjaxrs.b.elym.ElymEndpoint;
+import com.github.xdptdr.mbjaxrs.b.fule.FuleEndpoint;
 import com.github.xdptdr.mbwar.jaxrs.clients.aboo.AbooCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.aze.AzeCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.baby.BabyCLI;
@@ -154,6 +159,8 @@ import com.github.xdptdr.mbwar.jaxrs.clients.bar.BarCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.coda.CodaCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.cuk.CukCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.dime.DimeCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.elym.ElymCLI;
+import com.github.xdptdr.mbwar.jaxrs.clients.fule.FuleCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.gok.GokCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.hej.HejCLI;
 import com.github.xdptdr.mbwar.jaxrs.clients.iao.IaoCLI;
@@ -365,9 +372,11 @@ public class Notes {
 
 		n.k(DimeEndpoint.class, DimeCLI.class).s(" illustrates how to use ").k(GenericType.class, GenericEntity.class);
 
-		n.k(ElymEndpoint.class, DimeCLI.class).s(" illustrates how to use ").k(ConstrainedTo.class, RuntimeType.class);
+		n.k(ElymEndpoint.class, ElymCLI.class).s(" illustrates how to use ").k(ConstrainedTo.class, RuntimeType.class);
 		
+		// resteasy features
 		
+		n.k(FuleEndpoint.class, FuleCLI.class).s(" illustrates how to use ").k(ContentEncoding.class, ServerContentEncodingAnnotationFeature.class, ServerContentEncodingAnnotationFilter.class);
 
 		n.todo(ApplicationPath.class);
 		n.todo(BadRequestException.class);
@@ -480,6 +489,81 @@ public class Notes {
 		n.todo(RuntimeDelegate.class);
 		n.todo(WriterInterceptor.class);
 		n.todo(WriterInterceptorContext.class);
+
+		// resteasy features
+
+		n.todo(org.jboss.resteasy.plugins.interceptors.encoding.ServerContentEncodingAnnotationFeature.class);
+		n.todo(org.jboss.resteasy.plugins.interceptors.encoding.AcceptEncodingGZIPInterceptor.class);
+		n.todo(org.jboss.resteasy.plugins.interceptors.encoding.GZIPDecodingInterceptor.class);
+		n.todo(org.jboss.resteasy.plugins.interceptors.encoding.AcceptEncodingGZIPFilter.class);
+		n.todo(org.jboss.resteasy.plugins.interceptors.CacheControlFeature.class);
+		n.todo(org.jboss.resteasy.plugins.interceptors.encoding.ClientContentEncodingAnnotationFeature.class);
+		n.todo(org.jboss.resteasy.plugins.interceptors.encoding.GZIPEncodingInterceptor.class);
+
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MapMultipartFormDataWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartFormAnnotationWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartFormAnnotationReader.class);
+		n.todo(org.jboss.resteasy.plugins.providers.FileProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.FileRangeWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jaxb.JAXBXmlRootElementProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.StringTextStar.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jaxb.MapProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jaxb.JAXBElementProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.StreamingOutputProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jaxb.JAXBXmlSeeAlsoProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.ReaderProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.FormUrlEncodedProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.DocumentProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.YamlProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.IIOImageProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.XopWithMultipartRelatedReader.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jaxb.JAXBXmlTypeProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.atom.AtomEntryProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.ListMultipartWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartReader.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataReader.class);
+		n.todo(org.jboss.resteasy.plugins.providers.DefaultTextPlain.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jsonp.JsonArrayProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.JaxrsFormProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.DefaultNumberWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.DataSourceProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jsonp.JsonStructureProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MapMultipartFormDataReader.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.XopWithMultipartRelatedWriter.class);
+		n.todo(org.jboss.resteasy.plugins.providers.SourceProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jaxb.XmlJAXBContextFinder.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MimeMultipartProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jaxb.CollectionProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedReader.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.ListMultipartReader.class);
+		n.todo(org.jboss.resteasy.plugins.providers.jsonp.JsonObjectProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.atom.AtomFeedProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.ByteArrayProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.InputStreamProvider.class);
+		n.todo(org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedWriter.class);
+
+		n.todo(org.jboss.resteasy.security.doseta.DigitalVerificationInterceptor.class);
+		n.todo(org.jboss.resteasy.security.doseta.DigitalSigningInterceptor.class);
+		n.todo(org.jboss.resteasy.security.smime.MultipartSignedReader.class);
+		n.todo(org.jboss.resteasy.security.smime.PKCS7SignatureWriter.class);
+		n.todo(org.jboss.resteasy.security.doseta.DigitalSigningHeaderDecoratorClientExecutionInterceptor.class);
+		n.todo(org.jboss.resteasy.security.doseta.DigitalVerificationHeaderDecoratorClientExecutionInterceptor.class);
+		n.todo(org.jboss.resteasy.security.doseta.ServerDigitalVerificationHeaderDecoratorFeature.class);
+		n.todo(org.jboss.resteasy.security.smime.MultipartSignedWriter.class);
+		n.todo(org.jboss.resteasy.security.doseta.ClientDigitalSigningHeaderDecoratorFeature.class);
+		n.todo(org.jboss.resteasy.security.smime.EnvelopedReader.class);
+		n.todo(org.jboss.resteasy.security.smime.EnvelopedWriter.class);
+		n.todo(org.jboss.resteasy.security.smime.PKCS7SignatureReader.class);
+		n.todo(org.jboss.resteasy.security.doseta.ClientDigitalVerificationHeaderDecoratorFeature.class);
+		n.todo(org.jboss.resteasy.security.doseta.ServerDigitalSigningHeaderDecoratorFeature.class);
+		n.todo(org.jboss.resteasy.security.smime.PKCS7SignatureTextWriter.class);
+
+		n.todo(org.jboss.resteasy.plugins.validation.ValidatorContextResolverCDI.class);
+		n.todo(org.jboss.resteasy.plugins.validation.ValidatorContextResolver.class);
+		n.todo(org.jboss.resteasy.api.validation.ResteasyViolationExceptionMapper.class);
 	}
 
 	public static void main(String[] args) {
