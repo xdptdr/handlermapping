@@ -37,9 +37,9 @@ public class FuleCLI {
 					running = false;
 
 				} else if (CLI.match("u", args, 0)) {
-					response = client.target(FULE + "/utf8").request().get();
+					response = client.target(FULE + "/utf8").request().acceptEncoding("utf8","latin9").get();
 				} else if (CLI.match("l", args, 0)) {
-					response = client.target(FULE + "/latin9").request().get();
+					response = client.target(FULE + "/latin9").request().acceptEncoding("utf8","latin9").get();
 				}
 
 				if (response != null) {

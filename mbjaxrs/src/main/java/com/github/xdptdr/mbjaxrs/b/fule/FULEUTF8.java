@@ -9,7 +9,7 @@ import org.jboss.resteasy.annotations.ContentEncoding;
 
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@ContentEncoding("UTF-8")
+@ContentEncoding("UTF8")
 public @interface FULEUTF8 {
 
 }
