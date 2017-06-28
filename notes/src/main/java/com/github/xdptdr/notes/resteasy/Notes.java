@@ -21,6 +21,8 @@ import org.jboss.resteasy.links.impl.NotFoundException;
 import org.jboss.resteasy.links.impl.RESTUtils;
 import org.jboss.resteasy.links.impl.ServiceDiscoveryException;
 
+import com.github.xdptdr.mbjaxrs.c.agate.AgateEndpoint;
+import com.github.xdptdr.mbwar.jaxrs.clients.agate.AgateCLI;
 import com.github.xdptdr.notes.N;
 
 public class Notes {
@@ -28,8 +30,14 @@ public class Notes {
 	public static void notes(N n) {
 		// http://www.nounou-paris.fr/idees_prenoms.php?page=1&sexe=2&index_prenom=1&derniere_lettre=1&nombre_lettre=5
 
-		n.s("8. Linking resources");
+		n.k(AgateEndpoint.class, AgateCLI.class).s(" illustrates how to use ").k(AddLinks.class, LinkResource.class,
+				RESTServiceDiscovery.class);
 
+		todoLinks(n);
+
+	}
+
+	private static void todoLinks(N n) {
 		n.todo(AddLinks.class, ELProvider.class, LinkELProvider.class, LinkResource.class, LinkResources.class,
 				ParamBinding.class, ParentResource.class, ResourceFacade.class, ResourceID.class, ResourceIDs.class,
 				RESTServiceDiscovery.class);
