@@ -20,11 +20,14 @@ public class N {
 		return this;
 	}
 
-	public void todo(Class<?> clazz) {
-		if (todo.contains(clazz)) {
-			throw new RuntimeException("Duplicate class " + clazz.getName());
+	public void todo(Class<?>... classes) {
+		for (Class<?> clazz : classes) {
+
+			if (todo.contains(clazz)) {
+				throw new RuntimeException("Duplicate class " + clazz.getName());
+			}
+			todo.add(clazz);
 		}
-		todo.add(clazz);
 	}
 
 	public void sumUp() {
