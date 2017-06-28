@@ -36,12 +36,16 @@ public class CassyCLI {
 					System.out.println("Done.");
 					running = false;
 
-				} else if (CLI.match("get", args, 0)) {
-					response = client.target(CASSY).request().get();
-				} else if (CLI.match("cassy", args, 0)) {
-					response = client.target(CASSY).request()
-							.property("jersey.config.client.httpUrlConnection.setMethodWorkaround", true)
-							.method("cassy");
+				} else if (CLI.match("00", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().get();
+				} else if (CLI.match("01", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().get();
+				} else if (CLI.match("10", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassy.local")
+							.get();
+				} else if (CLI.match("11", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassy.local")
+							.get();
 				}
 
 				if (response != null) {

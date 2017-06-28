@@ -12,12 +12,16 @@ import javax.ws.rs.ext.Provider;
 public class CassyEndpoint {
 
 	@GET
-	public String get() {
+	@Path("/withoutCORS")
+	public String withoutCORS() {
 		return "Hello from Cassy";
 	}
-	
-	@CASSY
-	public String cassy() {
-		return "I have special powers !";
+
+	@GET
+	@Path("/withCORS")
+	@CassyCORS
+	public String withCORS() {
+		return "Hello from Cassy";
 	}
+
 }
