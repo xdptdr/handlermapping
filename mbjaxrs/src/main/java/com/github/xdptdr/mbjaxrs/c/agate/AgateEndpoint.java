@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.links.AddLinks;
@@ -30,5 +30,13 @@ public class AgateEndpoint {
 	@LinkResource(AgateResource.class)
 	public List<AgateResource> get() {
 		return resources;
+	}
+
+	@GET
+	@AddLinks
+	@Path("/agate/{id}")
+	@LinkResource
+	public AgateResource getById(@PathParam("id") Integer id) {
+		return resources.get(id);
 	}
 }
