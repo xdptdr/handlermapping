@@ -38,11 +38,18 @@ public class CassyCLI {
 					System.out.println("Done.");
 					running = false;
 
-				} else if (CLI.match("a", args, 0)) {
+				} else if (CLI.match("a0", args, 0)) {
 					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassycli.local")
 							.get();
-				} else if (CLI.match("b", args, 0)) {
+				} else if (CLI.match("a1", args, 0)) {
+					// 136
 					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassycli.local")
+							.get();
+				} else if (CLI.match("b0", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassy.local")
+							.get();
+				} else if (CLI.match("b1", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassy.local")
 							.get();
 				}
 
