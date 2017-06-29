@@ -112,7 +112,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
-import com.github.xdptdr.mbjaxrs.a.MyJAXRSApplication;
+import com.github.xdptdr.mbjaxrs.MyJAXRSApplication;
 import com.github.xdptdr.mbjaxrs.a.aze.AzeEndpoint;
 import com.github.xdptdr.mbjaxrs.a.bar.BAR;
 import com.github.xdptdr.mbjaxrs.a.bar.BarBean;

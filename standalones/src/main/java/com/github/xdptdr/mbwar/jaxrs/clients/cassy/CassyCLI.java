@@ -18,6 +18,8 @@ public class CassyCLI {
 
 	public static void main(String[] args) {
 
+		System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+
 		Client client = ClientBuilder.newClient();
 
 		Scanner command = new Scanner(System.in);
@@ -36,15 +38,11 @@ public class CassyCLI {
 					System.out.println("Done.");
 					running = false;
 
-				} else if (CLI.match("00", args, 0)) {
-					response = client.target(CASSY + "/withoutCORS").request().get();
-				} else if (CLI.match("01", args, 0)) {
-					response = client.target(CASSY + "/withCORS").request().get();
-				} else if (CLI.match("10", args, 0)) {
-					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassy.local")
+				} else if (CLI.match("a", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassycli.local")
 							.get();
-				} else if (CLI.match("11", args, 0)) {
-					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassy.local")
+				} else if (CLI.match("b", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassycli.local")
 							.get();
 				}
 
