@@ -39,18 +39,59 @@ public class CassyCLI {
 					running = false;
 
 				} else if (CLI.match("a0", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().get();
+				} else if (CLI.match("a1", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().get();
+				} else if (CLI.match("a2", args, 0)) {
+					response = client.target(CASSY + "/withCORSCustomized").request().get();
+				} else if (CLI.match("b0", args, 0)) {
 					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassycli.local")
 							.get();
-				} else if (CLI.match("a1", args, 0)) {
-					// 136
+				} else if (CLI.match("b1", args, 0)) {
 					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassycli.local")
 							.get();
-				} else if (CLI.match("b0", args, 0)) {
+				} else if (CLI.match("b2", args, 0)) {
+					response = client.target(CASSY + "/withCORSCustomized").request()
+							.header("Origin", "http://cassycli.local").get();
+				} else if (CLI.match("c0", args, 0)) {
 					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassy.local")
 							.get();
-				} else if (CLI.match("b1", args, 0)) {
+				} else if (CLI.match("c1", args, 0)) {
 					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassy.local")
 							.get();
+				} else if (CLI.match("c2", args, 0)) {
+					response = client.target(CASSY + "/withCORSCustomized").request()
+							.header("Origin", "http://cassy.local").get();
+				} else if (CLI.match("d0", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassy.local")
+							.options();
+				} else if (CLI.match("d1", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassy.local")
+							.options();
+				} else if (CLI.match("d2", args, 0)) {
+					response = client.target(CASSY + "/withCORSCustomized").request()
+							.header("Origin", "http://cassy.local").options();
+				} else if (CLI.match("e0", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassy.local")
+							.header("Access-Control-Request-Method", "CASSY")
+							.header("Access-Control-Request-Headers", "X-CASSY").options();
+				} else if (CLI.match("e1", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassy.local")
+							.header("Access-Control-Request-Method", "CASSY")
+							.header("Access-Control-Request-Headers", "X-CASSY").options();
+				} else if (CLI.match("e2", args, 0)) {
+					response = client.target(CASSY + "/withCORSCustomized").request()
+							.header("Origin", "http://cassy.local").header("Access-Control-Request-Method", "CASSY")
+							.header("Access-Control-Request-Headers", "X-CASSY").options();
+				} else if (CLI.match("f0", args, 0)) {
+					response = client.target(CASSY + "/withoutCORS").request().header("Origin", "http://cassy.local")
+							.get();
+				} else if (CLI.match("f1", args, 0)) {
+					response = client.target(CASSY + "/withCORS").request().header("Origin", "http://cassy.local")
+							.get();
+				} else if (CLI.match("f2", args, 0)) {
+					response = client.target(CASSY + "/withCORSCustomized").request()
+							.header("Origin", "http://cassy.local").get();
 				}
 
 				if (response != null) {

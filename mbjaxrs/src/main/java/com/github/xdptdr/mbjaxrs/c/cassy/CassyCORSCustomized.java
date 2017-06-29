@@ -10,6 +10,6 @@ import javax.ws.rs.NameBinding;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @NameBinding
-public @interface CassyCORS {
+public @interface CassyCORSCustomized {
 
 }
