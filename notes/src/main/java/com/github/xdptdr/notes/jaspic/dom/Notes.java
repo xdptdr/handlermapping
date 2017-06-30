@@ -260,6 +260,8 @@ public class Notes {
 
 	private static void notes(N n) {
 
+		/*- https://en.wikipedia.org/wiki/List_of_Greek_mythological_figures */
+
 		/*- JASPIC : JSR 196 */
 
 		/*- Message Processing Model */
@@ -444,6 +446,7 @@ public class Notes {
 
 	public static void main(String[] args) {
 		N n = new N();
+		n.setIgnoreDups(true);
 		notes(n);
 		n.sumUp();
 	}

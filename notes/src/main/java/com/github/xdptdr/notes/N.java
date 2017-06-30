@@ -7,6 +7,7 @@ public class N {
 
 	Set<Class<?>> covered = new HashSet<>();
 	Set<Class<?>> todo = new HashSet<>();
+	private boolean ignoreDups;
 
 	public N k(Class<?>... classes) {
 		for (Class<?> clazz : classes) {
@@ -23,10 +24,11 @@ public class N {
 	public void todo(Class<?>... classes) {
 		for (Class<?> clazz : classes) {
 
-			if (todo.contains(clazz)) {
+			if (!todo.contains(clazz)) {
+				todo.add(clazz);
+			} else if (!ignoreDups) {
 				throw new RuntimeException("Duplicate class " + clazz.getName());
 			}
-			todo.add(clazz);
 		}
 	}
 
@@ -42,6 +44,11 @@ public class N {
 			++total;
 		}
 		System.out.println("Progression : " + coveredCount + "/" + total);
+	}
+
+	public void setIgnoreDups(boolean ignoreDups) {
+		this.ignoreDups = ignoreDups;
+
 	}
 
 }
