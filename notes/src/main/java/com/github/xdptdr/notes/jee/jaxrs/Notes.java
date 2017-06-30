@@ -112,7 +112,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
-import com.github.xdptdr.mbjaxrs.MyJAXRSApplication;
+import com.github.xdptdr.mbjaxrs.JAXRSApplication;
 import com.github.xdptdr.mbjaxrs.a.aze.AzeEndpoint;
 import com.github.xdptdr.mbjaxrs.a.bar.BAR;
 import com.github.xdptdr.mbjaxrs.a.bar.BarBean;
@@ -190,7 +190,7 @@ public class Notes {
 		n.s("In these examples, we will define everything JAX-RS related with annotations.");
 
 		n.s("To define the servlet mapping of JAX-RS endpoints to /rs, we use the ").k(ApplicationPath.class)
-				.s(" annotation on the class ").k(MyJAXRSApplication.class).s(" which extends ").k(Application.class);
+				.s(" annotation on the class ").k(JAXRSApplication.class).s(" which extends ").k(Application.class);
 
 		/* 1.2 Very simple JAX-RS endpoint */
 
