@@ -24,18 +24,22 @@ public class Ares {
 			Certificate cert = ks.getCertificate(alias);
 			if (cert instanceof X509Certificate) {
 				X509Certificate xcert = (X509Certificate) cert;
-				System.out.println("  Basic constraints : " + xcert.getBasicConstraints());
-				// xcert.getBasicConstraints();
-				// xcert.getExtendedKeyUsage();
-				// xcert.getIssuerAlternativeNames();
+
+				System.out.println("  Basic constraints : " + Integer.toHexString(xcert.getBasicConstraints()));
+				System.out.println("Extendended key usage : " + xcert.getExtendedKeyUsage());
+				System.out.println("Alternative names : " + xcert.getIssuerAlternativeNames());
+				System.out.println("Issued Unique ID : " + xcert.getIssuerUniqueID());
+				System.out.println("Not after : " + xcert.getNotAfter());
+				System.out.println("Not before : " + xcert.getNotBefore());
+				System.out.println("Algorithm name : " + xcert.getSigAlgName());
+				// 
+				
 				// Principal p = xcert.getIssuerDN();
-				// xcert.getIssuerUniqueID();
+				// ;
 				// xcert.getIssuerX500Principal();
 				// xcert.getKeyUsage();
-				// xcert.getNotAfter();
-				// xcert.getNotBefore();
 				// xcert.getSerialNumber();
-				// xcert.getSigAlgName();
+				// ;
 				// xcert.getSigAlgOID();
 				// xcert.getSigAlgParams();
 				// xcert.getSignature();
