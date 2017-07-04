@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class Artemis {
 
@@ -31,16 +30,8 @@ public class Artemis {
 			return alias;
 		}
 
-		public void setAlias(String alias) {
-			this.alias = alias;
-		}
-
 		public Certificate getCert() {
 			return cert;
-		}
-
-		public void setCert(Certificate cert) {
-			this.cert = cert;
 		}
 
 	}
