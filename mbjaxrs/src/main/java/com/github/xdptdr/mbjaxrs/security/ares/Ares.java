@@ -10,6 +10,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
+import javax.security.auth.x500.X500Principal;
+
 public class Ares {
 	public static void main(String[] args)
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
@@ -26,35 +28,66 @@ public class Ares {
 				X509Certificate xcert = (X509Certificate) cert;
 
 				System.out.println("  Basic constraints : " + Integer.toHexString(xcert.getBasicConstraints()));
-				System.out.println("Extendended key usage : " + xcert.getExtendedKeyUsage());
-				System.out.println("Alternative names : " + xcert.getIssuerAlternativeNames());
-				System.out.println("Issued Unique ID : " + xcert.getIssuerUniqueID());
-				System.out.println("Not after : " + xcert.getNotAfter());
-				System.out.println("Not before : " + xcert.getNotBefore());
-				System.out.println("Algorithm name : " + xcert.getSigAlgName());
-				// 
-				
-				// Principal p = xcert.getIssuerDN();
-				// ;
-				// xcert.getIssuerX500Principal();
-				// xcert.getKeyUsage();
-				// xcert.getSerialNumber();
-				// ;
-				// xcert.getSigAlgOID();
-				// xcert.getSigAlgParams();
-				// xcert.getSignature();
-				// xcert.getSubjectAlternativeNames();
-				// xcert.getSubjectDN();
-				// xcert.getSubjectUniqueID();
-				// xcert.getSubjectX500Principal();
-				// xcert.getTBSCertificate();
-				// xcert.getVersion();
+				System.out.println("  Extendended key usage : " + xcert.getExtendedKeyUsage());
+				System.out.println("  Alternative names : " + xcert.getIssuerAlternativeNames());
+				System.out.println("  Issued Unique ID : " + xcert.getIssuerUniqueID());
+				System.out.println("  Not after : " + xcert.getNotAfter());
+				System.out.println("  Not before : " + xcert.getNotBefore());
+				System.out.println("  Signature Algorithm name : " + xcert.getSigAlgName());
+				System.out.println("  Signature Algorithm OID : " + xcert.getSigAlgOID());
+				System.out.println("  Subject alternative names : " + xcert.getSubjectAlternativeNames());
+				System.out.println("  Version : " + xcert.getVersion());
+
+				Principal p = xcert.getIssuerDN();
+				System.out.println("  Issuer DN : " + p.getName());
+
+				p = xcert.getSubjectDN();
+				System.out.println("  Subject DN : " + p.getName());
+
+				X500Principal xp = xcert.getIssuerX500Principal();
+				System.out.println("  Issuer X500 Principal : " + xp.getName());
+				xp = xcert.getSubjectX500Principal();
+				System.out.println("  Subject X500 Principal : " + xp.getName());
+
+				System.out.print("  Key Usage : ");
+				dumpBooleans(xcert.getKeyUsage());
+				System.out.println();
+
+				System.out.print("  Signature Algorithm Parameters :");
+				dumpBytes(xcert.getSigAlgParams());
+				System.out.println();
+
+				System.out.print("  Signature :");
+				dumpBytes(xcert.getSignature());
+				System.out.println();
+
+				System.out.println("  Serial Number : " + xcert.getSerialNumber());
+
+				System.out.print("  Subject Unique ID :");
+				dumpBooleans(xcert.getSubjectUniqueID());
+				System.out.println();
+
+				System.out.print("  TBS Certificate :");
+				dumpBytes(xcert.getTBSCertificate());
+				System.out.println();
 
 			}
 		}
 	}
 
+	private static void dumpClasses(Object o) {
+		Class<?> c = o.getClass();
+		while (c != Object.class) {
+			System.out.println(c.getName());
+			c = c.getSuperclass();
+		}
+	}
+
 	private static void dumpBytes(byte[] bytes) {
+		if (bytes == null) {
+			System.out.print(" null");
+			return;
+		}
 		for (byte b : bytes) {
 			System.out.print(" ");
 			String bs = Integer.toHexString(b & 0xFF);
@@ -62,6 +95,17 @@ public class Ares {
 				System.out.print("0");
 			}
 			System.out.print(bs);
+		}
+
+	}
+
+	private static void dumpBooleans(boolean[] booleans) {
+		if (booleans == null) {
+			System.out.print("null");
+			return;
+		}
+		for (boolean b : booleans) {
+			System.out.print(b ? "1" : "0");
 		}
 
 	}
