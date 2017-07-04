@@ -96,6 +96,7 @@ public class Demeter {
 									cln(type);
 									switch (type) {
 									case "X.509":
+										@SuppressWarnings("unused")
 										X509Certificate xcert = (X509Certificate) certificate;
 										cln("X509 certificate found");
 										break;
@@ -172,9 +173,9 @@ public class Demeter {
 		for (int i = 0; i < string.length(); ++i) {
 			System.out.print(string.charAt(i));
 			System.out.flush();
-			// sleep(50);
+			sleep(50);
 		}
-		// sleep(500);
+		sleep(500);
 	}
 
 	private static void sleep(int t) {
