@@ -72,6 +72,7 @@ import java.security.URIParameter;
 import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.UnresolvedPermission;
+import java.security.acl.Acl;
 import java.security.acl.AclEntry;
 import java.security.acl.AclNotFoundException;
 import java.security.acl.Group;
@@ -252,8 +253,9 @@ import javax.security.sasl.SaslServerFactory;
 
 import com.github.xdptdr.mbjaxrs.security.aphrodite.Aphrodite;
 import com.github.xdptdr.mbjaxrs.security.apollo.Apollo;
+import com.github.xdptdr.mbjaxrs.security.artemis.Artemis;
+import com.github.xdptdr.mbjaxrs.security.athena.Athena;
 import com.github.xdptdr.notes.N;
-import com.sun.mail.imap.ACL;
 
 import javassist.tools.Callback;
 
@@ -338,9 +340,14 @@ public class Notes {
 		  - KeyPairGenerator : RSA
 		  - Cipher : RSA, RSA/ECB/PKCS1Padding
 		 */
-		
+
 		n.k(Apollo.class).s(" illustrate how to sign a string with a public and private key using")
 				.k(KeyPairGenerator.class, KeyPair.class, PublicKey.class, PrivateKey.class, Signature.class);
+
+		n.k(Artemis.class).s(" illustrates how to enumerate windows certificates using ").k(KeyStore.class,
+				java.security.cert.Certificate.class, java.security.cert.X509Certificate.class);
+
+		n.k(Athena.class).s(" illustrates how to verify certificates");
 
 		todoJseJavaSecurity(n);
 
@@ -377,7 +384,7 @@ public class Notes {
 				UnrecoverableEntryException.class, UnrecoverableKeyException.class, UnresolvedPermission.class,
 				URIParameter.class);
 
-		n.todo(ACL.class, AclEntry.class, AclNotFoundException.class, Group.class, LastOwnerException.class,
+		n.todo(Acl.class, AclEntry.class, AclNotFoundException.class, Group.class, LastOwnerException.class,
 				NotOwnerException.class, Owner.class, Permission.class);
 
 		n.todo(java.security.cert.Certificate.class, java.security.cert.CertificateEncodingException.class,
@@ -479,7 +486,7 @@ public class Notes {
 		N n = new N();
 		n.setIgnoreDups(true);
 		notes(n);
-		n.sumUp();
+		n.sumUp(true);
 	}
 
 }

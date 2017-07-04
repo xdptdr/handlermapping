@@ -1,6 +1,9 @@
 package com.github.xdptdr.notes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class N {
@@ -33,16 +36,31 @@ public class N {
 	}
 
 	public void sumUp() {
+		sumUp(false);
+	}
+
+	public void sumUp(boolean ignoreExceptions) {
 		int total = 0;
 		int coveredCount = 0;
+		List<String> todos = new ArrayList<>();
+
 		for (Class<?> clazz : todo) {
+			if (ignoreExceptions && Exception.class.isAssignableFrom(clazz)) {
+				continue;
+			}
 			if (!covered.contains(clazz)) {
-				System.out.println("TODO : " + clazz.getName());
+				todos.add(clazz.getName());
 			} else {
 				++coveredCount;
 			}
 			++total;
 		}
+
+		Collections.sort(todos);
+		for (String todo : todos) {
+			System.out.println("TODO : " + todo);
+		}
+
 		System.out.println("Progression : " + coveredCount + "/" + total);
 	}
 
