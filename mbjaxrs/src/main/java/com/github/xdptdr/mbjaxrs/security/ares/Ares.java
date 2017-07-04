@@ -75,14 +75,6 @@ public class Ares {
 		}
 	}
 
-	private static void dumpClasses(Object o) {
-		Class<?> c = o.getClass();
-		while (c != Object.class) {
-			System.out.println(c.getName());
-			c = c.getSuperclass();
-		}
-	}
-
 	private static void dumpBytes(byte[] bytes) {
 		if (bytes == null) {
 			System.out.print(" null");
