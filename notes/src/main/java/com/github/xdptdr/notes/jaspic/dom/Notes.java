@@ -255,6 +255,7 @@ import com.github.xdptdr.mbjaxrs.security.aphrodite.Aphrodite;
 import com.github.xdptdr.mbjaxrs.security.apollo.Apollo;
 import com.github.xdptdr.mbjaxrs.security.artemis.Artemis;
 import com.github.xdptdr.mbjaxrs.security.athena.Athena;
+import com.github.xdptdr.mbjaxrs.security.demeter.Demeter;
 import com.github.xdptdr.notes.N;
 
 import javassist.tools.Callback;
@@ -348,6 +349,10 @@ public class Notes {
 				java.security.cert.Certificate.class, java.security.cert.X509Certificate.class);
 
 		n.k(Athena.class).s(" illustrates how to verify certificates");
+
+		n.k(Demeter.class).s(" illustrates how to use ").k(CodeSigner.class, CodeSource.class, Permission.class,
+				PermissionCollection.class, Principal.class, ProtectionDomain.class, Timestamp.class, CertPath.class,
+				java.security.cert.Certificate.class, java.security.cert.X509Certificate.class);
 
 		todoJseJavaSecurity(n);
 
