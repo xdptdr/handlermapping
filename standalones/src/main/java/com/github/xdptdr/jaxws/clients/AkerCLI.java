@@ -3,8 +3,8 @@ package com.github.xdptdr.jaxws.clients;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -19,9 +19,9 @@ import com.github.xdptdr.utils.CLI;
 
 public class AkerCLI {
 
-	private static final String AKER_SERVICE_NAME = "AkerServiceService";
+	private static final String AKER_SERVICE_NAME = "AkerService";
 	private static final String AKER_NAMESPACE = "http://aker.jaxws.xdptdr.github.com/";
-	private static final String AKER_WSDL = "http://localhost:8080/mbwar/AkerService?wsdl";
+	private static final String AKER_WSDL = "http://localhost:8080/mbwar/Aker?wsdl";
 	private static AkerSEI p;
 
 	public static void main(String[] args) {
