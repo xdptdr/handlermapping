@@ -57,6 +57,7 @@ public class AmmitHandler implements SOAPHandler<SOAPMessageContext> {
 				// doAttachments(soapMessage);
 				// doContentDescription(soapMessage);
 				// doMimeHeaders(soapMessage);
+				doSOAPBody(soapMessage);
 
 			}
 
@@ -64,45 +65,6 @@ public class AmmitHandler implements SOAPHandler<SOAPMessageContext> {
 				return true;
 			}
 
-			try {
-				SOAPBody body = soapMessage.getSOAPBody();
-				Document doc = body.extractContentAsDocument();
-				if (body.hasFault()) {
-					SOAPFault fault = body.getFault();
-					Detail d = fault.getDetail();
-					Iterator entries = d.getDetailEntries();
-					while (entries.hasNext()) {
-						DetailEntry entry = (DetailEntry) entries.next();
-						entry.getClass();
-
-					}
-					fault.getFaultActor();
-					fault.getFaultCode();
-					Name fn = fault.getFaultCodeAsName();
-					QName fqn = fault.getFaultCodeAsQName();
-					fault.getFaultNode();
-					Iterator frloc = fault.getFaultReasonLocales();
-					while (frloc.hasNext()) {
-						Locale frl = (Locale) frloc.next();
-					}
-					Iterator texts = fault.getFaultReasonTexts();
-					while (texts.hasNext()) {
-						String text = (String) texts.next();
-
-					}
-					fault.getFaultRole();
-					fault.getFaultString();
-					fault.getFaultStringLocale();
-					Iterator sc = fault.getFaultSubcodes();
-					while (sc.hasNext()) {
-						QName scode = (QName) sc.next();
-					}
-					fault.hasDetail();
-
-				}
-			} catch (SOAPException e) {
-				e.printStackTrace();
-			}
 			try {
 				SOAPHeader shear = soapMessage.getSOAPHeader();
 				Iterator headerments = shear.extractAllHeaderElements();
@@ -117,6 +79,79 @@ public class AmmitHandler implements SOAPHandler<SOAPMessageContext> {
 
 			return true;
 		}
+	}
+
+	private void doSOAPBody(SOAPMessage soapMessage) {
+
+		c("context/soapBody : ");
+
+		try {
+			SOAPBody body = soapMessage.getSOAPBody();
+			if (body == null) {
+				cln("not found");
+			} else {
+				cln("found");
+
+				c("context/soapBody/hasFault : ");
+
+				if (body.hasFault()) {
+					cln("yes");
+				} else {
+					cln("no");
+				}
+
+				Document doc = body.extractContentAsDocument();
+				c("context/soapBody/document : ");
+				if (doc == null) {
+					cln("not found");
+				} else {
+					cln("found");
+				}
+
+				if (System.currentTimeMillis() == 0) {
+					if (body.hasFault()) {
+						SOAPFault fault = body.getFault();
+						Detail d = fault.getDetail();
+						Iterator entries = d.getDetailEntries();
+						while (entries.hasNext()) {
+							DetailEntry entry = (DetailEntry) entries.next();
+							entry.getClass();
+
+						}
+						fault.getFaultActor();
+						fault.getFaultCode();
+						Name fn = fault.getFaultCodeAsName();
+						QName fqn = fault.getFaultCodeAsQName();
+						fault.getFaultNode();
+						Iterator frloc = fault.getFaultReasonLocales();
+						while (frloc.hasNext()) {
+							Locale frl = (Locale) frloc.next();
+						}
+						Iterator texts = fault.getFaultReasonTexts();
+						while (texts.hasNext()) {
+							String text = (String) texts.next();
+
+						}
+						fault.getFaultRole();
+						fault.getFaultString();
+						fault.getFaultStringLocale();
+						Iterator sc = fault.getFaultSubcodes();
+						while (sc.hasNext()) {
+							QName scode = (QName) sc.next();
+						}
+						fault.hasDetail();
+
+					}
+				}
+			}
+		} catch (SOAPException e) {
+			cln("got exception");
+			c(" !! exception class : ");
+			cln(e.getClass().getName());
+			c(" !! message : ");
+			cln(e.getMessage());
+		}
+
 	}
 
 	private void doMimeHeaders(SOAPMessage soapMessage) {
