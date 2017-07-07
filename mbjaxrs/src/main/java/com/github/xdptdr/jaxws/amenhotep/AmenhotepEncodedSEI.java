@@ -8,6 +8,5 @@ import javax.jws.soap.SOAPBinding.Use;
 
 @WebService
 @SOAPBinding(style = Style.DOCUMENT, use = Use.ENCODED, parameterStyle = ParameterStyle.WRAPPED)
-public interface AmenhotepEncodedSEI {
-	public String hello();
+public interface AmenhotepEncodedSEI extends AmenhotepSEI {
 }

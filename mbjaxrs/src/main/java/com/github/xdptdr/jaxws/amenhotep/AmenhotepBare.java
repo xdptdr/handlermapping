@@ -7,7 +7,7 @@ public class AmenhotepBare implements AmenhotepBareSEI {
 
 	@Override
 	public String hello() {
-		return "Hello from Ammit";
+		return "Hello from AmenhotepBare";
 	}
 
 }

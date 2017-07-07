@@ -7,7 +7,7 @@ public class AmenhotepRPC implements AmenhotepRPCSEI {
 
 	@Override
 	public String hello() {
-		return "Hello from Ammit";
+		return "Hello from AmenhotepRPC";
 	}
 
 }

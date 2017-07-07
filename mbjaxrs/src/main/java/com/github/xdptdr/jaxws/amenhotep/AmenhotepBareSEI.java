@@ -8,6 +8,8 @@ import javax.jws.soap.SOAPBinding.Use;
 
 @WebService
 @SOAPBinding(style = Style.DOCUMENT, use = Use.LITERAL, parameterStyle = ParameterStyle.BARE)
-public interface AmenhotepBareSEI {
-	public String hello();
+public interface AmenhotepBareSEI extends AmenhotepSEI {
+	@Override
+	@SOAPBinding(parameterStyle = ParameterStyle.BARE)
+	String hello();
 }
