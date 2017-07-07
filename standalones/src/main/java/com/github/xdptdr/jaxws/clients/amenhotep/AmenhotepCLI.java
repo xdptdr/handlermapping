@@ -22,7 +22,6 @@ import com.github.xdptdr.jaxws.amenhotep.AmenhotepBareSEI;
 import com.github.xdptdr.jaxws.amenhotep.AmenhotepEncodedSEI;
 import com.github.xdptdr.jaxws.amenhotep.AmenhotepRPCSEI;
 import com.github.xdptdr.jaxws.amenhotep.AmenhotepSEI;
-import com.github.xdptdr.jaxws.clients.ammit.AmmitHandler;
 import com.github.xdptdr.utils.CLI;
 
 public final class AmenhotepCLI {
@@ -125,7 +124,7 @@ public final class AmenhotepCLI {
 			@Override
 			public List<Handler> getHandlerChain(PortInfo portInfo) {
 				List<Handler> list = new ArrayList<>();
-				list.add(new AmmitHandler());
+				list.add(new AmenhotepHandler());
 				return list;
 			}
 		};

@@ -9,7 +9,4 @@ import javax.jws.soap.SOAPBinding.Use;
 @WebService
 @SOAPBinding(style = Style.RPC, use = Use.LITERAL, parameterStyle = ParameterStyle.WRAPPED)
 public interface AmenhotepRPCSEI extends AmenhotepSEI {
-	@Override
-	@SOAPBinding(style = Style.RPC)
-	String hello();
 }
