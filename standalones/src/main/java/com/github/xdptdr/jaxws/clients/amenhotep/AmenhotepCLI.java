@@ -147,7 +147,7 @@ public final class AmenhotepCLI {
 		case SERVICE_NAME:
 			switch (variant) {
 			case DEFAULT:
-				return "AmenhotepService";
+				return "AmenhotepDefaultService";
 			case BARE:
 				return "AmenhotepBareService";
 			case ENCODED:
@@ -160,7 +160,7 @@ public final class AmenhotepCLI {
 		case WSDL:
 			switch (variant) {
 			case DEFAULT:
-				return "http://localhost:8080/mbwar/Amenhotep?wsdl";
+				return "http://localhost:8080/mbwar/AmenhotepDefault?wsdl";
 			case BARE:
 				return "http://localhost:8080/mbwar/AmenhotepBare?wsdl";
 			case ENCODED:
