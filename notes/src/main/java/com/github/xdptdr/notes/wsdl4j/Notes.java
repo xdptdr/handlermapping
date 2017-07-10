@@ -61,6 +61,7 @@ import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 
 import com.github.xdptdr.notes.N;
+import com.github.xdptdr.wsdl4j.Baal;
 import com.ibm.wsdl.AbstractWSDLElement;
 import com.ibm.wsdl.BindingFaultImpl;
 import com.ibm.wsdl.BindingImpl;
@@ -146,7 +147,16 @@ import com.ibm.wsdl.xml.WSDLReaderImpl;
 import com.ibm.wsdl.xml.WSDLWriterImpl;
 
 public class Notes {
+
+	/*-
+	https://en.wikipedia.org/wiki/List_of_biblical_names_starting_with_B
+	 */
+
 	private static void notes(N n) {
+
+		n.k(Baal.class, AbstractWSDLElement.class);
+		n.k(Baal.class, BindingFaultImpl.class);
+
 		todos(n);
 	}
 
