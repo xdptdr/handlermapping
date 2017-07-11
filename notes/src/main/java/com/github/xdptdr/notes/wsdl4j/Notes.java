@@ -62,6 +62,7 @@ import javax.wsdl.xml.WSDLWriter;
 
 import com.github.xdptdr.notes.N;
 import com.github.xdptdr.wsdl4j.Baal;
+import com.github.xdptdr.wsdl4j.Baalah;
 import com.ibm.wsdl.AbstractWSDLElement;
 import com.ibm.wsdl.BindingFaultImpl;
 import com.ibm.wsdl.BindingImpl;
@@ -157,14 +158,16 @@ public class Notes {
 		n.k(Baal.class, AbstractWSDLElement.class);
 		n.k(Baal.class, Constants.class);
 
-		n.k(Baal.class, BindingFaultImpl.class, BindingImpl.class, BindingInputImpl.class,
-				BindingOperationImpl.class, BindingOutputImpl.class, DefinitionImpl.class, FaultImpl.class,
-				ImportImpl.class, InputImpl.class, MessageImpl.class, OperationImpl.class, OutputImpl.class,
-				PartImpl.class, PortImpl.class, PortTypeImpl.class, ServiceImpl.class, TypesImpl.class);
+		n.k(Baal.class, BindingFaultImpl.class, BindingImpl.class, BindingInputImpl.class, BindingOperationImpl.class,
+				BindingOutputImpl.class, DefinitionImpl.class, FaultImpl.class, ImportImpl.class, InputImpl.class,
+				MessageImpl.class, OperationImpl.class, OutputImpl.class, PartImpl.class, PortImpl.class,
+				PortTypeImpl.class, ServiceImpl.class, TypesImpl.class);
 
 		n.k(Baal.class, BindingFault.class, Binding.class, BindingInput.class, BindingOperation.class,
 				BindingOutput.class, Fault.class, Import.class, Input.class, Message.class, Operation.class,
 				Output.class, Part.class, Port.class, PortType.class, Service.class, Types.class);
+
+		n.k(Baalah.class, PopulatedExtensionRegistry.class);
 
 		todos(n);
 	}
