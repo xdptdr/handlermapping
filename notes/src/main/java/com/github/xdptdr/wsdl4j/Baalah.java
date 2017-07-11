@@ -6,6 +6,7 @@ import javax.wsdl.BindingFault;
 import javax.wsdl.BindingInput;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.BindingOutput;
+import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.wsdl.extensions.ExtensionRegistry;
@@ -24,7 +25,11 @@ import com.ibm.wsdl.extensions.http.HTTPUrlEncodedSerializer;
 import com.ibm.wsdl.extensions.http.HTTPUrlReplacementSerializer;
 import com.ibm.wsdl.extensions.mime.MIMEConstants;
 import com.ibm.wsdl.extensions.mime.MIMEContentSerializer;
+import com.ibm.wsdl.extensions.mime.MIMEMimeXmlSerializer;
 import com.ibm.wsdl.extensions.mime.MIMEMultipartRelatedSerializer;
+import com.ibm.wsdl.extensions.schema.SchemaConstants;
+import com.ibm.wsdl.extensions.schema.SchemaDeserializer;
+import com.ibm.wsdl.extensions.schema.SchemaSerializer;
 import com.ibm.wsdl.extensions.soap.SOAPAddressSerializer;
 import com.ibm.wsdl.extensions.soap.SOAPBodySerializer;
 import com.ibm.wsdl.extensions.soap.SOAPConstants;
@@ -91,50 +96,18 @@ public class Baalah {
 		q(r, BindingOutput.class, MIMEConstants.Q_ELEM_MIME_CONTENT, MIMEContentSerializer.class);
 		q(r, MIMEPart.class, MIMEConstants.Q_ELEM_MIME_CONTENT, MIMEContentSerializer.class);
 		q(r, BindingInput.class, MIMEConstants.Q_ELEM_MIME_MULTIPART_RELATED, MIMEMultipartRelatedSerializer.class);
-		// registerSerializer(BindingOutput.class,
-		// MIMEConstants.Q_ELEM_MIME_MULTIPART_RELATED,
-		// mimeMultipartRelatedSer);
-		// registerDeserializer(BindingOutput.class,
-		// MIMEConstants.Q_ELEM_MIME_MULTIPART_RELATED,
-		// mimeMultipartRelatedSer);
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
-		// registerSerializer(MIMEPart.class,
-		// MIMEConstants.Q_ELEM_MIME_MULTIPART_RELATED,
-		// mimeMultipartRelatedSer);
-		// registerDeserializer(MIMEPart.class,
-		// MIMEConstants.Q_ELEM_MIME_MULTIPART_RELATED,
-		// mimeMultipartRelatedSer);
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
-		// registerSerializer(BindingInput.class,
-		// MIMEConstants.Q_ELEM_MIME_MIME_XML, mimeMimeXmlSer);
-		// registerDeserializer(BindingInput.class,
-		// MIMEConstants.Q_ELEM_MIME_MIME_XML, mimeMimeXmlSer);
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
-		// registerSerializer(BindingOutput.class,
-		// MIMEConstants.Q_ELEM_MIME_MIME_XML, mimeMimeXmlSer);
-		// registerDeserializer(BindingOutput.class,
-		// MIMEConstants.Q_ELEM_MIME_MIME_XML, mimeMimeXmlSer);
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
-		// registerSerializer(MIMEPart.class,
-		// MIMEConstants.Q_ELEM_MIME_MIME_XML, mimeMimeXmlSer);
-		// registerDeserializer(MIMEPart.class,
-		// MIMEConstants.Q_ELEM_MIME_MIME_XML, mimeMimeXmlSer);
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
-		// registerDeserializer(Types.class, SchemaConstants.Q_ELEM_XSD_1999,
-		// new SchemaDeserializer());
-		// registerSerializer(Types.class, SchemaConstants.Q_ELEM_XSD_1999, new
-		// SchemaSerializer());
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
-		// registerDeserializer(Types.class, SchemaConstants.Q_ELEM_XSD_2000,
-		// new SchemaDeserializer());
-		// registerSerializer(Types.class, SchemaConstants.Q_ELEM_XSD_2000, new
-		// SchemaSerializer());
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
-		// registerDeserializer(Types.class, SchemaConstants.Q_ELEM_XSD_2001,
-		// new SchemaDeserializer());
-		// registerSerializer(Types.class, SchemaConstants.Q_ELEM_XSD_2001, new
-		// SchemaSerializer());
-		q(r, BindingInput.class, SOAP12Constants.Q_ELEM_SOAP_BODY, SOAP12BodySerializer.class);
+		q(r, BindingInput.class, MIMEConstants.Q_ELEM_MIME_MULTIPART_RELATED, MIMEMultipartRelatedSerializer.class);
+		q(r, MIMEPart.class, MIMEConstants.Q_ELEM_MIME_MULTIPART_RELATED, MIMEMultipartRelatedSerializer.class);
+		q(r, BindingInput.class, MIMEConstants.Q_ELEM_MIME_MIME_XML, MIMEMimeXmlSerializer.class);
+		q(r, BindingOutput.class, MIMEConstants.Q_ELEM_MIME_MIME_XML, MIMEMimeXmlSerializer.class);
+		q(r, MIMEPart.class, MIMEConstants.Q_ELEM_MIME_MIME_XML, MIMEMimeXmlSerializer.class);
+
+		q(r, Types.class, SchemaConstants.Q_ELEM_XSD_1999, SchemaSerializer.class, SchemaDeserializer.class);
+
+		q(r, Types.class, SchemaConstants.Q_ELEM_XSD_2000, SchemaSerializer.class, SchemaDeserializer.class);
+
+		q(r, Types.class, SchemaConstants.Q_ELEM_XSD_2001, SchemaSerializer.class, SchemaDeserializer.class);
+		
 		/*-
 				{
 					{
@@ -260,9 +233,15 @@ public class Baalah {
 		*/
 	}
 
+	private static void q(ExtensionRegistry r, Class<?> clazz, QName qn, Class<?> sClazz, Class<?> dClazz)
+			throws WSDLException {
+		assert (r.querySerializer(clazz, qn).getClass() == sClazz);
+		assert (r.queryDeserializer(clazz, qn).getClass() == dClazz);
+
+	}
+
 	private static void q(ExtensionRegistry r, Class<?> clazz, QName qn, Class<?> sdClazz) throws WSDLException {
-		assert (r.querySerializer(clazz, qn).getClass() == sdClazz);
-		assert (r.queryDeserializer(clazz, qn).getClass() == sdClazz);
+		q(r, clazz, qn, sdClazz, sdClazz);
 
 	}
 
