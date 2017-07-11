@@ -5,7 +5,9 @@ import java.io.StringWriter;
 
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.ExtensionRegistry;
+import javax.wsdl.extensions.ExtensionSerializer;
 import javax.xml.namespace.QName;
 
 import com.ibm.wsdl.Constants;
@@ -13,6 +15,7 @@ import com.ibm.wsdl.DefinitionImpl;
 import com.ibm.wsdl.extensions.http.HTTPAddressImpl;
 import com.ibm.wsdl.extensions.http.HTTPAddressSerializer;
 import com.ibm.wsdl.extensions.http.HTTPBindingImpl;
+import com.ibm.wsdl.extensions.http.HTTPBindingSerializer;
 import com.ibm.wsdl.extensions.http.HTTPConstants;
 import com.ibm.wsdl.extensions.http.HTTPOperationImpl;
 import com.ibm.wsdl.extensions.http.HTTPUrlEncodedImpl;
@@ -119,28 +122,42 @@ public class Baalath {
 		definition.addNamespace("http", HTTPConstants.NS_URI_HTTP);
 		definition.addNamespace("wsdl", Constants.NS_URI_WSDL);
 
-		HTTPAddressSerializer httpAddressSerializer = new HTTPAddressSerializer();
-		HTTPAddressImpl httpAddressImpl = new HTTPAddressImpl();
+		{
+			HTTPAddressSerializer httpAddressSerializer = new HTTPAddressSerializer();
+			HTTPAddressImpl httpAddressImpl = new HTTPAddressImpl();
 
-		httpAddressSerializer.marshall(parentType, elementType, httpAddressImpl, holder.getNew(), definition,
-				extensionRegistry);
-		System.out.println(holder.consume());
+			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
+					extensionRegistry);
 
-		httpAddressImpl.setRequired(false);
+			httpAddressImpl.setRequired(false);
 
-		httpAddressSerializer.marshall(parentType, elementType, httpAddressImpl, holder.getNew(), definition,
-				extensionRegistry);
-		System.out.println(holder.consume());
+			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
+					extensionRegistry);
 
-		httpAddressImpl.setLocationURI("titou");
+			httpAddressImpl.setLocationURI("titou");
 
-		httpAddressSerializer.marshall(parentType, elementType, httpAddressImpl, holder.getNew(), definition,
-				extensionRegistry);
-		System.out.println(holder.consume());
+			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
+					extensionRegistry);
 
-		httpAddressImpl.setElementType(new QName("yipee", "yopla"));
-		
-		httpAddressSerializer.marshall(parentType, elementType, httpAddressImpl, holder.getNew(), definition,
+			httpAddressImpl.setElementType(new QName("yipee", "yopla"));
+			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
+					extensionRegistry);
+		}
+
+		{
+			HTTPBindingSerializer httpBindingSerializer = new HTTPBindingSerializer();
+			HTTPBindingImpl httpBindingImpl = new HTTPBindingImpl();
+
+			serialize(httpBindingSerializer, parentType, elementType, httpBindingImpl, holder, definition,
+					extensionRegistry);
+		}
+
+	}
+
+	private static void serialize(ExtensionSerializer extensionSerializer, Class<?> parentType, QName elementType,
+			ExtensibilityElement extensibilityElement, StringWriterHolder holder, Definition definition,
+			ExtensionRegistry extensionRegistry) throws WSDLException {
+		extensionSerializer.marshall(parentType, elementType, extensibilityElement, holder.getNew(), definition,
 				extensionRegistry);
 		System.out.println(holder.consume());
 
