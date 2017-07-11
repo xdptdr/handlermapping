@@ -155,7 +155,16 @@ public class Notes {
 	private static void notes(N n) {
 
 		n.k(Baal.class, AbstractWSDLElement.class);
-		n.k(Baal.class, BindingFaultImpl.class);
+		n.k(Baal.class, Constants.class);
+
+		n.k(Baal.class, BindingFaultImpl.class, BindingImpl.class, BindingInputImpl.class,
+				BindingOperationImpl.class, BindingOutputImpl.class, DefinitionImpl.class, FaultImpl.class,
+				ImportImpl.class, InputImpl.class, MessageImpl.class, OperationImpl.class, OutputImpl.class,
+				PartImpl.class, PortImpl.class, PortTypeImpl.class, ServiceImpl.class, TypesImpl.class);
+
+		n.k(Baal.class, BindingFault.class, Binding.class, BindingInput.class, BindingOperation.class,
+				BindingOutput.class, Fault.class, Import.class, Input.class, Message.class, Operation.class,
+				Output.class, Part.class, Port.class, PortType.class, Service.class, Types.class);
 
 		todos(n);
 	}
@@ -167,6 +176,7 @@ public class Notes {
 				FaultImpl.class, ImportImpl.class, InputImpl.class, MessageImpl.class, OperationImpl.class,
 				OutputImpl.class, PartImpl.class, PortImpl.class, PortTypeImpl.class, ServiceImpl.class,
 				TypesImpl.class);
+
 		n.todo(PopulatedExtensionRegistry.class);
 
 		n.todo(HTTPAddressImpl.class, HTTPAddressSerializer.class, HTTPBindingImpl.class, HTTPBindingSerializer.class,
