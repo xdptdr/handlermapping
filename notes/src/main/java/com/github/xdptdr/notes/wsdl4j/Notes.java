@@ -64,6 +64,7 @@ import com.github.xdptdr.notes.N;
 import com.github.xdptdr.wsdl4j.Baal;
 import com.github.xdptdr.wsdl4j.Baalah;
 import com.github.xdptdr.wsdl4j.Baalath;
+import com.github.xdptdr.wsdl4j.BaalathBeer;
 import com.ibm.wsdl.AbstractWSDLElement;
 import com.ibm.wsdl.BindingFaultImpl;
 import com.ibm.wsdl.BindingImpl;
@@ -175,6 +176,12 @@ public class Notes {
 		n.k(Baalath.class, HTTPAddressSerializer.class, HTTPBindingSerializer.class, HTTPOperationSerializer.class,
 				HTTPUrlEncodedSerializer.class, HTTPUrlReplacementSerializer.class);
 		n.k(Baalath.class, HTTPConstants.class);
+
+		n.k(BaalathBeer.class, MIMEConstants.class);
+		n.k(BaalathBeer.class, MIMEContentImpl.class, MIMEMimeXmlImpl.class, MIMEPartImpl.class,
+				MIMEMultipartRelatedImpl.class);
+		n.k(BaalathBeer.class, MIMEContentSerializer.class, MIMEMimeXmlSerializer.class,
+				MIMEMultipartRelatedSerializer.class);
 
 		todos(n);
 	}
