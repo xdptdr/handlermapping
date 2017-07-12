@@ -63,6 +63,7 @@ import javax.wsdl.xml.WSDLWriter;
 import com.github.xdptdr.notes.N;
 import com.github.xdptdr.wsdl4j.Baal;
 import com.github.xdptdr.wsdl4j.Baalah;
+import com.github.xdptdr.wsdl4j.Baalath;
 import com.ibm.wsdl.AbstractWSDLElement;
 import com.ibm.wsdl.BindingFaultImpl;
 import com.ibm.wsdl.BindingImpl;
@@ -168,6 +169,12 @@ public class Notes {
 				Output.class, Part.class, Port.class, PortType.class, Service.class, Types.class);
 
 		n.k(Baalah.class, PopulatedExtensionRegistry.class);
+
+		n.k(Baalath.class, HTTPAddressImpl.class, HTTPBindingImpl.class, HTTPOperationImpl.class,
+				HTTPUrlEncodedImpl.class, HTTPUrlReplacementImpl.class);
+		n.k(Baalath.class, HTTPAddressSerializer.class, HTTPBindingSerializer.class, HTTPOperationSerializer.class,
+				HTTPUrlEncodedSerializer.class, HTTPUrlReplacementSerializer.class);
+		n.k(Baalath.class, HTTPConstants.class);
 
 		todos(n);
 	}

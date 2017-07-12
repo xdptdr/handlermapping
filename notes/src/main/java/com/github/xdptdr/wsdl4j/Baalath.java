@@ -158,7 +158,7 @@ public class Baalath {
 			serialize(httpOperationSerializer, parentType, elementType, httpOperationImpl, holder, definition,
 					extensionRegistry);
 		}
-		
+
 		{
 			HTTPUrlEncodedSerializer httpUrlEncodedSerializer = new HTTPUrlEncodedSerializer();
 			HTTPUrlEncodedImpl httpUrlEncodedImpl = new HTTPUrlEncodedImpl();
@@ -189,8 +189,31 @@ public class Baalath {
 
 	}
 
+	private static void fooConstants() {
+		System.out.println("ATTR_VERB : " + HTTPConstants.ATTR_VERB);
+		System.out.println("ELEM_ADDRESS : " + HTTPConstants.ELEM_ADDRESS);
+		System.out.println("ELEM_URL_ENCODED : " + HTTPConstants.ELEM_URL_ENCODED);
+		System.out.println("ELEM_URL_REPLACEMENT : " + HTTPConstants.ELEM_URL_REPLACEMENT);
+		System.out.println("NS_URI_HTTP : " + HTTPConstants.NS_URI_HTTP);
+		System.out.println("Q_ELEM_HTTP_ADDRESS : " + qns(HTTPConstants.Q_ELEM_HTTP_ADDRESS));
+		System.out.println("Q_ELEM_HTTP_BINDING : " + qns(HTTPConstants.Q_ELEM_HTTP_BINDING));
+		System.out.println("Q_ELEM_HTTP_OPERATION : " + qns(HTTPConstants.Q_ELEM_HTTP_OPERATION));
+		System.out.println("Q_ELEM_HTTP_URL_ENCODED : " + qns(HTTPConstants.Q_ELEM_HTTP_URL_ENCODED));
+		System.out.println("Q_ELEM_HTTP_URL_REPLACEMENT: " + qns(HTTPConstants.Q_ELEM_HTTP_URL_REPLACEMENT));
+	}
+
+	private static String qns(QName qn) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(qn.getLocalPart());
+		buf.append(" ");
+		buf.append(qn.getNamespaceURI());
+		buf.append(" ");
+		buf.append(qn.getPrefix());
+		return buf.toString();
+	}
+
 	public static void main(String[] args) throws WSDLException {
-		fooSer();
+		fooConstants();
 	}
 
 }
