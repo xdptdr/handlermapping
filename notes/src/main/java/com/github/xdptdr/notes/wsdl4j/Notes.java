@@ -62,6 +62,7 @@ import javax.wsdl.xml.WSDLWriter;
 
 import com.github.xdptdr.notes.N;
 import com.github.xdptdr.wsdl4j.Baal;
+import com.github.xdptdr.wsdl4j.BaalBerith;
 import com.github.xdptdr.wsdl4j.Baalah;
 import com.github.xdptdr.wsdl4j.Baalath;
 import com.github.xdptdr.wsdl4j.BaalathBeer;
@@ -182,6 +183,11 @@ public class Notes {
 				MIMEMultipartRelatedImpl.class);
 		n.k(BaalathBeer.class, MIMEContentSerializer.class, MIMEMimeXmlSerializer.class,
 				MIMEMultipartRelatedSerializer.class);
+		
+		n.k(BaalBerith.class, SchemaConstants.class);
+		n.k(BaalBerith.class, SchemaSerializer.class, SchemaImpl.class, SchemaImportImpl.class,
+				SchemaReferenceImpl.class);
+		n.k(BaalBerith.class, SchemaDeserializer.class);
 
 		todos(n);
 	}
