@@ -71,6 +71,9 @@ import com.github.xdptdr.wsdl4j.Baalah;
 import com.github.xdptdr.wsdl4j.Baalath;
 import com.github.xdptdr.wsdl4j.BaalathBeer;
 import com.github.xdptdr.wsdl4j.Baale;
+import com.github.xdptdr.wsdl4j.Baali;
+import com.github.xdptdr.wsdl4j.Baalim;
+import com.github.xdptdr.wsdl4j.Baalis;
 import com.ibm.wsdl.AbstractWSDLElement;
 import com.ibm.wsdl.BindingFaultImpl;
 import com.ibm.wsdl.BindingImpl;
@@ -230,6 +233,12 @@ public class Notes {
 
 		n.k(BaalHanan.class, SOAP12Address.class, SOAP12Binding.class, SOAP12Body.class, SOAP12Fault.class,
 				SOAP12Header.class, SOAP12HeaderFault.class, SOAP12Operation.class);
+
+		n.k(Baali.class, WSDLFactory.class);
+
+		n.k(Baalim.class, WSDLLocator.class);
+
+		n.k(Baalis.class, WSDLReader.class, WSDLReaderImpl.class, WSDLWriter.class, WSDLWriterImpl.class);
 
 		todos(n);
 	}
