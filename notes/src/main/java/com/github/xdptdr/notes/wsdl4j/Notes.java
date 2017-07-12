@@ -65,6 +65,7 @@ import com.github.xdptdr.wsdl4j.Baal;
 import com.github.xdptdr.wsdl4j.BaalBerith;
 import com.github.xdptdr.wsdl4j.BaalGad;
 import com.github.xdptdr.wsdl4j.BaalHamon;
+import com.github.xdptdr.wsdl4j.BaalHanan;
 import com.github.xdptdr.wsdl4j.BaalHermon;
 import com.github.xdptdr.wsdl4j.Baalah;
 import com.github.xdptdr.wsdl4j.Baalath;
@@ -208,6 +209,27 @@ public class Notes {
 		n.k(BaalHamon.class, WSDLFactoryImpl.class);
 
 		n.k(BaalHermon.class, IOUtils.class, ObjectRegistry.class, StringUtils.class);
+
+		n.k(BaalHanan.class, WSDLElement.class);
+
+		n.k(BaalHanan.class, Binding.class, BindingFault.class, BindingInput.class, BindingOperation.class,
+				BindingOutput.class, Definition.class, Fault.class, Import.class, Input.class, Message.class,
+				Operation.class, Output.class, Part.class, Port.class, PortType.class, Service.class, Types.class);
+
+		n.k(BaalHanan.class, OperationType.class, WSDLException.class);
+
+		n.k(BaalHanan.class, HTTPAddress.class, HTTPBinding.class, HTTPOperation.class, HTTPUrlEncoded.class,
+				HTTPUrlReplacement.class);
+
+		n.k(BaalHanan.class, MIMEContent.class, MIMEMimeXml.class, MIMEMultipartRelated.class, MIMEPart.class);
+
+		n.k(BaalHanan.class, Schema.class, SchemaImport.class, SchemaReference.class);
+
+		n.k(BaalHanan.class, SOAPAddress.class, SOAPBinding.class, SOAPBody.class, SOAPFault.class, SOAPHeader.class,
+				SOAPHeaderFault.class, SOAPOperation.class);
+
+		n.k(BaalHanan.class, SOAP12Address.class, SOAP12Binding.class, SOAP12Body.class, SOAP12Fault.class,
+				SOAP12Header.class, SOAP12HeaderFault.class, SOAP12Operation.class);
 
 		todos(n);
 	}
