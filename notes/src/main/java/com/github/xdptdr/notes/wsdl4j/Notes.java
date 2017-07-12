@@ -63,6 +63,9 @@ import javax.wsdl.xml.WSDLWriter;
 import com.github.xdptdr.notes.N;
 import com.github.xdptdr.wsdl4j.Baal;
 import com.github.xdptdr.wsdl4j.BaalBerith;
+import com.github.xdptdr.wsdl4j.BaalGad;
+import com.github.xdptdr.wsdl4j.BaalHamon;
+import com.github.xdptdr.wsdl4j.BaalHermon;
 import com.github.xdptdr.wsdl4j.Baalah;
 import com.github.xdptdr.wsdl4j.Baalath;
 import com.github.xdptdr.wsdl4j.BaalathBeer;
@@ -195,7 +198,17 @@ public class Notes {
 		n.k(Baale.class, SOAPAddressSerializer.class, SOAPBindingSerializer.class, SOAPBodySerializer.class,
 				SOAPFaultSerializer.class, SOAPHeaderSerializer.class, SOAPOperationSerializer.class);
 		n.k(Baale.class, SOAPConstants.class);
-		
+
+		n.k(BaalGad.class, SOAP12Constants.class);
+		n.k(BaalGad.class, SOAP12AddressImpl.class, SOAP12BindingImpl.class, SOAP12BodyImpl.class,
+				SOAP12FaultImpl.class, SOAP12HeaderFaultImpl.class, SOAP12HeaderImpl.class, SOAP12OperationImpl.class);
+		n.k(BaalGad.class, SOAP12AddressSerializer.class, SOAP12BindingSerializer.class, SOAP12BodySerializer.class,
+				SOAP12FaultSerializer.class, SOAP12HeaderSerializer.class, SOAP12OperationSerializer.class);
+
+		n.k(BaalHamon.class, WSDLFactoryImpl.class);
+
+		n.k(BaalHermon.class, IOUtils.class, ObjectRegistry.class, StringUtils.class);
+
 		todos(n);
 	}
 
