@@ -66,6 +66,7 @@ import com.github.xdptdr.wsdl4j.BaalBerith;
 import com.github.xdptdr.wsdl4j.Baalah;
 import com.github.xdptdr.wsdl4j.Baalath;
 import com.github.xdptdr.wsdl4j.BaalathBeer;
+import com.github.xdptdr.wsdl4j.Baale;
 import com.ibm.wsdl.AbstractWSDLElement;
 import com.ibm.wsdl.BindingFaultImpl;
 import com.ibm.wsdl.BindingImpl;
@@ -183,12 +184,18 @@ public class Notes {
 				MIMEMultipartRelatedImpl.class);
 		n.k(BaalathBeer.class, MIMEContentSerializer.class, MIMEMimeXmlSerializer.class,
 				MIMEMultipartRelatedSerializer.class);
-		
+
 		n.k(BaalBerith.class, SchemaConstants.class);
 		n.k(BaalBerith.class, SchemaSerializer.class, SchemaImpl.class, SchemaImportImpl.class,
 				SchemaReferenceImpl.class);
 		n.k(BaalBerith.class, SchemaDeserializer.class);
 
+		n.k(Baale.class, SOAPAddressImpl.class, SOAPBindingImpl.class, SOAPBodyImpl.class, SOAPFaultImpl.class,
+				SOAPHeaderFaultImpl.class, SOAPHeaderImpl.class, SOAPOperationImpl.class);
+		n.k(Baale.class, SOAPAddressSerializer.class, SOAPBindingSerializer.class, SOAPBodySerializer.class,
+				SOAPFaultSerializer.class, SOAPHeaderSerializer.class, SOAPOperationSerializer.class);
+		n.k(Baale.class, SOAPConstants.class);
+		
 		todos(n);
 	}
 
