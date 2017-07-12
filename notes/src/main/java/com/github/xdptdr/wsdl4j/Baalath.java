@@ -18,8 +18,11 @@ import com.ibm.wsdl.extensions.http.HTTPBindingImpl;
 import com.ibm.wsdl.extensions.http.HTTPBindingSerializer;
 import com.ibm.wsdl.extensions.http.HTTPConstants;
 import com.ibm.wsdl.extensions.http.HTTPOperationImpl;
+import com.ibm.wsdl.extensions.http.HTTPOperationSerializer;
 import com.ibm.wsdl.extensions.http.HTTPUrlEncodedImpl;
+import com.ibm.wsdl.extensions.http.HTTPUrlEncodedSerializer;
 import com.ibm.wsdl.extensions.http.HTTPUrlReplacementImpl;
+import com.ibm.wsdl.extensions.http.HTTPUrlReplacementSerializer;
 
 public class Baalath {
 
@@ -126,32 +129,55 @@ public class Baalath {
 			HTTPAddressSerializer httpAddressSerializer = new HTTPAddressSerializer();
 			HTTPAddressImpl httpAddressImpl = new HTTPAddressImpl();
 
-			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
-					extensionRegistry);
-
 			httpAddressImpl.setRequired(false);
-
-			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
-					extensionRegistry);
-
 			httpAddressImpl.setLocationURI("titou");
 
 			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
 					extensionRegistry);
 
-			httpAddressImpl.setElementType(new QName("yipee", "yopla"));
-			serialize(httpAddressSerializer, parentType, elementType, httpAddressImpl, holder, definition,
-					extensionRegistry);
 		}
 
 		{
 			HTTPBindingSerializer httpBindingSerializer = new HTTPBindingSerializer();
 			HTTPBindingImpl httpBindingImpl = new HTTPBindingImpl();
 
+			httpBindingImpl.setRequired(true);
+			httpBindingImpl.setVerb("hello");
+
 			serialize(httpBindingSerializer, parentType, elementType, httpBindingImpl, holder, definition,
 					extensionRegistry);
 		}
 
+		{
+			HTTPOperationSerializer httpOperationSerializer = new HTTPOperationSerializer();
+			HTTPOperationImpl httpOperationImpl = new HTTPOperationImpl();
+
+			httpOperationImpl.setRequired(true);
+			httpOperationImpl.setLocationURI("titou");
+
+			serialize(httpOperationSerializer, parentType, elementType, httpOperationImpl, holder, definition,
+					extensionRegistry);
+		}
+		
+		{
+			HTTPUrlEncodedSerializer httpUrlEncodedSerializer = new HTTPUrlEncodedSerializer();
+			HTTPUrlEncodedImpl httpUrlEncodedImpl = new HTTPUrlEncodedImpl();
+
+			httpUrlEncodedImpl.setRequired(true);
+
+			serialize(httpUrlEncodedSerializer, parentType, elementType, httpUrlEncodedImpl, holder, definition,
+					extensionRegistry);
+		}
+
+		{
+			HTTPUrlReplacementSerializer httpUrlReplacementSerializer = new HTTPUrlReplacementSerializer();
+			HTTPUrlReplacementImpl httpUrlReplacementImpl = new HTTPUrlReplacementImpl();
+
+			httpUrlReplacementImpl.setRequired(true);
+
+			serialize(httpUrlReplacementSerializer, parentType, elementType, httpUrlReplacementImpl, holder, definition,
+					extensionRegistry);
+		}
 	}
 
 	private static void serialize(ExtensionSerializer extensionSerializer, Class<?> parentType, QName elementType,
