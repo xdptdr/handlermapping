@@ -6,6 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.cxf.Bus;
+import org.apache.cxf.BusFactory;
+import org.apache.cxf.bus.extension.ExtensionManagerBus;
+
+import com.github.xdptdr.cxf.Aaron;
+
 public class N {
 
 	Set<Class<?>> covered = new HashSet<>();
@@ -66,6 +72,10 @@ public class N {
 
 	public void setIgnoreDups(boolean ignoreDups) {
 		this.ignoreDups = ignoreDups;
+
+	}
+
+	public void o(Class<?>... classes) {
 
 	}
 
