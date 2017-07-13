@@ -588,6 +588,7 @@ import org.apache.cxf.wsdl11.WSDLServiceFactory;
 import org.apache.cxf.wsdl11.WSDLServiceUtils;
 
 import com.github.xdptdr.cxf.Aaron;
+import com.github.xdptdr.cxf.Abba;
 import com.github.xdptdr.notes.N;
 
 public class Notes {
@@ -637,6 +638,8 @@ public class Notes {
 	private static void notes(N n) {
 
 		n.o(Aaron.class, BusFactory.class, Bus.class, ExtensionManagerBus.class, Feature.class);
+		
+		n.o(Abba.class);
 
 		todoCore(n);
 
