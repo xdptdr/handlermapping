@@ -67,6 +67,9 @@ import com.github.xdptdr.wsdl4j.BaalGad;
 import com.github.xdptdr.wsdl4j.BaalHamon;
 import com.github.xdptdr.wsdl4j.BaalHanan;
 import com.github.xdptdr.wsdl4j.BaalHermon;
+import com.github.xdptdr.wsdl4j.BaalMeon;
+import com.github.xdptdr.wsdl4j.BaalPeor;
+import com.github.xdptdr.wsdl4j.BaalPerazim;
 import com.github.xdptdr.wsdl4j.Baalah;
 import com.github.xdptdr.wsdl4j.Baalath;
 import com.github.xdptdr.wsdl4j.BaalathBeer;
@@ -178,7 +181,7 @@ public class Notes {
 				BindingOutput.class, Fault.class, Import.class, Input.class, Message.class, Operation.class,
 				Output.class, Part.class, Port.class, PortType.class, Service.class, Types.class);
 
-		n.k(Baalah.class, PopulatedExtensionRegistry.class);
+		n.k(Baalah.class, PopulatedExtensionRegistry.class, ExtensionRegistry.class);
 
 		n.k(Baalath.class, HTTPAddressImpl.class, HTTPBindingImpl.class, HTTPOperationImpl.class,
 				HTTPUrlEncodedImpl.class, HTTPUrlReplacementImpl.class);
@@ -239,6 +242,13 @@ public class Notes {
 		n.k(Baalim.class, WSDLLocator.class);
 
 		n.k(Baalis.class, WSDLReader.class, WSDLReaderImpl.class, WSDLWriter.class, WSDLWriterImpl.class);
+
+		n.k(BaalMeon.class);
+
+		n.k(BaalPeor.class, UnknownExtensibilityElement.class, UnknownExtensionSerializer.class,
+				UnknownExtensionDeserializer.class, ExtensionDeserializer.class, ExtensionSerializer.class);
+
+		n.k(BaalPerazim.class);
 
 		todos(n);
 	}
