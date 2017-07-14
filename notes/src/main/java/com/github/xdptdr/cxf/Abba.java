@@ -42,11 +42,4 @@ public class Abba {
 
 	}
 
-	public static void main(String[] args) {
-
-		Class<?>[] classes = new Class<?>[] { DataBinding.class, EndpointProperties.class, EndpointProperty.class,
-				EvaluateAllEndpoints.class, FactoryType.class, FastInfoset.class, GZIP.class, Logging.class,
-				Policies.class, Policy.class, Provider.class, SchemaValidation.class, UseAsyncMethod.class,
-				WSDLDocumentation.class, WSDLDocumentationCollection.class };
-	}
 }

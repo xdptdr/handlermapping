@@ -638,8 +638,11 @@ public class Notes {
 	private static void notes(N n) {
 
 		n.o(Aaron.class, BusFactory.class, Bus.class, ExtensionManagerBus.class, Feature.class);
-		
-		n.o(Abba.class);
+
+		n.o(Abba.class, DataBinding.class, EndpointProperties.class, EndpointProperty.class, EvaluateAllEndpoints.class,
+				FactoryType.class, FastInfoset.class, GZIP.class, Logging.class, Policies.class, Policy.class,
+				Provider.class, SchemaValidation.class, UseAsyncMethod.class, WSDLDocumentation.class,
+				WSDLDocumentationCollection.class);
 
 		todoCore(n);
 
