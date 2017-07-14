@@ -10,8 +10,6 @@ import org.apache.cxf.annotations.GZIP;
 import org.apache.cxf.annotations.Logging;
 import org.apache.cxf.annotations.Policies;
 import org.apache.cxf.annotations.Policy;
-import org.apache.cxf.annotations.Policy.Placement;
-import org.apache.cxf.annotations.WSDLDocumentation.DEFAULT;
 import org.apache.cxf.annotations.Provider;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.apache.cxf.annotations.UseAsyncMethod;

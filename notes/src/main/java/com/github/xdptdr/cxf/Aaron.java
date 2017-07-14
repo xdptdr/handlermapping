@@ -9,6 +9,7 @@ import org.apache.cxf.Bus.BusState;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
 import org.apache.cxf.feature.Feature;
+import org.apache.cxf.validation.BeanValidationFeature;
 
 public class Aaron {
 
@@ -36,7 +37,7 @@ public class Aaron {
 		BusFactory.setDefaultBus(bus);
 		BusFactory.setThreadDefaultBus(bus);
 		bus = busFactory.createBus();
-
+		
 	}
 
 	private static void bar(Bus bus) {

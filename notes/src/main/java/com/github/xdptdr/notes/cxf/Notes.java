@@ -68,23 +68,7 @@ import org.apache.cxf.bus.managers.ServiceContractResolverRegistryImpl;
 import org.apache.cxf.bus.managers.WorkQueueImplMBeanWrapper;
 import org.apache.cxf.bus.managers.WorkQueueManagerImpl;
 import org.apache.cxf.bus.managers.WorkQueueManagerImplMBeanWrapper;
-import org.apache.cxf.bus.osgi.CXFActivator;
-import org.apache.cxf.bus.osgi.CXFExtensionBundleListener;
-import org.apache.cxf.bus.osgi.ManagedWorkQueueList;
-import org.apache.cxf.bus.osgi.OSGIBusListener;
-import org.apache.cxf.bus.osgi.OSGiBeanLocator;
 import org.apache.cxf.bus.resource.ResourceManagerImpl;
-import org.apache.cxf.bus.spring.BusApplicationContext;
-import org.apache.cxf.bus.spring.BusApplicationContextResourceResolver;
-import org.apache.cxf.bus.spring.BusEntityResolver;
-import org.apache.cxf.bus.spring.BusExtensionPostProcessor;
-import org.apache.cxf.bus.spring.BusWiringBeanFactoryPostProcessor;
-import org.apache.cxf.bus.spring.ControlledValidationXmlBeanDefinitionReader;
-import org.apache.cxf.bus.spring.Jsr250BeanPostProcessor;
-import org.apache.cxf.bus.spring.NamespaceHandler;
-import org.apache.cxf.bus.spring.SpringBeanLocator;
-import org.apache.cxf.bus.spring.SpringBus;
-import org.apache.cxf.bus.spring.SpringBusFactory;
 import org.apache.cxf.buslifecycle.BusCreationListener;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
 import org.apache.cxf.buslifecycle.BusLifeCycleManager;
@@ -158,9 +142,6 @@ import org.apache.cxf.configuration.ConfigurationException;
 import org.apache.cxf.configuration.ConfiguredBeanLocator;
 import org.apache.cxf.configuration.Configurer;
 import org.apache.cxf.configuration.NullConfigurer;
-import org.apache.cxf.configuration.blueprint.AbstractBPBeanDefinitionParser;
-import org.apache.cxf.configuration.blueprint.InterceptorTypeConverter;
-import org.apache.cxf.configuration.blueprint.SimpleBPBeanDefinitionParser;
 import org.apache.cxf.configuration.jsse.SSLUtils;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.configuration.jsse.TLSClientParametersConfig;
@@ -186,13 +167,6 @@ import org.apache.cxf.configuration.security.SecureRandomParameters;
 import org.apache.cxf.configuration.security.TLSClientParametersType;
 import org.apache.cxf.configuration.security.TLSServerParametersType;
 import org.apache.cxf.configuration.security.TrustManagersType;
-import org.apache.cxf.configuration.spring.AbstractBeanDefinitionParser;
-import org.apache.cxf.configuration.spring.AbstractFactoryBeanDefinitionParser;
-import org.apache.cxf.configuration.spring.BusWiringType;
-import org.apache.cxf.configuration.spring.JAXBBeanFactory;
-import org.apache.cxf.configuration.spring.MappingBeanDefinitionParser;
-import org.apache.cxf.configuration.spring.SimpleBeanDefinitionParser;
-import org.apache.cxf.configuration.spring.StringBeanDefinitionParser;
 import org.apache.cxf.continuations.Continuation;
 import org.apache.cxf.continuations.ContinuationCallback;
 import org.apache.cxf.continuations.ContinuationProvider;
@@ -245,6 +219,8 @@ import org.apache.cxf.endpoint.ServiceContractResolver;
 import org.apache.cxf.endpoint.ServiceContractResolverRegistry;
 import org.apache.cxf.endpoint.SimpleEndpointImplFactory;
 import org.apache.cxf.endpoint.UpfrontConduitSelector;
+import org.apache.cxf.endpoint.dynamic.DynamicClientFactory;
+import org.apache.cxf.endpoint.dynamic.TypeClassInitializer;
 import org.apache.cxf.extension.BusExtension;
 import org.apache.cxf.extension.Registry;
 import org.apache.cxf.extension.RegistryImpl;
@@ -263,6 +239,22 @@ import org.apache.cxf.feature.transform.XSLTUtils;
 import org.apache.cxf.feature.validation.DefaultSchemaValidationTypeProvider;
 import org.apache.cxf.feature.validation.SchemaValidationFeature;
 import org.apache.cxf.feature.validation.SchemaValidationTypeProvider;
+import org.apache.cxf.frontend.AbstractServiceFactory;
+import org.apache.cxf.frontend.AbstractWSDLBasedEndpointFactory;
+import org.apache.cxf.frontend.ClientFactoryBean;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.frontend.ClientProxyFactoryBean;
+import org.apache.cxf.frontend.FaultInfoException;
+import org.apache.cxf.frontend.ServerFactoryBean;
+import org.apache.cxf.frontend.WSDLGetInterceptor;
+import org.apache.cxf.frontend.WSDLGetOutInterceptor;
+import org.apache.cxf.frontend.WSDLGetUtils;
+import org.apache.cxf.frontend.WSDLQueryException;
+import org.apache.cxf.frontend.blueprint.Activator;
+import org.apache.cxf.frontend.blueprint.ClientProxyFactoryBeanDefinitionParser;
+import org.apache.cxf.frontend.blueprint.ServerFactoryBeanDefinitionParser;
+import org.apache.cxf.frontend.blueprint.SimpleBPNamespaceHandler;
+import org.apache.cxf.frontend.spring.NamespaceHandler;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.headers.HeaderManager;
 import org.apache.cxf.headers.HeaderProcessor;
@@ -337,7 +329,6 @@ import org.apache.cxf.interceptor.security.callback.CertificateToNameMapper;
 import org.apache.cxf.interceptor.security.callback.NameToPasswordMapper;
 import org.apache.cxf.interceptor.transform.TransformInInterceptor;
 import org.apache.cxf.interceptor.transform.TransformOutInterceptor;
-import org.apache.cxf.internal.CXFAPINamespaceHandler;
 import org.apache.cxf.io.AbstractThresholdOutputStream;
 import org.apache.cxf.io.AbstractWrappedOutputStream;
 import org.apache.cxf.io.CacheAndWriteOutputStream;
@@ -419,7 +410,6 @@ import org.apache.cxf.service.invoker.PerRequestFactory;
 import org.apache.cxf.service.invoker.PooledFactory;
 import org.apache.cxf.service.invoker.SessionFactory;
 import org.apache.cxf.service.invoker.SingletonFactory;
-import org.apache.cxf.service.invoker.spring.SpringBeanFactory;
 import org.apache.cxf.service.model.AbstractDescriptionElement;
 import org.apache.cxf.service.model.AbstractMessageContainer;
 import org.apache.cxf.service.model.AbstractPropertiesHolder;
@@ -441,6 +431,7 @@ import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.service.model.ServiceModelUtil;
 import org.apache.cxf.service.model.ServiceSchemaInfo;
 import org.apache.cxf.service.model.UnwrappedOperationInfo;
+import org.apache.cxf.simple.SimpleServiceBuilder;
 import org.apache.cxf.staxutils.AbstractDOMStreamReader;
 import org.apache.cxf.staxutils.CachingXmlEventWriter;
 import org.apache.cxf.staxutils.DelegatingXMLStreamWriter;
@@ -467,12 +458,6 @@ import org.apache.cxf.staxutils.transform.IgnoreNamespacesWriter;
 import org.apache.cxf.staxutils.transform.InTransformReader;
 import org.apache.cxf.staxutils.transform.OutTransformWriter;
 import org.apache.cxf.staxutils.transform.TransformUtils;
-import org.apache.cxf.staxutils.validation.EmbeddedSchema;
-import org.apache.cxf.staxutils.validation.ResolvingGrammarReaderController;
-import org.apache.cxf.staxutils.validation.StaxSchemaValidationInInterceptor;
-import org.apache.cxf.staxutils.validation.StaxSchemaValidationOutInterceptor;
-import org.apache.cxf.staxutils.validation.W3CMultiSchemaFactory;
-import org.apache.cxf.staxutils.validation.WoodstoxValidationImpl;
 import org.apache.cxf.transport.AbstractConduit;
 import org.apache.cxf.transport.AbstractDestination;
 import org.apache.cxf.transport.AbstractMultiplexDestination;
@@ -588,6 +573,7 @@ import org.apache.cxf.wsdl11.WSDLServiceFactory;
 import org.apache.cxf.wsdl11.WSDLServiceUtils;
 
 import com.github.xdptdr.cxf.Aaron;
+import com.github.xdptdr.cxf.Abaddon;
 import com.github.xdptdr.cxf.Abba;
 import com.github.xdptdr.notes.N;
 
@@ -644,7 +630,15 @@ public class Notes {
 				Provider.class, SchemaValidation.class, UseAsyncMethod.class, WSDLDocumentation.class,
 				WSDLDocumentationCollection.class);
 
+		n.o(Abaddon.class, AttachmentDataSource.class, AttachmentDeserializer.class, AttachmentImpl.class,
+				AttachmentSerializer.class, AttachmentUtil.class, Base64DecoderStream.class, ByteDataSource.class,
+				ContentDisposition.class, DelegatingInputStream.class, ImageDataContentHandler.class,
+				LazyAttachmentCollection.class, LazyDataSource.class, MimeBodyPartInputStream.class,
+				QuotedPrintableDecoderStream.class, Rfc5987Util.class);
+
 		todoCore(n);
+
+		todoFrontendSimple(n);
 
 		todoWsdl(n);
 	}
@@ -949,6 +943,31 @@ public class Notes {
 			n.todo(clazz);
 		}
 
+	}
+
+	private static void todoFrontendSimple(N n) {
+
+		Class<?>[] classes = new Class<?>[] {
+
+				DynamicClientFactory.class, TypeClassInitializer.class,
+
+				AbstractServiceFactory.class, AbstractWSDLBasedEndpointFactory.class, ClientFactoryBean.class,
+				ClientProxy.class, ClientProxyFactoryBean.class, FaultInfoException.class, ServerFactoryBean.class,
+				WSDLGetInterceptor.class, WSDLGetOutInterceptor.class, WSDLGetUtils.class, WSDLQueryException.class,
+
+				Activator.class, ClientProxyFactoryBeanDefinitionParser.class, ServerFactoryBeanDefinitionParser.class,
+				SimpleBPNamespaceHandler.class,
+
+				org.apache.cxf.frontend.spring.ClientProxyFactoryBeanDefinitionParser.class, NamespaceHandler.class,
+				org.apache.cxf.frontend.spring.ServerFactoryBeanDefinitionParser.class,
+
+				SimpleServiceBuilder.class,
+
+				Object.class };
+
+		for (Class<?> clazz : classes) {
+			n.todo(clazz);
+		}
 	}
 
 	private static void todoWsdl(N n) {
