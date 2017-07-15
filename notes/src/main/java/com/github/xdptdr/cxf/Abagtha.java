@@ -19,6 +19,7 @@ import org.apache.cxf.bus.extension.ExtensionManagerBus;
 import org.apache.cxf.common.xmlschema.SchemaCollection;
 import org.apache.cxf.endpoint.EndpointException;
 import org.apache.cxf.feature.Feature;
+import org.apache.cxf.frontend.AbstractWSDLBasedEndpointFactory;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.invoker.Invoker;
@@ -36,6 +37,7 @@ import org.apache.cxf.service.model.ServiceSchemaInfo;
 import org.apache.cxf.simple.SimpleServiceBuilder;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
+import org.apache.cxf.wsdl.service.factory.DefaultServiceConfiguration;
 import org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean;
 
 public class Abagtha {
@@ -43,40 +45,42 @@ public class Abagtha {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException, EndpointException {
 
-		SimpleServiceBuilder ssb = new SimpleServiceBuilder();
+		SimpleServiceBuilder simpleServiceBuilder = new SimpleServiceBuilder();
+		azzert(simpleServiceBuilder.getServiceFactory() != null);
+		azzert(simpleServiceBuilder.getBindingConfig() == null);
+		azzert(simpleServiceBuilder.getBindingFactory() == null);
+		azzert(simpleServiceBuilder.getBus(false) == null);
+		azzert(simpleServiceBuilder.getDestinationFactory() == null);
+		azzert(simpleServiceBuilder.getFeatures().size() == 0);
+		azzert(simpleServiceBuilder.getProperties(false) == null);
 
-		azzert(ssb.getBindingConfig() == null);
-		azzert(ssb.getBindingFactory() == null);
-		azzert(ssb.getBus(false) == null);
-		azzert(ssb.getDestinationFactory() == null);
-		azzert(ssb.getFeatures().size() == 0);
-		azzert(ssb.getProperties(false) == null);
+		ReflectionServiceFactoryBean rsfb = simpleServiceBuilder.getServiceFactory();
 
-		ReflectionServiceFactoryBean rsfb = ssb.getServiceFactory();
-		azzert(rsfb.getClass() == ReflectionServiceFactoryBean.class);
+		azzert(rsfb.getConfigurations().size() == 2);
 
-		ssb.setServiceClass(Abagtha.class);
-
-		ServiceInfo si = ssb.createService();
-
+		simpleServiceBuilder.setServiceClass(Abagtha.class);
+		ServiceInfo si = simpleServiceBuilder.createService();
 		rsfb.validateServiceModel();
 
-		azzert(ssb.getAddress() == null);
-		azzert(ssb.getOutputFile() == null);
-		azzert(ssb.getBindingId() == null);
-		azzert(ssb.getConduitSelector() == null);
-		azzert(ssb.getDataBinding() == null);
-		azzert(ssb.getFeatures().size() == 0);
-		azzert(ssb.getProperties(false) == null);
+		azzert(simpleServiceBuilder.getAddress() == null);
+		azzert(simpleServiceBuilder.getOutputFile() == null);
+		azzert(simpleServiceBuilder.getBindingId() == null);
+		azzert(simpleServiceBuilder.getConduitSelector() == null);
+		azzert(simpleServiceBuilder.getDataBinding() == null);
+		azzert(simpleServiceBuilder.getFeatures().size() == 0);
+		azzert(simpleServiceBuilder.getProperties(false) == null);
 
-		azzert(ssb.getBindingConfig() instanceof SoapBindingConfiguration);
-		azzert(ssb.getBindingFactory() instanceof SoapBindingFactory);
-		azzert(ssb.getBus(false) instanceof ExtensionManagerBus);
-		azzert(ssb.getDestinationFactory() instanceof SoapTransportFactory);
+		azzert(simpleServiceBuilder.getBindingConfig() instanceof SoapBindingConfiguration);
+		azzert(simpleServiceBuilder.getBindingFactory() instanceof SoapBindingFactory);
+		azzert(simpleServiceBuilder.getBus(false) instanceof ExtensionManagerBus);
+		azzert(simpleServiceBuilder.getDestinationFactory() instanceof SoapTransportFactory);
 
-		ExtensionManagerBus bus = (ExtensionManagerBus) ssb.getBus();
+		azzert(rsfb.getConfigurations().size() == 2);
 
-		SoapBindingConfiguration soapBindingConfiguration = (SoapBindingConfiguration) ssb.getBindingConfig();
+		ExtensionManagerBus bus = (ExtensionManagerBus) simpleServiceBuilder.getBus();
+
+		SoapBindingConfiguration soapBindingConfiguration = (SoapBindingConfiguration) simpleServiceBuilder
+				.getBindingConfig();
 
 		SoapVersion version = soapBindingConfiguration.getVersion();
 		azzert(version != null);
@@ -91,17 +95,29 @@ public class Abagtha {
 
 		azzert(soapBindingConfiguration.isMtomEnabled() == false);
 
-		SoapBindingFactory soapBindingFactory = (SoapBindingFactory) ssb.getBindingFactory();
+		SoapBindingFactory soapBindingFactory = (SoapBindingFactory) simpleServiceBuilder.getBindingFactory();
 		azzert(soapBindingFactory.getActivationNamespaces() != null);
 		azzert(soapBindingFactory.getActivationNamespaces().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size());
 		azzert(soapBindingFactory.getBus() == bus);
 
-		SoapTransportFactory soapTransportFactory = (SoapTransportFactory) ssb.getDestinationFactory();
+		SoapTransportFactory soapTransportFactory = (SoapTransportFactory) simpleServiceBuilder.getDestinationFactory();
 
 		azzert(soapTransportFactory.getTransportIds().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size() + 1);
 
 		azzert(soapTransportFactory.getUriPrefixes().size() == 1);
 		azzert("soap.udp".equals(soapTransportFactory.getUriPrefixes().iterator().next()));
+
+		azzert(rsfb.getConfigurations().get(0) instanceof DefaultServiceConfiguration);
+		azzert(rsfb.getConfigurations().get(1) instanceof AbstractServiceConfiguration);
+
+		DefaultServiceConfiguration dc = (DefaultServiceConfiguration) rsfb.getConfigurations().get(0);
+		AbstractServiceConfiguration sc = rsfb.getConfigurations().get(1);
+		
+		azzert(dc.getEndpointName() != null);
+		azzert("http://cxf.xdptdr.github.com/".equals(dc.getEndpointName().getNamespaceURI()));
+		azzert("AbagthaPort".equals(dc.getEndpointName().getLocalPart()));
+		
+		azzert(sc.getEndpointName() == null);
 
 	}
 
@@ -333,6 +349,18 @@ public class Abagtha {
 	@SuppressWarnings("unused")
 	private static boolean t() {
 		return true;
+	}
+
+	private static String qns(QName qn) {
+		StringBuffer buf = new StringBuffer();
+		if (qn != null) {
+			buf.append(qn.getNamespaceURI());
+			buf.append(" ");
+			buf.append(qn.getPrefix());
+			buf.append(" ");
+			buf.append(qn.getLocalPart());
+		}
+		return buf.toString();
 	}
 
 }
