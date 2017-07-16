@@ -37,6 +37,7 @@ import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.ServiceImpl;
+import org.apache.cxf.service.factory.FactoryBeanListener.Event;
 import org.apache.cxf.service.factory.SimpleMethodDispatcher;
 import org.apache.cxf.service.invoker.FactoryInvoker;
 import org.apache.cxf.service.invoker.Invoker;
@@ -334,6 +335,12 @@ public class Abagtha {
 		azzert(rsfb.isWrapped());
 
 		azzert(rsfb.getWsdlURL() == null);
+
+		azzert(rsfb.getBus() == bus);
+		azzert(rsfb.getDataBinding() == dataBinding);
+		azzert(rsfb.getService() == service);
+		azzert(rsfb.getSessionState().size() == 0);
+
 
 	}
 
