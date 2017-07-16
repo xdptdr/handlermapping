@@ -67,6 +67,9 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 public class Abagtha {
 
+	public void foo() {
+	}
+
 	public static void main(String[] args) throws IOException, EndpointException {
 
 		SimpleServiceBuilder simpleServiceBuilder = new SimpleServiceBuilder();
@@ -340,7 +343,6 @@ public class Abagtha {
 		azzert(rsfb.getDataBinding() == dataBinding);
 		azzert(rsfb.getService() == service);
 		azzert(rsfb.getSessionState().size() == 0);
-
 
 	}
 
