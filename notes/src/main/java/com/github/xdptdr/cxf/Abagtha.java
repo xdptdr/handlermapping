@@ -67,8 +67,8 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 public class Abagtha {
 
-	public void foo() {
-	}
+	// public void foo() {
+	// }
 
 	public static void main(String[] args) throws IOException, EndpointException {
 
@@ -343,6 +343,30 @@ public class Abagtha {
 		azzert(rsfb.getDataBinding() == dataBinding);
 		azzert(rsfb.getService() == service);
 		azzert(rsfb.getSessionState().size() == 0);
+
+		azzert(bus.hasExtensionByName("org.apache.cxf.ws.policy.PolicyEngine"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.transport.http.HTTPConduitFactory"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.service.factory.FactoryBeanListenerManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.ws.policy.PolicyAnnotationListener"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.jaxws.context.WebServiceContextResourceResolver"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.transport.jms.wsdl11.JMSWSDLExtensionLoader"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.configuration.ConfiguredBeanLocator"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.resource.ResourceManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.buslifecycle.BusLifeCycleManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.ws.addressing.impl.AddressingWSDLExtensionLoader"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.wsdl.WSDLManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.endpoint.ServerRegistry"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.binding.soap.SoapTransportFactory"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.transport.DestinationFactoryManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.binding.BindingFactoryManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.policy.PolicyDataEngine"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.management.InstrumentationManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.transport.http.HTTPWSDLExtensionLoader"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.configuration.Configurer"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.binding.soap.SoapBindingFactory"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.bus.extension.ExtensionManager"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.binding.xml.wsdl11.XMLWSDLExtensionLoader"));
+		azzert(bus.hasExtensionByName("org.apache.cxf.transport.ConduitInitiatorManager"));
 
 	}
 
