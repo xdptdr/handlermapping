@@ -1,6 +1,7 @@
 package com.github.xdptdr.cxf;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -10,6 +11,10 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.cxf.binding.Binding;
 import org.apache.cxf.binding.soap.SoapBinding;
@@ -28,10 +33,14 @@ import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.InFaultChainInitiatorObserver;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.OutFaultChainInitiatorObserver;
+import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.ServiceImpl;
+import org.apache.cxf.service.factory.SimpleMethodDispatcher;
+import org.apache.cxf.service.invoker.FactoryInvoker;
 import org.apache.cxf.service.invoker.Invoker;
+import org.apache.cxf.service.invoker.MethodDispatcher;
 import org.apache.cxf.service.model.AbstractPropertiesHolder;
 import org.apache.cxf.service.model.BindingInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
@@ -51,6 +60,9 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.wsdl.service.factory.DefaultServiceConfiguration;
 import org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean;
+import org.w3c.dom.Node;
+
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 public class Abagtha {
 
@@ -188,23 +200,23 @@ public class Abagtha {
 		azzert(attributedURIType.getOtherAttributes().size() == 0);
 		azzert(attributedURIType.getValue() == null);
 
-		Endpoint e = rsfb.createEndpoint(endpointInfo);
-		azzert(e instanceof EndpointImpl);
+		Endpoint endpoint = rsfb.createEndpoint(endpointInfo);
+		azzert(endpoint instanceof EndpointImpl);
 
-		azzert(e.getActiveFeatures() == null);
-		azzert(e.getBinding() != null);
-		azzert(e.getCleanupHooks().size() == 0);
-		azzert(e.getEndpointInfo() == endpointInfo);
-		azzert(e.getExecutor() != null);
-		azzert(e.getInFaultObserver() != null);
-		azzert(e.getOutFaultObserver() != null);
-		azzert(e.getService() != null);
+		azzert(endpoint.getActiveFeatures() == null);
+		azzert(endpoint.getBinding() != null);
+		azzert(endpoint.getCleanupHooks().size() == 0);
+		azzert(endpoint.getEndpointInfo() == endpointInfo);
+		azzert(endpoint.getExecutor() != null);
+		azzert(endpoint.getInFaultObserver() != null);
+		azzert(endpoint.getOutFaultObserver() != null);
+		azzert(endpoint.getService() != null);
 
-		EndpointImpl endpointImpl = (EndpointImpl) e;
+		EndpointImpl endpointImpl = (EndpointImpl) endpoint;
 		azzert("{http://cxf.xdptdr.github.com/}AbagthaPort.endpoint".equals(endpointImpl.getBeanName()));
 		azzert(endpointImpl.getBus() == bus);
 
-		Binding binding = e.getBinding();
+		Binding binding = endpoint.getBinding();
 		azzert(binding instanceof SoapBinding);
 		azzert(binding.getBindingInfo() == bindingInfo);
 		azzert(((SoapBinding) binding).getSoapVersion() == version);
@@ -227,34 +239,122 @@ public class Abagtha {
 		azzert(soapMessage.getVersion() == version);
 		azzert(!soapMessage.hasAdditionalEnvNs());
 
-		Executor executor = e.getExecutor();
+		Executor executor = endpoint.getExecutor();
 		azzert(executor instanceof SynchronousExecutor);
 
-		MessageObserver inFaultObserver = e.getInFaultObserver();
+		MessageObserver inFaultObserver = endpoint.getInFaultObserver();
 		azzert(inFaultObserver instanceof InFaultChainInitiatorObserver);
 
-		MessageObserver outFaultObserver = e.getOutFaultObserver();
+		MessageObserver outFaultObserver = endpoint.getOutFaultObserver();
 		azzert(outFaultObserver instanceof OutFaultChainInitiatorObserver);
-		
-		Service s = e.getService();
-		azzert(s instanceof ServiceImpl);
-		
-		azzert(s.getDataBinding() != null);
-		azzert(s.getEndpoints().size() == 1);
-		azzert(s.getExecutor() == executor);
-		azzert(s.getInvoker() != null);
-		azzert(s.getName() != null);
-		azzert(s.getServiceInfos().size() > 0);
-		
-		DataBinding db = s.getDataBinding();
-		Endpoint ei = s.getEndpoints().entrySet().iterator().next().getValue();
-		Invoker i = s.getInvoker();
-		System.out.println(s.getName());
-		List<ServiceInfo> sis = s.getServiceInfos();
-		System.out.println(sis.size());
-		
-		
 
+		Service service = endpoint.getService();
+		azzert(service instanceof ServiceImpl);
+
+		azzert(service.getDataBinding() != null);
+		azzert(service.getEndpoints().size() == 1);
+		azzert(service.getEndpoints().entrySet().iterator().next().getValue() != endpoint);
+		// guess : endpoint was cloned
+		azzert(service.getExecutor() == executor);
+		azzert(service.getInvoker() != null);
+		azzert(service.getName() != null);
+		azzert(service.getServiceInfos().size() > 0);
+
+		DataBinding dataBinding = service.getDataBinding();
+		assert (dataBinding instanceof JAXBDataBinding);
+
+		azzert(dataBinding.getDeclaredNamespaceMappings() == null);
+		azzert(dataBinding.getMtomThreshold() == 0);
+		azzert(!dataBinding.isMtomEnabled());
+
+		azzert(dataBinding.getSupportedReaderFormats().length == 3);
+		azzertContains(dataBinding.getSupportedReaderFormats(), Node.class);
+		azzertContains(dataBinding.getSupportedReaderFormats(), XMLEventReader.class);
+		azzertContains(dataBinding.getSupportedReaderFormats(), XMLStreamReader.class);
+
+		azzert(dataBinding.getSupportedWriterFormats().length == 4);
+		azzertContains(dataBinding.getSupportedWriterFormats(), OutputStream.class);
+		azzertContains(dataBinding.getSupportedWriterFormats(), Node.class);
+		azzertContains(dataBinding.getSupportedWriterFormats(), XMLEventWriter.class);
+		azzertContains(dataBinding.getSupportedWriterFormats(), XMLStreamWriter.class);
+
+		JAXBDataBinding jaxbDataBinding = (JAXBDataBinding) dataBinding;
+		azzert(jaxbDataBinding.getConfiguredXmlAdapters().size() == 0);
+		azzert(jaxbDataBinding.getContext() instanceof JAXBContextImpl);
+		azzert(jaxbDataBinding.getContextClasses().size() == 0);
+		azzert(jaxbDataBinding.getContextProperties().size() == 0);
+		azzert(jaxbDataBinding.getExtraClass() == null);
+		azzert(jaxbDataBinding.getMarshallerListener() == null);
+		azzert(jaxbDataBinding.getUnmarshallerListener() == null);
+		azzert(jaxbDataBinding.getValidationEventHandler() == null);
+		azzert(jaxbDataBinding.isUnwrapJAXBElement());
+
+		Invoker invoker = service.getInvoker();
+		azzert(invoker instanceof FactoryInvoker);
+
+		FactoryInvoker factoryInvoker = (FactoryInvoker) invoker;
+		azzert(factoryInvoker.isSingletonFactory());
+
+		List<ServiceInfo> serviceInfos = service.getServiceInfos();
+		azzert(serviceInfos.size() == 1);
+		azzert(serviceInfos.get(0) == si);
+
+		azzert(!rsfb.getAnonymousWrapperTypes());
+
+		azzert(rsfb.getExecutor() == null);
+
+		azzert(rsfb.getFeatures().size() == 0);
+
+		azzert(rsfb.getIgnoredClasses().size() == 6);
+		azzertContains(rsfb.getIgnoredClasses(), "java.lang.Object");
+		azzertContains(rsfb.getIgnoredClasses(), "java.lang.Throwable");
+		azzertContains(rsfb.getIgnoredClasses(), "org.omg.CORBA_2_3.portable.ObjectImpl");
+		azzertContains(rsfb.getIgnoredClasses(), "org.omg.CORBA.portable.ObjectImpl");
+		azzertContains(rsfb.getIgnoredClasses(), "javax.ejb.EJBObject");
+		azzertContains(rsfb.getIgnoredClasses(), "javax.rmi.CORBA.Stub");
+
+		azzert(rsfb.getIgnoredMethods().size() == 0);
+
+		azzert(rsfb.getInvoker() == null);
+
+		azzert(rsfb.getMethodDispatcher() instanceof SimpleMethodDispatcher);
+
+		MethodDispatcher methodDispatcher = rsfb.getMethodDispatcher();
+		SimpleMethodDispatcher simpleMethodDispatcher = (SimpleMethodDispatcher) methodDispatcher;
+
+		azzert(rsfb.getProperties() == null);
+
+		azzert(rsfb.getQualifyWrapperSchema());
+
+		azzert("document".equals(rsfb.getStyle()));
+		azzert(rsfb.getWrapped() == null);
+		azzert(!rsfb.isAnonymousWrapperTypes());
+		azzert(rsfb.isPopulateFromClass());
+		azzert(rsfb.isQualifyWrapperSchema());
+		azzert(rsfb.isWrapped());
+
+		azzert(rsfb.getWsdlURL() == null);
+
+	}
+
+	private static <T> void azzertContains(List<T> list, T element) {
+		azzert(list != null);
+		for (T e : list) {
+			if (e == element) {
+				return;
+			}
+		}
+		throw new RuntimeException("Assertion error");
+	}
+
+	private static <T> void azzertContains(T[] array, T element) {
+		azzert(array != null);
+		for (T e : array) {
+			if (e == element) {
+				return;
+			}
+		}
+		throw new RuntimeException("Assertion error");
 	}
 
 	@SuppressWarnings("unused")
@@ -287,13 +387,10 @@ public class Abagtha {
 		reflectionServiceFactoryBean.create();
 		EndpointInfo endpointInfo = null;
 		reflectionServiceFactoryBean.createEndpoint(endpointInfo);
-		reflectionServiceFactoryBean.getAnonymousWrapperTypes();
-		reflectionServiceFactoryBean.getConfigurations();
 		reflectionServiceFactoryBean.getEndpointInfo();
 		reflectionServiceFactoryBean.getEndpointName();
 		boolean lookup = false;
 		reflectionServiceFactoryBean.getEndpointName(lookup);
-		reflectionServiceFactoryBean.getExecutor();
 		reflectionServiceFactoryBean.getFeatures();
 		Type type = null;
 		reflectionServiceFactoryBean.getHolderType(Object.class, type);
