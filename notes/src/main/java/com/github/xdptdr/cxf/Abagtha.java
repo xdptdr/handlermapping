@@ -322,10 +322,23 @@ public class Abagtha {
 
 		azzert(bindingMessageInfoOutput.getMessageParts().get(0) == messagePartInfoOutput);
 
-		BindingOperationInfo uo = bindingOperationInfo.getUnwrappedOperation();
-		BindingOperationInfo wo = bindingOperationInfo.getWrappedOperation();
-
-		OperationInfo oi = bindingOperationInfo.getOperationInfo();
+		OperationInfo operationInfo = bindingOperationInfo.getOperationInfo();
+		azzert(operationInfo.getFaults().size() == 0);
+		azzert(operationInfo.getInput() == messageInfoInput);
+		azzert(operationInfo.getOutput() == messageInfoOutput);
+		azzert("foo".equals(operationInfo.getInputName()));
+		azzert("fooResponse".equals(operationInfo.getOutputName()));
+		azzert("http://cxf.xdptdr.github.com/".equals(operationInfo.getName().getNamespaceURI()));
+		azzert("foo".equals(operationInfo.getName().getLocalPart()));
+		azzert(operationInfo.getParameterOrdering() == null);
+		azzert(operationInfo.getInterface() != null);
+		azzert(operationInfo.getUnwrappedOperation() != null);
+		azzert(!operationInfo.hasFaults());
+		azzert(operationInfo.hasInput());
+		azzert(operationInfo.hasOutput());
+		azzert(!operationInfo.isOneWay());
+		azzert(!operationInfo.isUnwrapped());
+		azzert(operationInfo.isUnwrappedCapable());
 
 		InterfaceInfo interfaceInfo = endpointInfo.getInterface();
 		azzert(interfaceInfo.getDescription() == null);
@@ -333,6 +346,7 @@ public class Abagtha {
 		azzert("AbagthaPortType".equals(interfaceInfo.getName().getLocalPart()));
 		azzert(interfaceInfo.getOperations().size() == 1); // TODO !
 		azzert(interfaceInfo.getService() == si);
+		azzert(interfaceInfo == operationInfo.getInterface());
 
 		EndpointReferenceType endpointReferenceType = endpointInfo.getTarget();
 		azzert(endpointReferenceType.getAddress() != null);
