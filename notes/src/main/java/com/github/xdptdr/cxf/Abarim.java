@@ -38,8 +38,13 @@ public class Abarim {
 		jaxWsServerFactoryBean.setServiceClass(jaxwsServiceBuilder.getServiceClass());
 		jaxWsServerFactoryBean.setAddress("http://localhost:9000/Abarim");
 		jaxWsServerFactoryBean.setServiceBean(new Abarim());
-		
-		 server = jaxWsServerFactoryBean.create();
+
+		server = jaxWsServerFactoryBean.create();
+
+		/*- wsdl?
+		    - org.apache.cxf.frontend.WSDLGetInterceptor.handleMessage(Message)
+		    - org.apache.cxf.frontend.WSDLGetUtils.writeWSDLDocument(Message, Map<String, Definition>, Map<String, SchemaReference>, String, String, EndpointInfo)
+		 */
 
 	}
 }
