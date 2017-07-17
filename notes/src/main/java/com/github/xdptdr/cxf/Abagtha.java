@@ -240,7 +240,8 @@ public class Abagtha {
 		azzert(messageInfoInput.getType() == MessageInfo.Type.INPUT);
 		azzert(messageInfoInput.getMessagePartsMap().size() == 1);
 
-		Entry<QName, MessagePartInfo> messageInfoInputEntry = messageInfoInput.getMessagePartsMap().entrySet().iterator().next();
+		Entry<QName, MessagePartInfo> messageInfoInputEntry = messageInfoInput.getMessagePartsMap().entrySet()
+				.iterator().next();
 		azzert("http://cxf.xdptdr.github.com/".equals(messageInfoInputEntry.getKey().getNamespaceURI()));
 		azzert("parameters".equals(messageInfoInputEntry.getKey().getLocalPart()));
 		azzert(messageInfoInputEntry.getValue() != null);
@@ -277,6 +278,9 @@ public class Abagtha {
 
 		// TODO : as above
 		BindingMessageInfo bmi = bindingOperationInfo.getOutput();
+		
+		
+		
 		BindingOperationInfo uo = bindingOperationInfo.getUnwrappedOperation();
 		BindingOperationInfo wo = bindingOperationInfo.getWrappedOperation();
 
@@ -534,221 +538,6 @@ public class Abagtha {
 			}
 		}
 		throw new RuntimeException("Assertion error");
-	}
-
-	@SuppressWarnings("unused")
-	private static void dumpRSFBConstants() {
-		System.out.println("ReflectionServiceFactoryBean.ELEMENT_NAME : " + ReflectionServiceFactoryBean.ELEMENT_NAME);
-		System.out.println(
-				"ReflectionServiceFactoryBean.ENDPOINT_CLASS : " + ReflectionServiceFactoryBean.ENDPOINT_CLASS);
-		System.out.println("ReflectionServiceFactoryBean.EXTRA_CLASS : " + ReflectionServiceFactoryBean.EXTRA_CLASS);
-		System.out.println("ReflectionServiceFactoryBean.FORCE_TYPES : " + ReflectionServiceFactoryBean.FORCE_TYPES);
-		System.out.println("ReflectionServiceFactoryBean.GENERIC_TYPE : " + ReflectionServiceFactoryBean.GENERIC_TYPE);
-		System.out.println("ReflectionServiceFactoryBean.HEADER : " + ReflectionServiceFactoryBean.HEADER);
-		System.out.println("ReflectionServiceFactoryBean.HOLDER : " + ReflectionServiceFactoryBean.HOLDER);
-		System.out.println("ReflectionServiceFactoryBean.METHOD : " + ReflectionServiceFactoryBean.METHOD);
-		System.out.println(
-				"ReflectionServiceFactoryBean.METHOD_ANNOTATIONS : " + ReflectionServiceFactoryBean.METHOD_ANNOTATIONS);
-		System.out.println("ReflectionServiceFactoryBean.METHOD_PARAM_ANNOTATIONS : "
-				+ ReflectionServiceFactoryBean.METHOD_PARAM_ANNOTATIONS);
-		System.out.println("ReflectionServiceFactoryBean.MODE_INOUT : " + ReflectionServiceFactoryBean.MODE_INOUT);
-		System.out.println("ReflectionServiceFactoryBean.MODE_OUT : " + ReflectionServiceFactoryBean.MODE_OUT);
-		System.out.println(
-				"ReflectionServiceFactoryBean.PARAM_ANNOTATION : " + ReflectionServiceFactoryBean.PARAM_ANNOTATION);
-		System.out.println("ReflectionServiceFactoryBean.RAW_CLASS : " + ReflectionServiceFactoryBean.RAW_CLASS);
-		System.out.println(
-				"ReflectionServiceFactoryBean.WRAPPERGEN_NEEDED : " + ReflectionServiceFactoryBean.WRAPPERGEN_NEEDED);
-
-	}
-
-	@SuppressWarnings("unused")
-	private static void rsfb(ReflectionServiceFactoryBean reflectionServiceFactoryBean) throws EndpointException {
-		reflectionServiceFactoryBean.create();
-		EndpointInfo endpointInfo = null;
-		reflectionServiceFactoryBean.createEndpoint(endpointInfo);
-		reflectionServiceFactoryBean.getEndpointInfo();
-		reflectionServiceFactoryBean.getEndpointName();
-		boolean lookup = false;
-		reflectionServiceFactoryBean.getEndpointName(lookup);
-		reflectionServiceFactoryBean.getFeatures();
-		Type type = null;
-		reflectionServiceFactoryBean.getHolderType(Object.class, type);
-		reflectionServiceFactoryBean.getIgnoredClasses();
-		reflectionServiceFactoryBean.getIgnoredMethods();
-		reflectionServiceFactoryBean.getInterfaceName();
-		reflectionServiceFactoryBean.getInvoker();
-		reflectionServiceFactoryBean.getMethodDispatcher();
-		reflectionServiceFactoryBean.getProperties();
-		reflectionServiceFactoryBean.getQualifyWrapperSchema();
-		reflectionServiceFactoryBean.getServiceClass();
-		reflectionServiceFactoryBean.getServiceConfigurations();
-		reflectionServiceFactoryBean.getServiceQName();
-		reflectionServiceFactoryBean.getServiceQName(lookup);
-		reflectionServiceFactoryBean.getStyle();
-		reflectionServiceFactoryBean.getWrapped();
-		MessagePartInfo mpi = null;
-		reflectionServiceFactoryBean.getWrapperPartMaxOccurs(mpi);
-		reflectionServiceFactoryBean.getWrapperPartMinOccurs(mpi);
-		reflectionServiceFactoryBean.getWsdlURL();
-		InterfaceInfo interfaceInfo = null;
-		reflectionServiceFactoryBean.hasWrappedMethods(interfaceInfo);
-		reflectionServiceFactoryBean.isAnonymousWrapperTypes();
-		Method method = null;
-		int j = 0;
-		reflectionServiceFactoryBean.isHeader(method, j);
-		reflectionServiceFactoryBean.isHolder(Object.class, type);
-		reflectionServiceFactoryBean.isPopulateFromClass();
-		reflectionServiceFactoryBean.isQualifyWrapperSchema();
-		reflectionServiceFactoryBean.isRPC(method);
-		reflectionServiceFactoryBean.isWrapped();
-		reflectionServiceFactoryBean.isWrapperPartNillable(mpi);
-		reflectionServiceFactoryBean.isWrapperPartQualified(mpi);
-		reflectionServiceFactoryBean.reset();
-		boolean b = false;
-		reflectionServiceFactoryBean.setAnonymousWrapperTypes(b);
-		List<AbstractServiceConfiguration> configurations = null;
-		reflectionServiceFactoryBean.setConfigurations(configurations);
-		QName qn = null;
-		reflectionServiceFactoryBean.setEndpointName(qn);
-		Executor executor = null;
-		reflectionServiceFactoryBean.setExecutor(executor);
-		List<? extends Feature> features = null;
-		reflectionServiceFactoryBean.setFeatures(features);
-		List<String> ignoredClasses = null;
-		reflectionServiceFactoryBean.setIgnoredClasses(ignoredClasses);
-		List<Method> ignoredMethods = null;
-		reflectionServiceFactoryBean.setIgnoredMethods(ignoredMethods);
-		Invoker invoker = null;
-		reflectionServiceFactoryBean.setInvoker(invoker);
-		boolean fomClass = false;
-		reflectionServiceFactoryBean.setPopulateFromClass(fomClass);
-		Map<String, Object> properties = null;
-		reflectionServiceFactoryBean.setProperties(properties);
-		reflectionServiceFactoryBean.setQualifyWrapperSchema(b);
-		List<String> schemaLocations = null;
-		reflectionServiceFactoryBean.setSchemaLocations(schemaLocations);
-		Class<?> serviceClass = null;
-		reflectionServiceFactoryBean.setServiceClass(serviceClass);
-		List<AbstractServiceConfiguration> serviceConfigurations = null;
-		reflectionServiceFactoryBean.setServiceConfigurations(serviceConfigurations);
-		QName serviceName = null;
-		reflectionServiceFactoryBean.setServiceName(serviceName);
-		ParameterizedType servicetype = null;
-		reflectionServiceFactoryBean.setServiceType(servicetype);
-		boolean validate = false;
-		reflectionServiceFactoryBean.setValidate(validate);
-		boolean style = false;
-		reflectionServiceFactoryBean.setWrapped(style);
-		String wsdlURL = null;
-		reflectionServiceFactoryBean.setWsdlURL(wsdlURL);
-		URL url = null;
-		reflectionServiceFactoryBean.setWsdlURL(url);
-		BindingOperationInfo boi = null;
-		reflectionServiceFactoryBean.updateBindingOperation(boi);
-
-	}
-
-	@SuppressWarnings("unused")
-	private static void si(ServiceInfo serviceInfo) {
-		BindingInfo bindingInfo = null;
-		serviceInfo.addBinding(bindingInfo);
-		EndpointInfo endpointInfo = null;
-		serviceInfo.addEndpoint(endpointInfo);
-		String schemaNamespaceURI = null;
-		serviceInfo.addNewSchema(schemaNamespaceURI);
-		SchemaInfo schemaInfo = null;
-		serviceInfo.addSchema(schemaInfo);
-		QName qn = null;
-		serviceInfo.createInterface(qn);
-		serviceInfo.getBinding(qn);
-		serviceInfo.getBindings();
-		serviceInfo.getDescription();
-		serviceInfo.getEndpoint(qn);
-		serviceInfo.getEndpoints();
-		serviceInfo.getInterface();
-		serviceInfo.getMessage(qn);
-		serviceInfo.getMessages();
-		serviceInfo.getName();
-		serviceInfo.getSchema(schemaNamespaceURI);
-		serviceInfo.getSchemas();
-		serviceInfo.getTargetNamespace();
-		serviceInfo.getTopLevelDoc();
-		serviceInfo.getXmlSchemaCollection();
-		serviceInfo.refresh();
-		DescriptionInfo descriptionInfo = null;
-		serviceInfo.setDescription(descriptionInfo);
-		InterfaceInfo interfaceInfo = null;
-		serviceInfo.setInterface(interfaceInfo);
-		Map<QName, MessageInfo> messageInfos = null;
-		serviceInfo.setMessages(messageInfos);
-		serviceInfo.setName(qn);
-		SchemaCollection cachedXmlSchemaCollection = null;
-		List<SchemaInfo> cachedSchemas = null;
-		serviceInfo.setSchemas(cachedXmlSchemaCollection, cachedSchemas);
-		ServiceSchemaInfo serviceSchemaInfo = null;
-		serviceInfo.setServiceSchemaInfo(serviceSchemaInfo);
-		String targetNamespace = null;
-		serviceInfo.setTargetNamespace(targetNamespace);
-		String topLevelDoc = null;
-		serviceInfo.setTopLevelDoc(topLevelDoc);
-
-		Object o = null;
-		serviceInfo.addExtensionAttribute(qn, o);
-		serviceInfo.addExtensor(o);
-		serviceInfo.containsExtensor(o);
-		serviceInfo.getDocumentation();
-		serviceInfo.getExtensionAttribute(qn);
-		serviceInfo.getExtensionAttributes();
-		serviceInfo.getExtensor(Object.class);
-		serviceInfo.getExtensors();
-		serviceInfo.getProperties();
-		String name = null;
-		serviceInfo.getProperty(name);
-		Class<?> clazz = null;
-		serviceInfo.getProperty(name, clazz);
-		serviceInfo.getTraversedExtensor(o, Object.class);
-		serviceInfo.hasProperty(name);
-		serviceInfo.removeProperty(name);
-		AbstractPropertiesHolder p = null;
-		boolean props = false;
-		serviceInfo.setDelegate(p, props);
-		String documentation = null;
-		serviceInfo.setDocumentation(documentation);
-		Map<QName, Object> qnmap = null;
-		serviceInfo.setExtensionAttributes(qnmap);
-		serviceInfo.setProperty(name, o);
-
-	}
-
-	@SuppressWarnings("unused")
-	private static void ssb(SimpleServiceBuilder ssb) {
-
-		ssb.getWsdlURL();
-
-		boolean createIfNeeded = false;
-		QName endpointName = ssb.getEndpointName();
-		boolean create = false;
-		ssb.getProperties(create);
-		String publishedEndpointUrl = ssb.getPublishedEndpointUrl();
-		QName serviceName = ssb.getServiceName();
-		String transportId = ssb.getTransportId();
-		ssb.setEndpointName(endpointName);
-		EndpointReferenceType enpointReferenceType = null;
-		ssb.setEndpointReference(enpointReferenceType);
-		ssb.setPublishedEndpointUrl(publishedEndpointUrl);
-		ssb.setServiceName(serviceName);
-		ssb.setTransportId(transportId);
-
-		ssb.getInFaultInterceptors();
-		ssb.getInInterceptors();
-		ssb.getOutFaultInterceptors();
-		ssb.getOutInterceptors();
-		List<Interceptor<? extends Message>> interceptors = null;
-		ssb.setInFaultInterceptors(interceptors);
-		ssb.setInInterceptors(interceptors);
-		ssb.setOutFaultInterceptors(interceptors);
-		ssb.setOutInterceptors(interceptors);
-
 	}
 
 	private static void azzert(boolean b) {
