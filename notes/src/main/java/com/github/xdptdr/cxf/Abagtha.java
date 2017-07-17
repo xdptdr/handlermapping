@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 
 import javax.xml.namespace.QName;
@@ -58,14 +59,17 @@ import org.apache.cxf.service.factory.SimpleMethodDispatcher;
 import org.apache.cxf.service.invoker.FactoryInvoker;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.service.invoker.MethodDispatcher;
+import org.apache.cxf.service.model.AbstractMessageContainer;
 import org.apache.cxf.service.model.AbstractPropertiesHolder;
 import org.apache.cxf.service.model.BindingInfo;
+import org.apache.cxf.service.model.BindingMessageInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.DescriptionInfo;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.InterfaceInfo;
 import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
+import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.SchemaInfo;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.service.model.ServiceSchemaInfo;
@@ -86,6 +90,7 @@ import org.apache.cxf.wsdl.WSDLManager;
 import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.wsdl.service.factory.DefaultServiceConfiguration;
 import org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean;
+import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.jboss.wsf.stack.cxf.client.injection.JBossWSResourceInjectionResolver;
 import org.w3c.dom.Node;
 
@@ -93,8 +98,9 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 public class Abagtha {
 
-	// public void foo() {
-	// }
+	public String foo(String bar) {
+		return bar + "!" + bar;
+	}
 
 	public static void main(String[] args) throws IOException, EndpointException {
 
@@ -209,14 +215,77 @@ public class Abagtha {
 		azzert(bindingInfo.getInterface() == endpointInfo.getInterface());
 		azzert("http://cxf.xdptdr.github.com/".equals(bindingInfo.getName().getNamespaceURI()));
 		azzert("AbagthaSoapBinding".equals(bindingInfo.getName().getLocalPart()));
-		azzert(bindingInfo.getOperations().size() == 0);
+		azzert(bindingInfo.getOperations().size() == 1); // TODO !
 		azzert(bindingInfo.getService() == si);
+
+		BindingOperationInfo bindingOperationInfo = bindingInfo.getOperations().iterator().next();
+		azzert("http://cxf.xdptdr.github.com/".equals(bindingOperationInfo.getName().getNamespaceURI()));
+		azzert("foo".equals(bindingOperationInfo.getName().getLocalPart()));
+		azzert(bindingOperationInfo.getBinding() == bindingInfo);
+		azzert(bindingOperationInfo.getFaults().size() == 0);
+		azzert(bindingOperationInfo.getInput() != null);
+		azzert(bindingOperationInfo.getOutput() != null);
+		azzert(bindingOperationInfo.getOperationInfo() != null);
+		azzert(bindingOperationInfo.getUnwrappedOperation() != null);
+		azzert(bindingOperationInfo.getWrappedOperation() != null);
+		azzert(!bindingOperationInfo.isUnwrapped());
+		azzert(bindingOperationInfo.isUnwrappedCapable());
+
+		BindingMessageInfo bindingMessageInfoInput = bindingOperationInfo.getInput();
+		azzert(bindingMessageInfoInput.getBindingOperation() == bindingOperationInfo);
+		azzert(bindingMessageInfoInput.getMessageInfo() != null);
+		azzert(bindingMessageInfoInput.getMessageParts().size() == 1);
+
+		MessageInfo messageInfoInput = bindingMessageInfoInput.getMessageInfo();
+		azzert(messageInfoInput.getType() == MessageInfo.Type.INPUT);
+		azzert(messageInfoInput.getMessagePartsMap().size() == 1);
+
+		Entry<QName, MessagePartInfo> messageInfoInputEntry = messageInfoInput.getMessagePartsMap().entrySet().iterator().next();
+		azzert("http://cxf.xdptdr.github.com/".equals(messageInfoInputEntry.getKey().getNamespaceURI()));
+		azzert("parameters".equals(messageInfoInputEntry.getKey().getLocalPart()));
+		azzert(messageInfoInputEntry.getValue() != null);
+
+		MessagePartInfo messagePartInfoInput = messageInfoInputEntry.getValue();
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getConcreteName().getNamespaceURI()));
+		azzert("foo".equals(messagePartInfoInput.getConcreteName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getElementQName().getNamespaceURI()));
+		azzert("foo".equals(messagePartInfoInput.getElementQName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getName().getNamespaceURI()));
+		azzert("parameters".equals(messagePartInfoInput.getName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getTypeQName().getNamespaceURI()));
+		azzert("foo".equals(messagePartInfoInput.getTypeQName().getLocalPart()));
+		azzert(messagePartInfoInput.getTypeClass() == null);
+		azzert(messagePartInfoInput.isElement());
+		azzert(messagePartInfoInput.getMessageInfo() != null);
+		azzert(messagePartInfoInput.getXmlSchema() != null);
+
+		AbstractMessageContainer abstractMessageContainerInput = messagePartInfoInput.getMessageInfo();
+		azzert(abstractMessageContainerInput.getMessageDocumentation() == null);
+		azzert(abstractMessageContainerInput.getMessagePartsNumber() == 1);
+		azzert("http://cxf.xdptdr.github.com/".equals(abstractMessageContainerInput.getName().getNamespaceURI()));
+		azzert("foo".equals(abstractMessageContainerInput.getName().getLocalPart()));
+		azzert(abstractMessageContainerInput.getOutOfBandParts().size() == 0);
+		azzert(abstractMessageContainerInput.getMessageParts().size() == 1);
+		azzert(abstractMessageContainerInput.getMessageParts().get(0) == messagePartInfoInput);
+
+		XmlSchemaAnnotated xmlSchemaAnnotatedInput = messagePartInfoInput.getXmlSchema();
+		azzert(xmlSchemaAnnotatedInput.getAnnotation() == null);
+		azzert(xmlSchemaAnnotatedInput.getId() == null);
+		azzert(xmlSchemaAnnotatedInput.getUnhandledAttributes() == null);
+
+		azzert(bindingMessageInfoInput.getMessageParts().get(0) == messagePartInfoInput);
+
+		BindingMessageInfo bmi = bindingOperationInfo.getOutput();
+		BindingOperationInfo uo = bindingOperationInfo.getUnwrappedOperation();
+		BindingOperationInfo wo = bindingOperationInfo.getWrappedOperation();
+
+		OperationInfo oi = bindingOperationInfo.getOperationInfo();
 
 		InterfaceInfo interfaceInfo = endpointInfo.getInterface();
 		azzert(interfaceInfo.getDescription() == null);
 		azzert("http://cxf.xdptdr.github.com/".equals(interfaceInfo.getName().getNamespaceURI()));
 		azzert("AbagthaPortType".equals(interfaceInfo.getName().getLocalPart()));
-		azzert(interfaceInfo.getOperations().size() == 0);
+		azzert(interfaceInfo.getOperations().size() == 1); // TODO !
 		azzert(interfaceInfo.getService() == si);
 
 		EndpointReferenceType endpointReferenceType = endpointInfo.getTarget();
