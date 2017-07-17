@@ -275,6 +275,7 @@ public class Abagtha {
 
 		azzert(bindingMessageInfoInput.getMessageParts().get(0) == messagePartInfoInput);
 
+		// TODO : as above
 		BindingMessageInfo bmi = bindingOperationInfo.getOutput();
 		BindingOperationInfo uo = bindingOperationInfo.getUnwrappedOperation();
 		BindingOperationInfo wo = bindingOperationInfo.getWrappedOperation();
