@@ -120,6 +120,14 @@ public class Abagtha {
 	private static OperationInfo operationInfo;
 	private static BindingOperationInfo bindingOperationInfoUnwrapped;
 	private static BindingOperationInfo bindingOperationInfoWrapped;
+	private static MessageInfo messageInfoInput;
+	private static MessagePartInfo messagePartInfoInput;
+	private static AbstractMessageContainer abstractMessageContainerInput;
+	private static XmlSchemaAnnotated xmlSchemaAnnotatedInput;
+	private static MessageInfo messageInfoOutput;
+	private static MessagePartInfo messagePartInfoOutput;
+	private static AbstractMessageContainer abstractMessageContainerOutput;
+	private static XmlSchemaAnnotated xmlSchemaAnnotatedOutput;
 
 	public String foo(String bar) {
 		return bar + "!" + bar;
@@ -153,92 +161,16 @@ public class Abagtha {
 		azzertBI();
 		azzertBOI();
 		azzertBMII();
+		azzertMII();
+		azzertMPII();
+		azzertAMCI();
+		azzertXSAI();
 
-		MessageInfo messageInfoInput = bindingMessageInfoInput.getMessageInfo();
-		azzert(messageInfoInput.getType() == MessageInfo.Type.INPUT);
-		azzert(messageInfoInput.getMessagePartsMap().size() == 1);
-
-		Entry<QName, MessagePartInfo> messageInfoInputEntry = messageInfoInput.getMessagePartsMap().entrySet()
-				.iterator().next();
-		azzert("http://cxf.xdptdr.github.com/".equals(messageInfoInputEntry.getKey().getNamespaceURI()));
-		azzert("parameters".equals(messageInfoInputEntry.getKey().getLocalPart()));
-		azzert(messageInfoInputEntry.getValue() != null);
-
-		MessagePartInfo messagePartInfoInput = messageInfoInputEntry.getValue();
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getConcreteName().getNamespaceURI()));
-		azzert("foo".equals(messagePartInfoInput.getConcreteName().getLocalPart()));
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getElementQName().getNamespaceURI()));
-		azzert("foo".equals(messagePartInfoInput.getElementQName().getLocalPart()));
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getName().getNamespaceURI()));
-		azzert("parameters".equals(messagePartInfoInput.getName().getLocalPart()));
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getTypeQName().getNamespaceURI()));
-		azzert("foo".equals(messagePartInfoInput.getTypeQName().getLocalPart()));
-		azzert(messagePartInfoInput.getTypeClass() == null);
-		azzert(messagePartInfoInput.isElement());
-		azzert(messagePartInfoInput.getMessageInfo() != null);
-		azzert(messagePartInfoInput.getXmlSchema() != null);
-
-		AbstractMessageContainer abstractMessageContainerInput = messagePartInfoInput.getMessageInfo();
-		azzert(abstractMessageContainerInput.getMessageDocumentation() == null);
-		azzert(abstractMessageContainerInput.getMessagePartsNumber() == 1);
-		azzert("http://cxf.xdptdr.github.com/".equals(abstractMessageContainerInput.getName().getNamespaceURI()));
-		azzert("foo".equals(abstractMessageContainerInput.getName().getLocalPart()));
-		azzert(abstractMessageContainerInput.getOutOfBandParts().size() == 0);
-		azzert(abstractMessageContainerInput.getMessageParts().size() == 1);
-		azzert(abstractMessageContainerInput.getMessageParts().get(0) == messagePartInfoInput);
-
-		XmlSchemaAnnotated xmlSchemaAnnotatedInput = messagePartInfoInput.getXmlSchema();
-		azzert(xmlSchemaAnnotatedInput.getAnnotation() == null);
-		azzert(xmlSchemaAnnotatedInput.getId() == null);
-		azzert(xmlSchemaAnnotatedInput.getUnhandledAttributes() == null);
-
-		azzert(bindingMessageInfoInput.getMessageParts().get(0) == messagePartInfoInput);
-
-		BindingMessageInfo bindingMessageInfoOutput = bindingOperationInfo.getOutput();
-		azzert(bindingMessageInfoOutput.getBindingOperation() == bindingOperationInfo);
-		azzert(bindingMessageInfoOutput.getMessageInfo() != null);
-		azzert(bindingMessageInfoOutput.getMessageParts().size() == 1);
-
-		MessageInfo messageInfoOutput = bindingMessageInfoOutput.getMessageInfo();
-		azzert(messageInfoOutput.getType() == MessageInfo.Type.OUTPUT);
-		azzert(messageInfoOutput.getMessagePartsMap().size() == 1);
-
-		Entry<QName, MessagePartInfo> messageInfoOutputEntry = messageInfoOutput.getMessagePartsMap().entrySet()
-				.iterator().next();
-		azzert("http://cxf.xdptdr.github.com/".equals(messageInfoOutputEntry.getKey().getNamespaceURI()));
-		azzert("parameters".equals(messageInfoOutputEntry.getKey().getLocalPart()));
-		azzert(messageInfoOutputEntry.getValue() != null);
-
-		MessagePartInfo messagePartInfoOutput = messageInfoOutputEntry.getValue();
-
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getConcreteName().getNamespaceURI()));
-		azzert("fooResponse".equals(messagePartInfoOutput.getConcreteName().getLocalPart()));
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getElementQName().getNamespaceURI()));
-		azzert("fooResponse".equals(messagePartInfoOutput.getElementQName().getLocalPart()));
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getName().getNamespaceURI()));
-		azzert("parameters".equals(messagePartInfoOutput.getName().getLocalPart()));
-		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getTypeQName().getNamespaceURI()));
-		azzert("fooResponse".equals(messagePartInfoOutput.getTypeQName().getLocalPart()));
-		azzert(messagePartInfoOutput.getTypeClass() == null);
-		azzert(messagePartInfoOutput.isElement());
-		azzert(messagePartInfoOutput.getMessageInfo() != null);
-		azzert(messagePartInfoOutput.getXmlSchema() != null);
-
-		AbstractMessageContainer abstractMessageContainerOutput = messagePartInfoOutput.getMessageInfo();
-		azzert(abstractMessageContainerOutput.getMessageDocumentation() == null);
-		azzert(abstractMessageContainerOutput.getMessagePartsNumber() == 1);
-		azzert("http://cxf.xdptdr.github.com/".equals(abstractMessageContainerOutput.getName().getNamespaceURI()));
-		azzert("fooResponse".equals(abstractMessageContainerOutput.getName().getLocalPart()));
-		azzert(abstractMessageContainerOutput.getOutOfBandParts().size() == 0);
-		azzert(abstractMessageContainerOutput.getMessageParts().size() == 1);
-		azzert(abstractMessageContainerOutput.getMessageParts().get(0) == messagePartInfoOutput);
-
-		XmlSchemaAnnotated xmlSchemaAnnotatedOutput = messagePartInfoOutput.getXmlSchema();
-		azzert(xmlSchemaAnnotatedOutput.getAnnotation() == null);
-		azzert(xmlSchemaAnnotatedOutput.getId() == null);
-		azzert(xmlSchemaAnnotatedOutput.getUnhandledAttributes() == null);
-
-		azzert(bindingMessageInfoOutput.getMessageParts().get(0) == messagePartInfoOutput);
+		azzertBMIO();
+		azzertMIO();
+		azzertMPIO();
+		azzertAMCO();
+		azzertXSAO();
 
 		OperationInfo operationInfo = bindingOperationInfo.getOperationInfo();
 		azzert(operationInfo.getFaults().size() == 0);
@@ -436,10 +368,126 @@ public class Abagtha {
 
 	}
 
+	private static void azzertBMIO() {
+		azzert(bindingMessageInfoOutput.getBindingOperation() == bindingOperationInfo);
+
+		messageInfoOutput = bindingMessageInfoOutput.getMessageInfo();
+		azzert(messageInfoOutput != null);
+
+		azzert(bindingMessageInfoOutput.getMessageParts().size() == 1);
+		messagePartInfoOutput = bindingMessageInfoOutput.getMessageParts().get(0);
+
+	}
+
+	private static void azzertMIO() {
+		azzert(messageInfoOutput.getType() == MessageInfo.Type.OUTPUT);
+		azzert(messageInfoOutput.getMessagePartsMap().size() == 1);
+
+		Entry<QName, MessagePartInfo> messageInfoOutputEntry = messageInfoOutput.getMessagePartsMap().entrySet()
+				.iterator().next();
+		azzert("http://cxf.xdptdr.github.com/".equals(messageInfoOutputEntry.getKey().getNamespaceURI()));
+		azzert("parameters".equals(messageInfoOutputEntry.getKey().getLocalPart()));
+
+		azzert(messageInfoOutputEntry.getValue() != messagePartInfoOutput);
+
+	}
+
+	private static void azzertMPIO() {
+
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getConcreteName().getNamespaceURI()));
+		azzert("fooResponse".equals(messagePartInfoOutput.getConcreteName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getElementQName().getNamespaceURI()));
+		azzert("fooResponse".equals(messagePartInfoOutput.getElementQName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getName().getNamespaceURI()));
+		azzert("parameters".equals(messagePartInfoOutput.getName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoOutput.getTypeQName().getNamespaceURI()));
+		azzert("fooResponse".equals(messagePartInfoOutput.getTypeQName().getLocalPart()));
+		azzert(messagePartInfoOutput.getTypeClass() == null);
+		azzert(messagePartInfoOutput.isElement());
+
+		abstractMessageContainerOutput = messagePartInfoOutput.getMessageInfo();
+		azzert(abstractMessageContainerOutput != null);
+
+		xmlSchemaAnnotatedOutput = messagePartInfoOutput.getXmlSchema();
+		azzert(xmlSchemaAnnotatedOutput != null);
+
+	}
+
+	private static void azzertAMCO() {
+		azzert(abstractMessageContainerOutput.getMessageDocumentation() == null);
+		azzert(abstractMessageContainerOutput.getMessagePartsNumber() == 1);
+		azzert("http://cxf.xdptdr.github.com/".equals(abstractMessageContainerOutput.getName().getNamespaceURI()));
+		azzert("fooResponse".equals(abstractMessageContainerOutput.getName().getLocalPart()));
+		azzert(abstractMessageContainerOutput.getOutOfBandParts().size() == 0);
+		azzert(abstractMessageContainerOutput.getMessageParts().size() == 1);
+		azzert(abstractMessageContainerOutput.getMessageParts().get(0) == messagePartInfoOutput);
+
+	}
+
+	private static void azzertXSAO() {
+		azzert(xmlSchemaAnnotatedOutput.getAnnotation() == null);
+		azzert(xmlSchemaAnnotatedOutput.getId() == null);
+		azzert(xmlSchemaAnnotatedOutput.getUnhandledAttributes() == null);
+	}
+
+	private static void azzertXSAI() {
+		azzert(xmlSchemaAnnotatedInput.getAnnotation() == null);
+		azzert(xmlSchemaAnnotatedInput.getId() == null);
+		azzert(xmlSchemaAnnotatedInput.getUnhandledAttributes() == null);
+	}
+
+	private static void azzertAMCI() {
+		azzert(abstractMessageContainerInput.getMessageDocumentation() == null);
+		azzert(abstractMessageContainerInput.getMessagePartsNumber() == 1);
+		azzert("http://cxf.xdptdr.github.com/".equals(abstractMessageContainerInput.getName().getNamespaceURI()));
+		azzert("foo".equals(abstractMessageContainerInput.getName().getLocalPart()));
+		azzert(abstractMessageContainerInput.getOutOfBandParts().size() == 0);
+		azzert(abstractMessageContainerInput.getMessageParts().size() == 1);
+		azzert(abstractMessageContainerInput.getMessageParts().get(0) == messagePartInfoInput);
+
+	}
+
+	private static void azzertMPII() {
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getConcreteName().getNamespaceURI()));
+		azzert("foo".equals(messagePartInfoInput.getConcreteName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getElementQName().getNamespaceURI()));
+		azzert("foo".equals(messagePartInfoInput.getElementQName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getName().getNamespaceURI()));
+		azzert("parameters".equals(messagePartInfoInput.getName().getLocalPart()));
+		azzert("http://cxf.xdptdr.github.com/".equals(messagePartInfoInput.getTypeQName().getNamespaceURI()));
+		azzert("foo".equals(messagePartInfoInput.getTypeQName().getLocalPart()));
+		azzert(messagePartInfoInput.getTypeClass() == null);
+		azzert(messagePartInfoInput.isElement());
+
+		abstractMessageContainerInput = messagePartInfoInput.getMessageInfo();
+		azzert(abstractMessageContainerInput != null);
+
+		xmlSchemaAnnotatedInput = messagePartInfoInput.getXmlSchema();
+		azzert(xmlSchemaAnnotatedInput != null);
+
+	}
+
+	private static void azzertMII() {
+		messageInfoInput = bindingMessageInfoInput.getMessageInfo();
+		azzert(messageInfoInput.getType() == MessageInfo.Type.INPUT);
+		azzert(messageInfoInput.getMessagePartsMap().size() == 1);
+
+		Entry<QName, MessagePartInfo> messageInfoInputEntry = messageInfoInput.getMessagePartsMap().entrySet()
+				.iterator().next();
+		azzert("http://cxf.xdptdr.github.com/".equals(messageInfoInputEntry.getKey().getNamespaceURI()));
+		azzert("parameters".equals(messageInfoInputEntry.getKey().getLocalPart()));
+		azzert(messageInfoInputEntry.getValue() == messagePartInfoInput);
+
+	}
+
 	private static void azzertBMII() {
 		azzert(bindingMessageInfoInput.getBindingOperation() == bindingOperationInfo);
-		azzert(bindingMessageInfoInput.getMessageInfo() != null);
+		messageInfoInput = bindingMessageInfoInput.getMessageInfo();
+		azzert(messageInfoInput != null);
 		azzert(bindingMessageInfoInput.getMessageParts().size() == 1);
+
+		messagePartInfoInput = bindingMessageInfoInput.getMessageParts().get(0);
+		azzert(messagePartInfoInput != null);
 
 	}
 
