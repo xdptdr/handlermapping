@@ -33,7 +33,10 @@ import org.apache.cxf.databinding.DataBinding;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointException;
 import org.apache.cxf.endpoint.EndpointImpl;
+import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.endpoint.ServerImpl;
 import org.apache.cxf.endpoint.ServerRegistry;
+import org.apache.cxf.frontend.ServerFactoryBean;
 import org.apache.cxf.interceptor.InFaultChainInitiatorObserver;
 import org.apache.cxf.interceptor.OutFaultChainInitiatorObserver;
 import org.apache.cxf.jaxb.JAXBDataBinding;
@@ -93,6 +96,8 @@ public class Abagtha {
 	private static AbstractMessageContainer abstractMessageContainerOutput;
 	private static AbstractServiceConfiguration abstractServiceConfiguration1;
 	private static AbstractServiceConfiguration abstractServiceConfiguration2;
+	private static AttributedURIType attributedURIType;
+	private static Binding binding;
 	private static BindingConfiguration bindingConfig;
 	private static BindingFactory bindingFactory;
 	private static BindingInfo bindingInfo;
@@ -106,43 +111,44 @@ public class Abagtha {
 	private static DefaultServiceConfiguration defaultServiceConfiguration;
 	private static DestinationFactory destinationFactory;
 	private static Endpoint endpoint;
+	private static EndpointImpl endpointImpl;
 	private static EndpointInfo endpointInfo;
 	private static EndpointReferenceType endpointReferenceType;
+	private static Executor executor;
 	private static ExtensionManagerBus extensionManagerBus;
+	private static FactoryInvoker factoryInvoker;
+	private static InFaultChainInitiatorObserver inFaultChainInitiatorObserver;
 	private static InterfaceInfo interfaceInfo;
+	private static Invoker invoker;
+	private static JAXBDataBinding jaxbDataBinding;
+	private static Message message;
 	private static MessageInfo messageInfoInput;
 	private static MessageInfo messageInfoOutput;
+	private static MessageObserver messageObserver_In;
+	private static MessageObserver messageObserver_Out;
 	private static MessagePartInfo messagePartInfoInput;
 	private static MessagePartInfo messagePartInfoOutput;
 	private static MethodDispatcher methodDispatcher;
 	private static OperationInfo operationInfo;
+	private static OutFaultChainInitiatorObserver outFaultChainInitiatorObserver;
 	private static ReflectionServiceFactoryBean reflectionServiceFactoryBean;
 	private static Service service;
 	private static ServiceInfo serviceInfo;
 	private static SimpleMethodDispatcher simpleMethodDispatcher;
 	private static SimpleServiceBuilder simpleServiceBuilder;
+	private static SoapBinding soapBinding;
 	private static SoapBindingConfiguration soapBindingConfiguration;
 	private static SoapBindingFactory soapBindingFactory;
 	private static AbstractServiceConfiguration soapBindingServiceConfiguration;
+	private static SoapMessage soapMessage;
 	private static SoapTransportFactory soapTransportFactory;
+	private static SynchronousExecutor synchronousExecutor;
 	private static SoapVersion version;
 	private static XmlSchemaAnnotated xmlSchemaAnnotatedInput;
 	private static XmlSchemaAnnotated xmlSchemaAnnotatedOutput;
-	private static AttributedURIType attributedURIType;
-	private static Binding binding;
-	private static Executor executor;
-	private static MessageObserver messageObserver_In;
-	private static MessageObserver messageObserver_Out;
-	private static EndpointImpl endpointImpl;
-	private static SoapBinding soapBinding;
-	private static Message message;
-	private static SoapMessage soapMessage;
-	private static SynchronousExecutor synchronousExecutor;
-	private static InFaultChainInitiatorObserver inFaultChainInitiatorObserver;
-	private static OutFaultChainInitiatorObserver outFaultChainInitiatorObserver;
-	private static Invoker invoker;
-	private static JAXBDataBinding jaxbDataBinding;
-	private static FactoryInvoker factoryInvoker;
+	private static Server server;
+	private static ServerFactoryBean serverFactoryBean;
+	private static ServerImpl serverImpl;
 
 	private static void azzert(boolean b) {
 		if (!b) {
@@ -162,19 +168,6 @@ public class Abagtha {
 
 	}
 
-	private static void azzertQN(QName qn, String ns, String lp) {
-		if (ns == null) {
-			azzert(qn.getNamespaceURI() == null);
-		} else {
-			azzert(ns.equals(qn.getNamespaceURI()));
-		}
-		if (lp == null) {
-			azzert(qn.getLocalPart() == null);
-		} else {
-			azzert(lp.equals(qn.getLocalPart()));
-		}
-	}
-
 	private static void azzertAbstractMessageContainer_Output() {
 		azzert(abstractMessageContainerOutput.getMessageDocumentation() == null);
 		azzert(abstractMessageContainerOutput.getMessagePartsNumber() == 1);
@@ -183,6 +176,16 @@ public class Abagtha {
 		azzert(abstractMessageContainerOutput.getMessageParts().size() == 1);
 		azzert(abstractMessageContainerOutput.getMessageParts().get(0) == messagePartInfoOutput);
 
+	}
+
+	private static void azzertAttributedURIType() {
+		azzert(attributedURIType.getOtherAttributes().size() == 0);
+		azzert(attributedURIType.getValue() == null);
+	}
+
+	private static void azzertBinding() {
+		azzert(binding.getBindingInfo() == bindingInfo);
+		azzert(soapBinding.getSoapVersion() == version);
 	}
 
 	private static void azzertBindingInfo() {
@@ -279,6 +282,33 @@ public class Abagtha {
 		throw new RuntimeException("Assertion error");
 	}
 
+	private static void azzertDataBinding() {
+		azzert(dataBinding.getDeclaredNamespaceMappings() == null);
+		azzert(dataBinding.getMtomThreshold() == 0);
+		azzert(!dataBinding.isMtomEnabled());
+
+		azzert(dataBinding.getSupportedReaderFormats().length == 3);
+		azzertContains(dataBinding.getSupportedReaderFormats(), Node.class);
+		azzertContains(dataBinding.getSupportedReaderFormats(), XMLEventReader.class);
+		azzertContains(dataBinding.getSupportedReaderFormats(), XMLStreamReader.class);
+
+		azzert(dataBinding.getSupportedWriterFormats().length == 4);
+		azzertContains(dataBinding.getSupportedWriterFormats(), OutputStream.class);
+		azzertContains(dataBinding.getSupportedWriterFormats(), Node.class);
+		azzertContains(dataBinding.getSupportedWriterFormats(), XMLEventWriter.class);
+		azzertContains(dataBinding.getSupportedWriterFormats(), XMLStreamWriter.class);
+
+		azzert(jaxbDataBinding.getConfiguredXmlAdapters().size() == 0);
+		azzert(jaxbDataBinding.getContext() instanceof JAXBContextImpl);
+		azzert(jaxbDataBinding.getContextClasses().size() == 0);
+		azzert(jaxbDataBinding.getContextProperties().size() == 0);
+		azzert(jaxbDataBinding.getExtraClass() == null);
+		azzert(jaxbDataBinding.getMarshallerListener() == null);
+		azzert(jaxbDataBinding.getUnmarshallerListener() == null);
+		azzert(jaxbDataBinding.getValidationEventHandler() == null);
+		azzert(jaxbDataBinding.isUnwrapJAXBElement());
+	}
+
 	private static void azzertDefaultServiceConfiguration() {
 
 		azzertQN(defaultServiceConfiguration.getEndpointName(), "http://cxf.xdptdr.github.com/", "AbagthaPort");
@@ -292,6 +322,30 @@ public class Abagtha {
 		azzert("http://cxf.xdptdr.github.com/".equals(defaultServiceConfiguration.getServiceNamespace()));
 		azzert("Abagtha".equals(defaultServiceConfiguration.getServiceName()));
 
+	}
+
+	private static void azzertEndpoint() {
+
+		azzert(endpoint.getActiveFeatures() == null);
+		azzert(endpoint.getCleanupHooks().size() == 0);
+		azzert(endpoint.getEndpointInfo() == endpointInfo);
+
+		azzert(endpoint.getService() == service);
+
+		executor = endpoint.getExecutor();
+		azzert(executor instanceof SynchronousExecutor);
+		synchronousExecutor = (SynchronousExecutor) executor;
+
+		messageObserver_In = endpoint.getInFaultObserver();
+		azzert(messageObserver_In instanceof InFaultChainInitiatorObserver);
+		inFaultChainInitiatorObserver = (InFaultChainInitiatorObserver) messageObserver_In;
+
+		messageObserver_Out = endpoint.getOutFaultObserver();
+		azzert(messageObserver_Out instanceof OutFaultChainInitiatorObserver);
+		outFaultChainInitiatorObserver = (OutFaultChainInitiatorObserver) messageObserver_Out;
+
+		azzert("{http://cxf.xdptdr.github.com/}AbagthaPort.endpoint".equals(endpointImpl.getBeanName()));
+		azzert(endpointImpl.getBus() == bus);
 	}
 
 	private static void azzertEndpointInfo() {
@@ -314,6 +368,44 @@ public class Abagtha {
 		azzert(interfaceInfo != null);
 	}
 
+	private static void azzertEndpointReferenceType() {
+		azzert(endpointReferenceType.getAny().size() == 0);
+		azzert(endpointReferenceType.getMetadata() == null);
+		azzert(endpointReferenceType.getOtherAttributes().size() == 0);
+		azzert(endpointReferenceType.getReferenceParameters() == null);
+
+		azzert(endpointReferenceType.getAddress() != null);
+		attributedURIType = endpointReferenceType.getAddress();
+	}
+
+	private static void azzertIinterfaceInfo() {
+		azzert(interfaceInfo.getDescription() == null);
+		azzertQN(interfaceInfo.getName(), "http://cxf.xdptdr.github.com/", "AbagthaPortType");
+		azzert(interfaceInfo.getOperations().size() == 1); // TODO !
+		azzert(interfaceInfo.getService() == serviceInfo);
+		azzert(interfaceInfo == operationInfo.getInterface());
+	}
+
+	private static void azzertInvoker() {
+		azzert(factoryInvoker.isSingletonFactory());
+	}
+
+	private static void azzertMessage() {
+		azzert(message.getAttachments() == null);
+		azzert(message.getContentFormats().size() == 0);
+		azzert(message.getContextualProperty("") == null);
+		azzert(message.getContextualPropertyKeys().size() > 0);
+		azzert(message.getDestination() == null);
+		azzert(message.getExchange() == null);
+		azzert(message.getId() == null);
+		azzert(message.getInterceptorChain() == null);
+
+		azzert(soapMessage.getEnvelopeNs() == null);
+		azzert(soapMessage.getHeaders().size() == 0);
+		azzert(soapMessage.getVersion() == version);
+		azzert(!soapMessage.hasAdditionalEnvNs());
+	}
+
 	private static void azzertMessageInfo_Input() {
 		messageInfoInput = bindingMessageInfoInput.getMessageInfo();
 		azzert(messageInfoInput.getType() == MessageInfo.Type.INPUT);
@@ -334,7 +426,7 @@ public class Abagtha {
 				.iterator().next();
 		azzertQN(messageInfoOutputEntry.getKey(), "http://cxf.xdptdr.github.com/", "parameters");
 
-		azzert(messageInfoOutputEntry.getValue() != messagePartInfoOutput);
+		azzert(messageInfoOutputEntry.getValue() == messagePartInfoOutput);
 
 	}
 
@@ -370,6 +462,37 @@ public class Abagtha {
 		xmlSchemaAnnotatedOutput = messagePartInfoOutput.getXmlSchema();
 		azzert(xmlSchemaAnnotatedOutput != null);
 
+	}
+
+	private static void azzertOperationInfo() {
+		azzert(operationInfo.getFaults().size() == 0);
+		azzert(operationInfo.getInput() == messageInfoInput);
+		azzert(operationInfo.getOutput() == messageInfoOutput);
+		azzert("foo".equals(operationInfo.getInputName()));
+		azzert("fooResponse".equals(operationInfo.getOutputName()));
+		azzertQN(operationInfo.getName(), "http://cxf.xdptdr.github.com/", "foo");
+		azzert(operationInfo.getParameterOrdering() == null);
+		azzert(operationInfo.getInterface() != null);
+		azzert(operationInfo.getUnwrappedOperation() != null);
+		azzert(!operationInfo.hasFaults());
+		azzert(operationInfo.hasInput());
+		azzert(operationInfo.hasOutput());
+		azzert(!operationInfo.isOneWay());
+		azzert(!operationInfo.isUnwrapped());
+		azzert(operationInfo.isUnwrappedCapable());
+	}
+
+	private static void azzertQN(QName qn, String ns, String lp) {
+		if (ns == null) {
+			azzert(qn.getNamespaceURI() == null);
+		} else {
+			azzert(ns.equals(qn.getNamespaceURI()));
+		}
+		if (lp == null) {
+			azzert(qn.getLocalPart() == null);
+		} else {
+			azzert(lp.equals(qn.getLocalPart()));
+		}
 	}
 
 	private static void azzertReflectionServiceFactoryBean() {
@@ -421,6 +544,26 @@ public class Abagtha {
 		azzert(abstractServiceConfiguration2 instanceof AbstractServiceConfiguration);
 		defaultServiceConfiguration = (DefaultServiceConfiguration) abstractServiceConfiguration1;
 		soapBindingServiceConfiguration = abstractServiceConfiguration2;
+
+	}
+
+	private static void azzertService() {
+
+		azzert(service.getDataBinding() == dataBinding);
+		azzert(service.getEndpoints().size() == 1);
+		azzert(service.getExecutor() == executor);
+		azzert(service.getName() != null);
+
+		final List<ServiceInfo> serviceInfos = service.getServiceInfos();
+		azzert(serviceInfos.size() == 1);
+		azzert(serviceInfos.get(0) == serviceInfo);
+
+		invoker = service.getInvoker();
+		azzert(invoker instanceof FactoryInvoker);
+		factoryInvoker = (FactoryInvoker) invoker;
+
+		Endpoint serviceEndpoint = service.getEndpoints().entrySet().iterator().next().getValue();
+		azzert(serviceEndpoint != endpoint); // guess : endpoint was cloned
 
 	}
 
@@ -525,6 +668,16 @@ public class Abagtha {
 		azzert(message instanceof SoapMessage);
 		soapMessage = (SoapMessage) message;
 
+		serverFactoryBean = new ServerFactoryBean();
+		serverFactoryBean.setServiceClass(simpleServiceBuilder.getServiceClass());
+		serverFactoryBean.setAddress("http://localhost:9000/Abagtha");
+		serverFactoryBean.setServiceBean(new Abagtha());
+
+		server = serverFactoryBean.create();
+		azzert(server instanceof ServerImpl);
+		serverImpl = (ServerImpl) server;
+		azzert(server.isStarted());
+
 		azzertSimpleServiceBuilder();
 		azzertReflectionServiceFactoryBean();
 		azzertSoapBindingConfiguration();
@@ -561,7 +714,7 @@ public class Abagtha {
 
 		ServerRegistry serverRegistry = bus.getExtension(ServerRegistry.class);
 		azzert(serverRegistry != null);
-		azzert(serverRegistry.getServers().size() == 0);
+		azzert(serverRegistry.getServers().size() == 1);
 
 		WSDLManager wsdlManager = bus.getExtension(WSDLManager.class);
 		azzert(wsdlManager != null);
@@ -622,143 +775,8 @@ public class Abagtha {
 		ConduitInitiatorManager u = bus.getExtension(ConduitInitiatorManager.class);
 		azzert(u != null);
 
-	}
-
-	private static void azzertInvoker() {
-		azzert(factoryInvoker.isSingletonFactory());
-	}
-
-	private static void azzertDataBinding() {
-		azzert(dataBinding.getDeclaredNamespaceMappings() == null);
-		azzert(dataBinding.getMtomThreshold() == 0);
-		azzert(!dataBinding.isMtomEnabled());
-
-		azzert(dataBinding.getSupportedReaderFormats().length == 3);
-		azzertContains(dataBinding.getSupportedReaderFormats(), Node.class);
-		azzertContains(dataBinding.getSupportedReaderFormats(), XMLEventReader.class);
-		azzertContains(dataBinding.getSupportedReaderFormats(), XMLStreamReader.class);
-
-		azzert(dataBinding.getSupportedWriterFormats().length == 4);
-		azzertContains(dataBinding.getSupportedWriterFormats(), OutputStream.class);
-		azzertContains(dataBinding.getSupportedWriterFormats(), Node.class);
-		azzertContains(dataBinding.getSupportedWriterFormats(), XMLEventWriter.class);
-		azzertContains(dataBinding.getSupportedWriterFormats(), XMLStreamWriter.class);
-
-		azzert(jaxbDataBinding.getConfiguredXmlAdapters().size() == 0);
-		azzert(jaxbDataBinding.getContext() instanceof JAXBContextImpl);
-		azzert(jaxbDataBinding.getContextClasses().size() == 0);
-		azzert(jaxbDataBinding.getContextProperties().size() == 0);
-		azzert(jaxbDataBinding.getExtraClass() == null);
-		azzert(jaxbDataBinding.getMarshallerListener() == null);
-		azzert(jaxbDataBinding.getUnmarshallerListener() == null);
-		azzert(jaxbDataBinding.getValidationEventHandler() == null);
-		azzert(jaxbDataBinding.isUnwrapJAXBElement());
-	}
-
-	private static void azzertService() {
-
-		azzert(service.getDataBinding() == dataBinding);
-		azzert(service.getEndpoints().size() == 1);
-		azzert(service.getExecutor() == executor);
-		azzert(service.getName() != null);
-		
-		final List<ServiceInfo> serviceInfos = service.getServiceInfos();
-		azzert(serviceInfos.size() == 1);
-		azzert(serviceInfos.get(0) == serviceInfo);
-
-		invoker = service.getInvoker();
-		azzert(invoker instanceof FactoryInvoker);
-		factoryInvoker = (FactoryInvoker) invoker;
-
-		Endpoint serviceEndpoint = service.getEndpoints().entrySet().iterator().next().getValue();
-		azzert(serviceEndpoint != endpoint); // guess : endpoint was cloned
-
-	}
-
-	private static void azzertMessage() {
-		azzert(message.getAttachments() == null);
-		azzert(message.getContentFormats().size() == 0);
-		azzert(message.getContextualProperty("") == null);
-		azzert(message.getContextualPropertyKeys().size() > 0);
-		azzert(message.getDestination() == null);
-		azzert(message.getExchange() == null);
-		azzert(message.getId() == null);
-		azzert(message.getInterceptorChain() == null);
-
-		azzert(soapMessage.getEnvelopeNs() == null);
-		azzert(soapMessage.getHeaders().size() == 0);
-		azzert(soapMessage.getVersion() == version);
-		azzert(!soapMessage.hasAdditionalEnvNs());
-	}
-
-	private static void azzertBinding() {
-		azzert(binding.getBindingInfo() == bindingInfo);
-		azzert(soapBinding.getSoapVersion() == version);
-	}
-
-	private static void azzertEndpoint() {
-
-		azzert(endpoint.getActiveFeatures() == null);
-		azzert(endpoint.getCleanupHooks().size() == 0);
-		azzert(endpoint.getEndpointInfo() == endpointInfo);
-
-		azzert(endpoint.getService() == service);
-
-		executor = endpoint.getExecutor();
-		azzert(executor instanceof SynchronousExecutor);
-		synchronousExecutor = (SynchronousExecutor) executor;
-
-		messageObserver_In = endpoint.getInFaultObserver();
-		azzert(messageObserver_In instanceof InFaultChainInitiatorObserver);
-		inFaultChainInitiatorObserver = (InFaultChainInitiatorObserver) messageObserver_In;
-
-		messageObserver_Out = endpoint.getOutFaultObserver();
-		azzert(messageObserver_Out instanceof OutFaultChainInitiatorObserver);
-		outFaultChainInitiatorObserver = (OutFaultChainInitiatorObserver) messageObserver_Out;
-
-		azzert("{http://cxf.xdptdr.github.com/}AbagthaPort.endpoint".equals(endpointImpl.getBeanName()));
-		azzert(endpointImpl.getBus() == bus);
-	}
-
-	private static void azzertAttributedURIType() {
-		azzert(attributedURIType.getOtherAttributes().size() == 0);
-		azzert(attributedURIType.getValue() == null);
-	}
-
-	private static void azzertEndpointReferenceType() {
-		azzert(endpointReferenceType.getAny().size() == 0);
-		azzert(endpointReferenceType.getMetadata() == null);
-		azzert(endpointReferenceType.getOtherAttributes().size() == 0);
-		azzert(endpointReferenceType.getReferenceParameters() == null);
-
-		azzert(endpointReferenceType.getAddress() != null);
-		attributedURIType = endpointReferenceType.getAddress();
-	}
-
-	private static void azzertIinterfaceInfo() {
-		azzert(interfaceInfo.getDescription() == null);
-		azzertQN(interfaceInfo.getName(), "http://cxf.xdptdr.github.com/", "AbagthaPortType");
-		azzert(interfaceInfo.getOperations().size() == 1); // TODO !
-		azzert(interfaceInfo.getService() == serviceInfo);
-		azzert(interfaceInfo == operationInfo.getInterface());
-	}
-
-	private static void azzertOperationInfo() {
-		azzert(operationInfo.getFaults().size() == 0);
-		azzert(operationInfo.getInput() == messageInfoInput);
-		azzert(operationInfo.getOutput() == messageInfoOutput);
-		azzert("foo".equals(operationInfo.getInputName()));
-		azzert("fooResponse".equals(operationInfo.getOutputName()));
-		azzertQN(operationInfo.getName(), "http://cxf.xdptdr.github.com/", "foo");
-		azzert(operationInfo.getParameterOrdering() == null);
-		azzert(operationInfo.getInterface() != null);
-		azzert(operationInfo.getUnwrappedOperation() != null);
-		azzert(!operationInfo.hasFaults());
-		azzert(operationInfo.hasInput());
-		azzert(operationInfo.hasOutput());
-		azzert(!operationInfo.isOneWay());
-		azzert(!operationInfo.isUnwrapped());
-		azzert(operationInfo.isUnwrappedCapable());
+		server.stop();
+		server.destroy();
 	}
 
 	@SuppressWarnings("unused")
