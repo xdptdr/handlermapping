@@ -38,6 +38,64 @@ import org.apache.cxf.binding.Binding;
 import org.apache.cxf.binding.BindingConfiguration;
 import org.apache.cxf.binding.BindingFactory;
 import org.apache.cxf.binding.BindingFactoryManager;
+import org.apache.cxf.binding.soap.HeaderUtil;
+import org.apache.cxf.binding.soap.Soap11;
+import org.apache.cxf.binding.soap.Soap12;
+import org.apache.cxf.binding.soap.SoapBinding;
+import org.apache.cxf.binding.soap.SoapBindingConfiguration;
+import org.apache.cxf.binding.soap.SoapBindingConstants;
+import org.apache.cxf.binding.soap.SoapBindingFactory;
+import org.apache.cxf.binding.soap.SoapFault;
+import org.apache.cxf.binding.soap.SoapHeader;
+import org.apache.cxf.binding.soap.SoapMessage;
+import org.apache.cxf.binding.soap.SoapTransportFactory;
+import org.apache.cxf.binding.soap.SoapVersion;
+import org.apache.cxf.binding.soap.SoapVersionEditor;
+import org.apache.cxf.binding.soap.SoapVersionFactory;
+import org.apache.cxf.binding.soap.blueprint.SoapBindingBPHandler;
+import org.apache.cxf.binding.soap.blueprint.SoapBindingBPInfoConfigDefinitionParser;
+import org.apache.cxf.binding.soap.blueprint.SoapVersionTypeConverter;
+import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
+import org.apache.cxf.binding.soap.interceptor.CheckFaultInterceptor;
+import org.apache.cxf.binding.soap.interceptor.EndpointSelectionInterceptor;
+import org.apache.cxf.binding.soap.interceptor.MustUnderstandInterceptor;
+import org.apache.cxf.binding.soap.interceptor.RPCInInterceptor;
+import org.apache.cxf.binding.soap.interceptor.RPCOutInterceptor;
+import org.apache.cxf.binding.soap.interceptor.ReadHeadersInterceptor;
+import org.apache.cxf.binding.soap.interceptor.Soap11FaultInInterceptor;
+import org.apache.cxf.binding.soap.interceptor.Soap11FaultOutInterceptor;
+import org.apache.cxf.binding.soap.interceptor.Soap12FaultInInterceptor;
+import org.apache.cxf.binding.soap.interceptor.Soap12FaultOutInterceptor;
+import org.apache.cxf.binding.soap.interceptor.SoapActionInInterceptor;
+import org.apache.cxf.binding.soap.interceptor.SoapHeaderInterceptor;
+import org.apache.cxf.binding.soap.interceptor.SoapHeaderOutFilterInterceptor;
+import org.apache.cxf.binding.soap.interceptor.SoapInterceptor;
+import org.apache.cxf.binding.soap.interceptor.SoapOutInterceptor;
+import org.apache.cxf.binding.soap.interceptor.SoapPreProtocolOutInterceptor;
+import org.apache.cxf.binding.soap.interceptor.StartBodyInterceptor;
+import org.apache.cxf.binding.soap.interceptor.TibcoSoapActionInterceptor;
+import org.apache.cxf.binding.soap.jms.interceptor.JMSFault;
+import org.apache.cxf.binding.soap.jms.interceptor.JMSFaultFactory;
+import org.apache.cxf.binding.soap.jms.interceptor.JMSFaultType;
+import org.apache.cxf.binding.soap.jms.interceptor.SoapFaultFactory;
+import org.apache.cxf.binding.soap.jms.interceptor.SoapJMSConstants;
+import org.apache.cxf.binding.soap.jms.interceptor.SoapJMSInInterceptor;
+import org.apache.cxf.binding.soap.model.SoapBindingInfo;
+import org.apache.cxf.binding.soap.model.SoapBodyInfo;
+import org.apache.cxf.binding.soap.model.SoapHeaderInfo;
+import org.apache.cxf.binding.soap.model.SoapOperationInfo;
+import org.apache.cxf.binding.soap.saaj.SAAJFactoryResolver;
+import org.apache.cxf.binding.soap.saaj.SAAJInInterceptor;
+import org.apache.cxf.binding.soap.saaj.SAAJOutInterceptor;
+import org.apache.cxf.binding.soap.saaj.SAAJStreamWriter;
+import org.apache.cxf.binding.soap.saaj.SAAJUtils;
+import org.apache.cxf.binding.soap.spring.SoapBindingInfoConfigBeanDefinitionParser;
+import org.apache.cxf.binding.soap.spring.SoapVersionRegistrar;
+import org.apache.cxf.binding.soap.wsdl.extensions.SoapAddress;
+import org.apache.cxf.binding.soap.wsdl.extensions.SoapBody;
+import org.apache.cxf.binding.soap.wsdl.extensions.SoapHeaderFault;
+import org.apache.cxf.binding.soap.wsdl.extensions.SoapOperation;
+import org.apache.cxf.binding.soap.wsdl11.SoapAddressPlugin;
 import org.apache.cxf.bus.CXFBusFactory;
 import org.apache.cxf.bus.ManagedBus;
 import org.apache.cxf.bus.blueprint.BlueprintBeanLocator;
@@ -483,6 +541,90 @@ import org.apache.cxf.transport.TransportURIResolver;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.common.gzip.GZIPInInterceptor;
 import org.apache.cxf.transport.common.gzip.GZIPOutInterceptor;
+import org.apache.cxf.transport.http.AbstractHTTPDestination;
+import org.apache.cxf.transport.http.Address;
+import org.apache.cxf.transport.http.CXFAuthenticator;
+import org.apache.cxf.transport.http.ContinuationProviderFactory;
+import org.apache.cxf.transport.http.Cookie;
+import org.apache.cxf.transport.http.Cookies;
+import org.apache.cxf.transport.http.DestinationRegistry;
+import org.apache.cxf.transport.http.DestinationRegistryImpl;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transport.http.HTTPConduitConfigurer;
+import org.apache.cxf.transport.http.HTTPConduitFactory;
+import org.apache.cxf.transport.http.HTTPException;
+import org.apache.cxf.transport.http.HTTPSession;
+import org.apache.cxf.transport.http.HTTPTransportFactory;
+import org.apache.cxf.transport.http.HTTPWSDLExtensionLoader;
+import org.apache.cxf.transport.http.Headers;
+import org.apache.cxf.transport.http.HttpAuthenticationFaultHandler;
+import org.apache.cxf.transport.http.HttpDestinationFactory;
+import org.apache.cxf.transport.http.HttpServletRequestSnapshot;
+import org.apache.cxf.transport.http.HttpURLConnectionInfo;
+import org.apache.cxf.transport.http.HttpUrlUtil;
+import org.apache.cxf.transport.http.MessageTrustDecider;
+import org.apache.cxf.transport.http.PatternBuilder;
+import org.apache.cxf.transport.http.ProxyFactory;
+import org.apache.cxf.transport.http.ReferencingAuthenticator;
+import org.apache.cxf.transport.http.Servlet3ContinuationProvider;
+import org.apache.cxf.transport.http.URLConnectionHTTPConduit;
+import org.apache.cxf.transport.http.URLConnectionInfo;
+import org.apache.cxf.transport.http.UntrustedURLConnectionIOException;
+import org.apache.cxf.transport.http.auth.AbstractSpnegoAuthSupplier;
+import org.apache.cxf.transport.http.auth.DefaultBasicAuthSupplier;
+import org.apache.cxf.transport.http.auth.DigestAuthSupplier;
+import org.apache.cxf.transport.http.auth.HttpAuthHeader;
+import org.apache.cxf.transport.http.auth.HttpAuthSupplier;
+import org.apache.cxf.transport.http.auth.SpnegoAuthSupplier;
+import org.apache.cxf.transport.http.auth.WSDLGetAuthenticatorInterceptor;
+import org.apache.cxf.transport.http.blueprint.HttpBPHandler;
+import org.apache.cxf.transport.http.blueprint.HttpConduitBPBeanDefinitionParser;
+import org.apache.cxf.transport.http.blueprint.HttpDestinationBPBeanDefinitionParser;
+import org.apache.cxf.transport.http.osgi.HTTPTransportActivator;
+import org.apache.cxf.transport.http.policy.HTTPClientAssertionBuilder;
+import org.apache.cxf.transport.http.policy.HTTPServerAssertionBuilder;
+import org.apache.cxf.transport.http.policy.NoOpPolicyInterceptorProvider;
+import org.apache.cxf.transport.http.policy.impl.ClientPolicyCalculator;
+import org.apache.cxf.transport.http.policy.impl.ServerPolicyCalculator;
+import org.apache.cxf.transport.http.spring.HttpAuthSupplierBeanDefinitionParser;
+import org.apache.cxf.transport.http.spring.HttpConduitBeanDefinitionParser;
+import org.apache.cxf.transport.http.spring.HttpDestinationBeanDefinitionParser;
+import org.apache.cxf.transport.http.spring.MessageTrustDeciderBeanDefinitionParser;
+import org.apache.cxf.transport.https.AliasedX509ExtendedKeyManager;
+import org.apache.cxf.transport.https.CertConstraints;
+import org.apache.cxf.transport.https.CertConstraintsFeature;
+import org.apache.cxf.transport.https.CertConstraintsInterceptor;
+import org.apache.cxf.transport.https.CertConstraintsJaxBUtils;
+import org.apache.cxf.transport.https.HttpsURLConnectionFactory;
+import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
+import org.apache.cxf.transport.https.httpclient.DefaultHostnameVerifier;
+import org.apache.cxf.transport.https.httpclient.DomainType;
+import org.apache.cxf.transport.https.httpclient.InetAddressUtils;
+import org.apache.cxf.transport.https.httpclient.PublicSuffixList;
+import org.apache.cxf.transport.https.httpclient.PublicSuffixListParser;
+import org.apache.cxf.transport.https.httpclient.PublicSuffixMatcher;
+import org.apache.cxf.transport.https.httpclient.PublicSuffixMatcherLoader;
+import org.apache.cxf.transport.local.LocalConduit;
+import org.apache.cxf.transport.local.LocalDestination;
+import org.apache.cxf.transport.local.LocalTransportFactory;
+import org.apache.cxf.transport.servlet.AbstractHTTPServlet;
+import org.apache.cxf.transport.servlet.BaseUrlHelper;
+import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
+import org.apache.cxf.transport.servlet.CXFServlet;
+import org.apache.cxf.transport.servlet.ServletContextResourceResolver;
+import org.apache.cxf.transport.servlet.ServletController;
+import org.apache.cxf.transport.servlet.ServletDestination;
+import org.apache.cxf.transport.servlet.ServletDestinationFactory;
+import org.apache.cxf.transport.servlet.blueprint.CXFBlueprintServlet;
+import org.apache.cxf.transport.servlet.servicelist.FormattedServiceListWriter;
+import org.apache.cxf.transport.servlet.servicelist.ServiceListGeneratorServlet;
+import org.apache.cxf.transport.servlet.servicelist.ServiceListJAASAuthenticator;
+import org.apache.cxf.transport.servlet.servicelist.ServiceListWriter;
+import org.apache.cxf.transport.servlet.servicelist.UnformattedServiceListWriter;
+import org.apache.cxf.transports.http.configuration.ConnectionType;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.cxf.transports.http.configuration.HTTPServerPolicy;
+import org.apache.cxf.transports.http.configuration.ProxyServerType;
 import org.apache.cxf.validation.AbstractValidationInterceptor;
 import org.apache.cxf.validation.BeanValidationFeature;
 import org.apache.cxf.validation.BeanValidationInInterceptor;
@@ -589,20 +731,20 @@ public class Notes {
 		(x) cxf-core
 		( ) cxf-rt-bindings-coloc
 		( ) cxf-rt-bindings-object
-		( ) cxf-rt-bindings-soap
+		(x) cxf-rt-bindings-soap
 		( ) cxf-rt-bindings-xml
 		( ) cxf-rt-databinding-aegis
 		( ) cxf-rt-databinding-jaxb
 		( ) cxf-rt-features-clustering
 		( ) cxf-rt-frontend-jaxws
-		( ) cxf-rt-frontend-simple
+		(x) cxf-rt-frontend-simple
 		( ) cxf-rt-management
 		( ) cxf-rt-security
 		( ) cxf-rt-security-saml
-		( ) cxf-rt-transports-http
+		(x) cxf-rt-transports-http
 		( ) cxf-rt-transports-http-hc
 		( ) cxf-rt-transports-jms
-		( ) cxf-rt-transports-local
+		(x) cxf-rt-transports-local
 		( ) cxf-rt-ws-addr
 		(x) cxf-rt-wsdl
 		( ) cxf-rt-ws-mex
@@ -641,6 +783,12 @@ public class Notes {
 		todoFrontendSimple(n);
 
 		todoWsdl(n);
+
+		todoTransportHttp(n);
+
+		todoTransportLocal(n);
+
+		todoBindingsSoap(n);
 	}
 
 	private static void todoCore(N n) {
@@ -992,6 +1140,127 @@ public class Notes {
 				WSDLServiceBuilder.class, WSDLServiceFactory.class, WSDLServiceUtils.class
 
 		);
+	}
+
+	private static void todoTransportHttp(N n) {
+
+		Class<?>[] classes = new Class<?>[] {
+
+				AbstractHTTPDestination.class, Address.class, ContinuationProviderFactory.class, Cookie.class,
+				Cookies.class, CXFAuthenticator.class, DestinationRegistry.class, DestinationRegistryImpl.class,
+				Headers.class, HttpAuthenticationFaultHandler.class, HTTPConduit.class, HTTPConduitConfigurer.class,
+				HTTPConduitFactory.class, HttpDestinationFactory.class, HTTPException.class,
+				HttpServletRequestSnapshot.class, HTTPSession.class, HTTPTransportFactory.class,
+				HttpURLConnectionInfo.class, HttpUrlUtil.class, HTTPWSDLExtensionLoader.class,
+				MessageTrustDecider.class, PatternBuilder.class, ProxyFactory.class, ReferencingAuthenticator.class,
+				Servlet3ContinuationProvider.class, UntrustedURLConnectionIOException.class,
+				URLConnectionHTTPConduit.class, URLConnectionInfo.class,
+
+				AbstractSpnegoAuthSupplier.class, DefaultBasicAuthSupplier.class, DigestAuthSupplier.class,
+				HttpAuthHeader.class, HttpAuthSupplier.class, SpnegoAuthSupplier.class,
+				WSDLGetAuthenticatorInterceptor.class,
+
+				HttpBPHandler.class, HttpConduitBPBeanDefinitionParser.class,
+				HttpDestinationBPBeanDefinitionParser.class,
+
+				HTTPTransportActivator.class,
+
+				HTTPClientAssertionBuilder.class, HTTPServerAssertionBuilder.class, NoOpPolicyInterceptorProvider.class,
+
+				ClientPolicyCalculator.class, ServerPolicyCalculator.class,
+				org.apache.cxf.transport.http.policy.impl.StringUtils.class,
+
+				HttpAuthSupplierBeanDefinitionParser.class, HttpConduitBeanDefinitionParser.class,
+				HttpDestinationBeanDefinitionParser.class, MessageTrustDeciderBeanDefinitionParser.class,
+				NamespaceHandler.class,
+
+				AliasedX509ExtendedKeyManager.class, CertConstraints.class, CertConstraintsFeature.class,
+				CertConstraintsInterceptor.class, CertConstraintsJaxBUtils.class, HttpsURLConnectionFactory.class,
+				HttpsURLConnectionInfo.class, org.apache.cxf.transport.https.SSLUtils.class,
+
+				DefaultHostnameVerifier.class, DomainType.class, InetAddressUtils.class, PublicSuffixList.class,
+				PublicSuffixListParser.class, PublicSuffixMatcher.class, PublicSuffixMatcherLoader.class,
+
+				AbstractHTTPServlet.class, BaseUrlHelper.class, CXFNonSpringServlet.class, CXFServlet.class,
+				ServletContextResourceResolver.class, ServletController.class, ServletDestination.class,
+				ServletDestinationFactory.class,
+
+				CXFBlueprintServlet.class,
+
+				FormattedServiceListWriter.class, ServiceListGeneratorServlet.class, ServiceListJAASAuthenticator.class,
+				ServiceListWriter.class, UnformattedServiceListWriter.class,
+
+				ConnectionType.class, HTTPClientPolicy.class, HTTPServerPolicy.class,
+				org.apache.cxf.transports.http.configuration.ObjectFactory.class, ProxyServerType.class
+
+		};
+
+		for (Class<?> clazz : classes) {
+			n.todo(clazz);
+		}
+
+	}
+
+	private static void todoTransportLocal(N n) {
+
+		Class<?>[] classes = new Class<?>[] {
+
+				LocalConduit.class, LocalDestination.class, LocalTransportFactory.class
+
+		};
+
+		for (Class<?> clazz : classes) {
+			n.todo(clazz);
+		}
+
+	}
+
+	private static void todoBindingsSoap(N n) {
+
+		Class<?>[] classes = new Class<?>[] {
+
+				HeaderUtil.class, Soap11.class, Soap12.class, SoapBinding.class, SoapBindingConfiguration.class,
+				SoapBindingConstants.class, SoapBindingFactory.class, org.apache.cxf.binding.soap.SOAPBindingUtil.class,
+				SoapFault.class, SoapHeader.class, SoapMessage.class, SoapTransportFactory.class, SoapVersion.class,
+				SoapVersionEditor.class, SoapVersionFactory.class,
+
+				org.apache.cxf.binding.soap.blueprint.Activator.class, SoapBindingBPHandler.class,
+				SoapBindingBPInfoConfigDefinitionParser.class, SoapVersionTypeConverter.class,
+
+				AbstractSoapInterceptor.class, CheckFaultInterceptor.class, EndpointSelectionInterceptor.class,
+				MustUnderstandInterceptor.class, ReadHeadersInterceptor.class, RPCInInterceptor.class,
+				RPCOutInterceptor.class, Soap11FaultInInterceptor.class, Soap11FaultOutInterceptor.class,
+				Soap12FaultInInterceptor.class, Soap12FaultOutInterceptor.class, SoapActionInInterceptor.class,
+				SoapHeaderInterceptor.class, SoapHeaderOutFilterInterceptor.class, SoapInterceptor.class,
+				SoapOutInterceptor.class, SoapPreProtocolOutInterceptor.class, StartBodyInterceptor.class,
+				TibcoSoapActionInterceptor.class,
+
+				JMSFault.class, JMSFaultFactory.class, JMSFaultType.class, SoapFaultFactory.class,
+				SoapJMSConstants.class, SoapJMSInInterceptor.class,
+
+				SoapBindingInfo.class, SoapBodyInfo.class, SoapHeaderInfo.class, SoapOperationInfo.class,
+
+				SAAJFactoryResolver.class, SAAJInInterceptor.class, SAAJOutInterceptor.class, SAAJStreamWriter.class,
+				SAAJUtils.class,
+
+				org.apache.cxf.binding.soap.spring.NamespaceHandler.class,
+				SoapBindingInfoConfigBeanDefinitionParser.class, SoapVersionRegistrar.class,
+
+				SoapAddress.class, org.apache.cxf.binding.soap.wsdl.extensions.SoapBinding.class, SoapBody.class,
+				org.apache.cxf.binding.soap.wsdl.extensions.SoapFault.class,
+				org.apache.cxf.binding.soap.wsdl.extensions.SoapHeader.class, SoapHeaderFault.class,
+				SoapOperation.class,
+
+				SoapAddressPlugin.class,
+
+				Object.class
+
+		};
+
+		for (Class<?> clazz : classes) {
+			n.todo(clazz);
+		}
+
 	}
 
 	public static void main(String[] args) {
