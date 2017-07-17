@@ -110,6 +110,16 @@ public class Abagtha {
 	private static AbstractServiceConfiguration abstractServiceConfiguration2;
 	private static DefaultServiceConfiguration defaultServiceConfiguration;
 	private static AbstractServiceConfiguration soapBindingServiceConfiguration;
+	private static SoapVersion version;
+	private static EndpointReferenceType endpointReferenceType;
+	private static BindingInfo bindingInfo;
+	private static InterfaceInfo interfaceInfo;
+	private static BindingOperationInfo bindingOperationInfo;
+	private static BindingMessageInfo bindingMessageInfoInput;
+	private static BindingMessageInfo bindingMessageInfoOutput;
+	private static OperationInfo operationInfo;
+	private static BindingOperationInfo bindingOperationInfoUnwrapped;
+	private static BindingOperationInfo bindingOperationInfoWrapped;
 
 	public String foo(String bar) {
 		return bar + "!" + bar;
@@ -133,90 +143,16 @@ public class Abagtha {
 		azzert(endpoint != null);
 
 		azzertSSB();
-
 		azzertRSFB();
-
-		SoapVersion version = soapBindingConfiguration.getVersion();
-		azzert(version != null);
-
-		azzert(version.getBindingId().equals(soapBindingConfiguration.getBindingId()));
-
-		azzert(soapBindingConfiguration.getBindingName() == null);
-		azzert("SoapBinding".equals(soapBindingConfiguration.getBindingNamePostfix()));
-
-		azzert("document".equals(soapBindingConfiguration.getStyle()));
-		azzert(soapBindingConfiguration.getUse() == null);
-
-		azzert(soapBindingConfiguration.isMtomEnabled() == false);
-
-		azzert(soapBindingFactory.getActivationNamespaces() != null);
-		azzert(soapBindingFactory.getActivationNamespaces().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size());
-		azzert(soapBindingFactory.getBus() == bus);
-
-		azzert(soapTransportFactory.getTransportIds().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size() + 1);
-
-		azzert(soapTransportFactory.getUriPrefixes().size() == 1);
-		azzert("soap.udp".equals(soapTransportFactory.getUriPrefixes().iterator().next()));
-
-		azzert("http://cxf.xdptdr.github.com/".equals(defaultServiceConfiguration.getEndpointName().getNamespaceURI()));
-		azzert("AbagthaPort".equals(defaultServiceConfiguration.getEndpointName().getLocalPart()));
-
-		azzert("http://cxf.xdptdr.github.com/"
-				.equals(defaultServiceConfiguration.getInterfaceName().getNamespaceURI()));
-		azzert("AbagthaPortType".equals(defaultServiceConfiguration.getInterfaceName().getLocalPart()));
-
-		azzert("Abagtha".equals(defaultServiceConfiguration.getServiceName()));
-		azzert("http://cxf.xdptdr.github.com/".equals(defaultServiceConfiguration.getServiceNamespace()));
-		azzert(defaultServiceConfiguration.getServiceFactory() == reflectionServiceFactoryBean);
-		azzert(defaultServiceConfiguration.getStyle() == null);
-		azzert(defaultServiceConfiguration.getWsdlURL() == null);
-		azzert(defaultServiceConfiguration.isWrapped() == null);
-
-		azzert(soapBindingServiceConfiguration.getEndpointName() == null);
-		azzert(soapBindingServiceConfiguration.getInterfaceName() == null);
-		azzert(soapBindingServiceConfiguration.getServiceName() == null);
-		azzert(soapBindingServiceConfiguration.getServiceNamespace() == null);
-		azzert(soapBindingServiceConfiguration.getServiceFactory() == reflectionServiceFactoryBean);
-		azzert("document".equals(soapBindingServiceConfiguration.getStyle()));
-		azzert(soapBindingServiceConfiguration.getWsdlURL() == null);
-		azzert(soapBindingServiceConfiguration.isWrapped() == null);
-
-		azzert(endpointInfo.getAddress() == null);
-		azzert(endpointInfo.getBinding() != null);
-		azzert(endpointInfo.getDescription() == null);
-		azzert(endpointInfo.getInterface() != null);
-		azzert("http://cxf.xdptdr.github.com/".equals(endpointInfo.getName().getNamespaceURI()));
-		azzert("AbagthaPort".equals(endpointInfo.getName().getLocalPart()));
-		azzert(endpointInfo.getService() == serviceInfo);
-		azzert(endpointInfo.getTarget() != null);
-		azzert("http://schemas.xmlsoap.org/soap/http".equals(endpointInfo.getTransportId()));
-
-		BindingInfo bindingInfo = endpointInfo.getBinding();
-		azzert("http://schemas.xmlsoap.org/soap/".equals(bindingInfo.getBindingId()));
-		azzert(bindingInfo.getDescription() == null);
-		azzert(bindingInfo.getInterface() == endpointInfo.getInterface());
-		azzert("http://cxf.xdptdr.github.com/".equals(bindingInfo.getName().getNamespaceURI()));
-		azzert("AbagthaSoapBinding".equals(bindingInfo.getName().getLocalPart()));
-		azzert(bindingInfo.getOperations().size() == 1); // TODO !
-		azzert(bindingInfo.getService() == serviceInfo);
-
-		BindingOperationInfo bindingOperationInfo = bindingInfo.getOperations().iterator().next();
-		azzert("http://cxf.xdptdr.github.com/".equals(bindingOperationInfo.getName().getNamespaceURI()));
-		azzert("foo".equals(bindingOperationInfo.getName().getLocalPart()));
-		azzert(bindingOperationInfo.getBinding() == bindingInfo);
-		azzert(bindingOperationInfo.getFaults().size() == 0);
-		azzert(bindingOperationInfo.getInput() != null);
-		azzert(bindingOperationInfo.getOutput() != null);
-		azzert(bindingOperationInfo.getOperationInfo() != null);
-		azzert(bindingOperationInfo.getUnwrappedOperation() != null);
-		azzert(bindingOperationInfo.getWrappedOperation() != null);
-		azzert(!bindingOperationInfo.isUnwrapped());
-		azzert(bindingOperationInfo.isUnwrappedCapable());
-
-		BindingMessageInfo bindingMessageInfoInput = bindingOperationInfo.getInput();
-		azzert(bindingMessageInfoInput.getBindingOperation() == bindingOperationInfo);
-		azzert(bindingMessageInfoInput.getMessageInfo() != null);
-		azzert(bindingMessageInfoInput.getMessageParts().size() == 1);
+		azzertSBC();
+		azzertSBF();
+		azzertSTF();
+		azzertDSC();
+		azzertSBSC();
+		azzertEI();
+		azzertBI();
+		azzertBOI();
+		azzertBMII();
 
 		MessageInfo messageInfoInput = bindingMessageInfoInput.getMessageInfo();
 		azzert(messageInfoInput.getType() == MessageInfo.Type.INPUT);
@@ -322,7 +258,6 @@ public class Abagtha {
 		azzert(!operationInfo.isUnwrapped());
 		azzert(operationInfo.isUnwrappedCapable());
 
-		InterfaceInfo interfaceInfo = endpointInfo.getInterface();
 		azzert(interfaceInfo.getDescription() == null);
 		azzert("http://cxf.xdptdr.github.com/".equals(interfaceInfo.getName().getNamespaceURI()));
 		azzert("AbagthaPortType".equals(interfaceInfo.getName().getLocalPart()));
@@ -330,7 +265,6 @@ public class Abagtha {
 		azzert(interfaceInfo.getService() == serviceInfo);
 		azzert(interfaceInfo == operationInfo.getInterface());
 
-		EndpointReferenceType endpointReferenceType = endpointInfo.getTarget();
 		azzert(endpointReferenceType.getAddress() != null);
 		azzert(endpointReferenceType.getAny().size() == 0);
 		azzert(endpointReferenceType.getMetadata() == null);
@@ -499,6 +433,133 @@ public class Abagtha {
 		azzert(t != null);
 		ConduitInitiatorManager u = bus.getExtension(ConduitInitiatorManager.class);
 		azzert(u != null);
+
+	}
+
+	private static void azzertBMII() {
+		azzert(bindingMessageInfoInput.getBindingOperation() == bindingOperationInfo);
+		azzert(bindingMessageInfoInput.getMessageInfo() != null);
+		azzert(bindingMessageInfoInput.getMessageParts().size() == 1);
+
+	}
+
+	private static void azzertBOI() {
+
+		azzert("http://cxf.xdptdr.github.com/".equals(bindingOperationInfo.getName().getNamespaceURI()));
+		azzert("foo".equals(bindingOperationInfo.getName().getLocalPart()));
+		azzert(bindingOperationInfo.getBinding() == bindingInfo);
+		azzert(bindingOperationInfo.getFaults().size() == 0);
+		azzert(!bindingOperationInfo.isUnwrapped());
+		azzert(bindingOperationInfo.isUnwrappedCapable());
+
+		bindingMessageInfoInput = bindingOperationInfo.getInput();
+		azzert(bindingMessageInfoInput != null);
+
+		bindingMessageInfoOutput = bindingOperationInfo.getOutput();
+		azzert(bindingMessageInfoOutput != null);
+
+		operationInfo = bindingOperationInfo.getOperationInfo();
+		azzert(operationInfo != null);
+
+		bindingOperationInfoUnwrapped = bindingOperationInfo.getUnwrappedOperation();
+		azzert(bindingOperationInfoUnwrapped != null);
+		azzert(bindingOperationInfoUnwrapped != bindingOperationInfo);
+
+		bindingOperationInfoWrapped = bindingOperationInfo.getWrappedOperation();
+		azzert(bindingOperationInfoWrapped == bindingOperationInfoUnwrapped);
+
+	}
+
+	private static void azzertBI() {
+
+		azzert("http://schemas.xmlsoap.org/soap/".equals(bindingInfo.getBindingId()));
+
+		azzert(bindingInfo.getDescription() == null);
+		azzert(bindingInfo.getInterface() == interfaceInfo);
+
+		azzert("http://cxf.xdptdr.github.com/".equals(bindingInfo.getName().getNamespaceURI()));
+		azzert("AbagthaSoapBinding".equals(bindingInfo.getName().getLocalPart()));
+
+		azzert(bindingInfo.getService() == serviceInfo);
+
+		azzert(bindingInfo.getOperations().size() == 1);
+		bindingOperationInfo = bindingInfo.getOperations().iterator().next();
+
+	}
+
+	private static void azzertEI() {
+		azzert(endpointInfo.getAddress() == null);
+		azzert(endpointInfo.getBinding() != null);
+		azzert(endpointInfo.getDescription() == null);
+		azzert(endpointInfo.getInterface() != null);
+
+		azzert("http://cxf.xdptdr.github.com/".equals(endpointInfo.getName().getNamespaceURI()));
+		azzert("AbagthaPort".equals(endpointInfo.getName().getLocalPart()));
+		azzert(endpointInfo.getService() == serviceInfo);
+		azzert("http://schemas.xmlsoap.org/soap/http".equals(endpointInfo.getTransportId()));
+
+		endpointReferenceType = endpointInfo.getTarget();
+		azzert(endpointReferenceType != null);
+
+		bindingInfo = endpointInfo.getBinding();
+		azzert(bindingInfo != null);
+
+		interfaceInfo = endpointInfo.getInterface();
+		azzert(interfaceInfo != null);
+	}
+
+	private static void azzertSBSC() {
+		azzert(soapBindingServiceConfiguration.getEndpointName() == null);
+		azzert(soapBindingServiceConfiguration.getInterfaceName() == null);
+		azzert(soapBindingServiceConfiguration.getServiceName() == null);
+		azzert(soapBindingServiceConfiguration.getServiceNamespace() == null);
+		azzert(soapBindingServiceConfiguration.getServiceFactory() == reflectionServiceFactoryBean);
+		azzert("document".equals(soapBindingServiceConfiguration.getStyle()));
+		azzert(soapBindingServiceConfiguration.getWsdlURL() == null);
+		azzert(soapBindingServiceConfiguration.isWrapped() == null);
+	}
+
+	private static void azzertDSC() {
+
+		azzert("http://cxf.xdptdr.github.com/".equals(defaultServiceConfiguration.getEndpointName().getNamespaceURI()));
+		azzert("AbagthaPort".equals(defaultServiceConfiguration.getEndpointName().getLocalPart()));
+
+		azzert("http://cxf.xdptdr.github.com/"
+				.equals(defaultServiceConfiguration.getInterfaceName().getNamespaceURI()));
+		azzert("AbagthaPortType".equals(defaultServiceConfiguration.getInterfaceName().getLocalPart()));
+
+		azzert(defaultServiceConfiguration.getServiceFactory() == reflectionServiceFactoryBean);
+		azzert(defaultServiceConfiguration.getStyle() == null);
+		azzert(defaultServiceConfiguration.getWsdlURL() == null);
+		azzert(defaultServiceConfiguration.isWrapped() == null);
+
+		azzert("http://cxf.xdptdr.github.com/".equals(defaultServiceConfiguration.getServiceNamespace()));
+		azzert("Abagtha".equals(defaultServiceConfiguration.getServiceName()));
+
+	}
+
+	private static void azzertSTF() {
+		azzert(soapTransportFactory.getTransportIds().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size() + 1);
+		azzert(soapTransportFactory.getUriPrefixes().size() == 1);
+		azzert("soap.udp".equals(soapTransportFactory.getUriPrefixes().iterator().next()));
+	}
+
+	private static void azzertSBF() {
+		azzert(soapBindingFactory.getActivationNamespaces().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size());
+		azzert(soapBindingFactory.getBus() == bus);
+	}
+
+	private static void azzertSBC() {
+
+		azzert(soapBindingConfiguration.getBindingName() == null);
+		azzert("SoapBinding".equals(soapBindingConfiguration.getBindingNamePostfix()));
+		azzert("document".equals(soapBindingConfiguration.getStyle()));
+		azzert(soapBindingConfiguration.isMtomEnabled() == false);
+		azzert(soapBindingConfiguration.getUse() == null);
+
+		version = soapBindingConfiguration.getVersion();
+		azzert(version != null);
+		azzert(soapBindingConfiguration.getBindingId().equals(version.getBindingId()));
 
 	}
 
