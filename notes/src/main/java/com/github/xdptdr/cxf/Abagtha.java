@@ -17,27 +17,43 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.cxf.binding.Binding;
+import org.apache.cxf.binding.BindingFactoryManager;
 import org.apache.cxf.binding.soap.SoapBinding;
 import org.apache.cxf.binding.soap.SoapBindingConfiguration;
 import org.apache.cxf.binding.soap.SoapBindingFactory;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.SoapTransportFactory;
 import org.apache.cxf.binding.soap.SoapVersion;
+import org.apache.cxf.binding.xml.wsdl11.XMLWSDLExtensionLoader;
+import org.apache.cxf.bus.extension.ExtensionManager;
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
+import org.apache.cxf.buslifecycle.BusLifeCycleManager;
 import org.apache.cxf.common.xmlschema.SchemaCollection;
+import org.apache.cxf.configuration.ConfiguredBeanLocator;
+import org.apache.cxf.configuration.Configurer;
 import org.apache.cxf.databinding.DataBinding;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointException;
 import org.apache.cxf.endpoint.EndpointImpl;
+import org.apache.cxf.endpoint.ServerRegistry;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.InFaultChainInitiatorObserver;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.OutFaultChainInitiatorObserver;
 import org.apache.cxf.jaxb.JAXBDataBinding;
+import org.apache.cxf.jaxws.context.WebServiceContextResourceResolver;
+import org.apache.cxf.management.InstrumentationManager;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.policy.PolicyDataEngine;
+import org.apache.cxf.resource.ClassLoaderResolver;
+import org.apache.cxf.resource.ClasspathResolver;
+import org.apache.cxf.resource.ObjectTypeResolver;
+import org.apache.cxf.resource.PropertiesResolver;
+import org.apache.cxf.resource.ResourceManager;
+import org.apache.cxf.resource.SinglePropertyResolver;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.ServiceImpl;
-import org.apache.cxf.service.factory.FactoryBeanListener.Event;
+import org.apache.cxf.service.factory.FactoryBeanListenerManager;
 import org.apache.cxf.service.factory.SimpleMethodDispatcher;
 import org.apache.cxf.service.invoker.FactoryInvoker;
 import org.apache.cxf.service.invoker.Invoker;
@@ -54,13 +70,23 @@ import org.apache.cxf.service.model.SchemaInfo;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.service.model.ServiceSchemaInfo;
 import org.apache.cxf.simple.SimpleServiceBuilder;
+import org.apache.cxf.transport.ConduitInitiatorManager;
+import org.apache.cxf.transport.DestinationFactoryManager;
 import org.apache.cxf.transport.MessageObserver;
+import org.apache.cxf.transport.http.HTTPConduitFactory;
+import org.apache.cxf.transport.http.HTTPWSDLExtensionLoader;
+import org.apache.cxf.transport.jms.wsdl11.JMSWSDLExtensionLoader;
 import org.apache.cxf.workqueue.SynchronousExecutor;
 import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.ws.addressing.impl.AddressingWSDLExtensionLoader;
+import org.apache.cxf.ws.policy.PolicyAnnotationListener;
+import org.apache.cxf.ws.policy.PolicyEngine;
+import org.apache.cxf.wsdl.WSDLManager;
 import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
 import org.apache.cxf.wsdl.service.factory.DefaultServiceConfiguration;
 import org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean;
+import org.jboss.wsf.stack.cxf.client.injection.JBossWSResourceInjectionResolver;
 import org.w3c.dom.Node;
 
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
@@ -344,30 +370,80 @@ public class Abagtha {
 		azzert(rsfb.getService() == service);
 		azzert(rsfb.getSessionState().size() == 0);
 
-		azzert(bus.hasExtensionByName("org.apache.cxf.ws.policy.PolicyEngine"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.transport.http.HTTPConduitFactory"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.service.factory.FactoryBeanListenerManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.ws.policy.PolicyAnnotationListener"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.jaxws.context.WebServiceContextResourceResolver"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.transport.jms.wsdl11.JMSWSDLExtensionLoader"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.configuration.ConfiguredBeanLocator"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.resource.ResourceManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.buslifecycle.BusLifeCycleManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.ws.addressing.impl.AddressingWSDLExtensionLoader"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.wsdl.WSDLManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.endpoint.ServerRegistry"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.binding.soap.SoapTransportFactory"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.transport.DestinationFactoryManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.binding.BindingFactoryManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.policy.PolicyDataEngine"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.management.InstrumentationManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.transport.http.HTTPWSDLExtensionLoader"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.configuration.Configurer"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.binding.soap.SoapBindingFactory"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.bus.extension.ExtensionManager"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.binding.xml.wsdl11.XMLWSDLExtensionLoader"));
-		azzert(bus.hasExtensionByName("org.apache.cxf.transport.ConduitInitiatorManager"));
+		ServerRegistry serverRegistry = bus.getExtension(ServerRegistry.class);
+		azzert(serverRegistry != null);
+		azzert(serverRegistry.getServers().size() == 0);
 
+		WSDLManager wsdlManager = bus.getExtension(WSDLManager.class);
+		azzert(wsdlManager != null);
+		azzert(wsdlManager.getDefinitions().size() == 0);
+		azzert(wsdlManager.getWSDLFactory() != null);
+
+		ResourceManager e = bus.getExtension(ResourceManager.class);
+		azzert(e.getResourceResolvers().size() == 12);
+		System.out.println(e.getResourceResolvers());
+		azzertContainsT(e.getResourceResolvers(), JBossWSResourceInjectionResolver.class);
+		azzertContainsT(e.getResourceResolvers(), WebServiceContextResourceResolver.class);
+		azzertContainsT(e.getResourceResolvers(), ObjectTypeResolver.class);
+		azzertContainsT(e.getResourceResolvers(), SinglePropertyResolver.class);
+		azzertContainsT(e.getResourceResolvers(), PropertiesResolver.class);
+		azzertContainsT(e.getResourceResolvers(), ClassLoaderResolver.class);
+		azzertContainsT(e.getResourceResolvers(), ClasspathResolver.class);
+
+		PolicyEngine pe = bus.getExtension(PolicyEngine.class);
+		azzert(pe != null);
+		HTTPConduitFactory h = bus.getExtension(HTTPConduitFactory.class);
+		azzert(h != null);
+		FactoryBeanListenerManager fblm = bus.getExtension(FactoryBeanListenerManager.class);
+		azzert(fblm != null);
+		PolicyAnnotationListener a = bus.getExtension(PolicyAnnotationListener.class);
+		azzert(a != null);
+		WebServiceContextResourceResolver b = bus.getExtension(WebServiceContextResourceResolver.class);
+		azzert(b != null);
+		JMSWSDLExtensionLoader c = bus.getExtension(JMSWSDLExtensionLoader.class);
+		azzert(c != null);
+		ConfiguredBeanLocator d = bus.getExtension(ConfiguredBeanLocator.class);
+		azzert(d != null);
+
+		azzert(e != null);
+		BusLifeCycleManager f = bus.getExtension(BusLifeCycleManager.class);
+		azzert(f != null);
+		AddressingWSDLExtensionLoader g = bus.getExtension(AddressingWSDLExtensionLoader.class);
+		azzert(g != null);
+
+		SoapTransportFactory j = bus.getExtension(SoapTransportFactory.class);
+		azzert(j != null);
+		DestinationFactoryManager l = bus.getExtension(DestinationFactoryManager.class);
+		azzert(l != null);
+		BindingFactoryManager m = bus.getExtension(BindingFactoryManager.class);
+		azzert(m != null);
+		PolicyDataEngine n = bus.getExtension(PolicyDataEngine.class);
+		azzert(n != null);
+		InstrumentationManager o = bus.getExtension(InstrumentationManager.class);
+		azzert(o != null);
+		HTTPWSDLExtensionLoader p = bus.getExtension(HTTPWSDLExtensionLoader.class);
+		azzert(p != null);
+		Configurer q = bus.getExtension(Configurer.class);
+		azzert(q != null);
+		SoapBindingFactory r = bus.getExtension(SoapBindingFactory.class);
+		azzert(r != null);
+		ExtensionManager s = bus.getExtension(ExtensionManager.class);
+		azzert(s != null);
+		XMLWSDLExtensionLoader t = bus.getExtension(XMLWSDLExtensionLoader.class);
+		azzert(t != null);
+		ConduitInitiatorManager u = bus.getExtension(ConduitInitiatorManager.class);
+		azzert(u != null);
+
+	}
+
+	private static void azzertContainsT(List<?> list, Class<?> clazz) {
+		azzert(list != null);
+		for (Object e : list) {
+			if (e != null && e.getClass() == clazz) {
+				return;
+			}
+		}
+		throw new RuntimeException("Assertion error");
 	}
 
 	private static <T> void azzertContains(List<T> list, T element) {
