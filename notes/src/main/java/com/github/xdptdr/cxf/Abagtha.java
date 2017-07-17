@@ -14,7 +14,10 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.cxf.Bus;
 import org.apache.cxf.binding.Binding;
+import org.apache.cxf.binding.BindingConfiguration;
+import org.apache.cxf.binding.BindingFactory;
 import org.apache.cxf.binding.BindingFactoryManager;
 import org.apache.cxf.binding.soap.SoapBinding;
 import org.apache.cxf.binding.soap.SoapBindingConfiguration;
@@ -29,7 +32,6 @@ import org.apache.cxf.buslifecycle.BusLifeCycleManager;
 import org.apache.cxf.configuration.ConfiguredBeanLocator;
 import org.apache.cxf.configuration.Configurer;
 import org.apache.cxf.databinding.DataBinding;
-import org.apache.cxf.endpoint.AbstractEndpointFactory;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointException;
 import org.apache.cxf.endpoint.EndpointImpl;
@@ -66,6 +68,7 @@ import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.simple.SimpleServiceBuilder;
 import org.apache.cxf.transport.ConduitInitiatorManager;
+import org.apache.cxf.transport.DestinationFactory;
 import org.apache.cxf.transport.DestinationFactoryManager;
 import org.apache.cxf.transport.MessageObserver;
 import org.apache.cxf.transport.http.HTTPConduitFactory;
@@ -114,26 +117,11 @@ public class Abagtha {
 		Endpoint endpoint = reflectionServiceFactoryBean.createEndpoint(endpointInfo);
 		items.put("endpoint", endpoint);
 
-		ExtensionManagerBus bus = (ExtensionManagerBus) simpleServiceBuilder.getBus();
-		items.put("bus", bus);
-
+		azzertSSB(simpleServiceBuilder, items);
 		azzertRSFB(reflectionServiceFactoryBean, items);
 
-		azzert(simpleServiceBuilder.getAddress() == null);
-		azzert(simpleServiceBuilder.getOutputFile() == null);
-		azzert(simpleServiceBuilder.getBindingId() == null);
-		azzert(simpleServiceBuilder.getConduitSelector() == null);
-		azzert(simpleServiceBuilder.getDataBinding() == null);
-		azzert(simpleServiceBuilder.getFeatures().size() == 0);
-		azzert(simpleServiceBuilder.getProperties(false) == null);
-
-		azzert(simpleServiceBuilder.getBindingConfig() instanceof SoapBindingConfiguration);
-		azzert(simpleServiceBuilder.getBindingFactory() instanceof SoapBindingFactory);
-		azzert(simpleServiceBuilder.getBus(false) instanceof ExtensionManagerBus);
-		azzert(simpleServiceBuilder.getDestinationFactory() instanceof SoapTransportFactory);
-
-		SoapBindingConfiguration soapBindingConfiguration = (SoapBindingConfiguration) simpleServiceBuilder
-				.getBindingConfig();
+		SoapBindingConfiguration soapBindingConfiguration = (SoapBindingConfiguration) items
+				.get("simpleServiceBuilder/bindingConfig");
 
 		SoapVersion version = soapBindingConfiguration.getVersion();
 		azzert(version != null);
@@ -148,12 +136,13 @@ public class Abagtha {
 
 		azzert(soapBindingConfiguration.isMtomEnabled() == false);
 
-		SoapBindingFactory soapBindingFactory = (SoapBindingFactory) simpleServiceBuilder.getBindingFactory();
+		SoapBindingFactory soapBindingFactory = (SoapBindingFactory) items.get("simpleServiceBuilder/bindingFactory");
 		azzert(soapBindingFactory.getActivationNamespaces() != null);
 		azzert(soapBindingFactory.getActivationNamespaces().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size());
-		azzert(soapBindingFactory.getBus() == bus);
+		azzert(soapBindingFactory.getBus() == items.get("simpleServiceBuilder/bus"));
 
-		SoapTransportFactory soapTransportFactory = (SoapTransportFactory) simpleServiceBuilder.getDestinationFactory();
+		SoapTransportFactory soapTransportFactory = (SoapTransportFactory) items
+				.get("simpleServiceBuilder/destinationFactory");
 
 		azzert(soapTransportFactory.getTransportIds().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size() + 1);
 
@@ -360,7 +349,7 @@ public class Abagtha {
 
 		EndpointImpl endpointImpl = (EndpointImpl) endpoint;
 		azzert("{http://cxf.xdptdr.github.com/}AbagthaPort.endpoint".equals(endpointImpl.getBeanName()));
-		azzert(endpointImpl.getBus() == bus);
+		azzert(endpointImpl.getBus() == items.get("simpleServiceBuilder/bus"));
 
 		Binding binding = endpoint.getBinding();
 		azzert(binding instanceof SoapBinding);
@@ -448,6 +437,7 @@ public class Abagtha {
 
 		SimpleMethodDispatcher simpleMethodDispatcher = (SimpleMethodDispatcher) items.get("simpleMethodDispatcher");
 
+		Bus bus = (Bus) items.get("simpleServiceBuilder/bus");
 		ServerRegistry serverRegistry = bus.getExtension(ServerRegistry.class);
 		azzert(serverRegistry != null);
 		azzert(serverRegistry.getServers().size() == 0);
@@ -513,6 +503,33 @@ public class Abagtha {
 
 	}
 
+	private static void azzertSSB(SimpleServiceBuilder simpleServiceBuilder, Map<String, Object> items) {
+
+		Bus bus = simpleServiceBuilder.getBus(false);
+		azzert(bus instanceof ExtensionManagerBus);
+		items.put("simpleServiceBuilder/bus", bus);
+
+		azzert(simpleServiceBuilder.getAddress() == null);
+		azzert(simpleServiceBuilder.getOutputFile() == null);
+		azzert(simpleServiceBuilder.getBindingId() == null);
+		azzert(simpleServiceBuilder.getConduitSelector() == null);
+		azzert(simpleServiceBuilder.getDataBinding() == null);
+		azzert(simpleServiceBuilder.getFeatures().size() == 0);
+		azzert(simpleServiceBuilder.getProperties(false) == null);
+
+		final BindingConfiguration bindingConfig = simpleServiceBuilder.getBindingConfig();
+		azzert(bindingConfig instanceof SoapBindingConfiguration);
+		items.put("simpleServiceBuilder/bindingConfig", bindingConfig);
+
+		final BindingFactory bindingFactory = simpleServiceBuilder.getBindingFactory();
+		azzert(bindingFactory instanceof SoapBindingFactory);
+		items.put("simpleServiceBuilder/bindingFactory", bindingFactory);
+
+		final DestinationFactory destinationFactory = simpleServiceBuilder.getDestinationFactory();
+		azzert(destinationFactory instanceof SoapTransportFactory);
+		items.put("simpleServiceBuilder/destinationFactory", destinationFactory);
+	}
+
 	private static void azzertRSFB(ReflectionServiceFactoryBean reflectionServiceFactoryBean,
 			Map<String, Object> items) {
 
@@ -558,7 +575,9 @@ public class Abagtha {
 
 		azzert(reflectionServiceFactoryBean.getWsdlURL() == null);
 
-		azzert(reflectionServiceFactoryBean.getBus() == items.get("bus"));
+		final Bus bus = reflectionServiceFactoryBean.getBus();
+		items.put("reflectionServiceFactoryBean/bus", bus);
+		azzert(items.get("reflectionServiceFactoryBean/bus") == items.get("simpleServiceBuilder/bus"));
 
 		final DataBinding db = reflectionServiceFactoryBean.getDataBinding();
 		azzert(db != null);
@@ -567,7 +586,7 @@ public class Abagtha {
 		Service s = reflectionServiceFactoryBean.getService();
 		azzert(s != null);
 		items.put("service", s);
-		
+
 		azzert(reflectionServiceFactoryBean.getSessionState().size() == 0);
 
 	}
