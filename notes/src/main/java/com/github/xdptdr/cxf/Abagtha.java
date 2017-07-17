@@ -2,9 +2,7 @@ package com.github.xdptdr.cxf;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 
@@ -50,7 +48,6 @@ import org.apache.cxf.resource.PropertiesResolver;
 import org.apache.cxf.resource.ResourceManager;
 import org.apache.cxf.resource.SinglePropertyResolver;
 import org.apache.cxf.service.Service;
-import org.apache.cxf.service.ServiceImpl;
 import org.apache.cxf.service.factory.FactoryBeanListenerManager;
 import org.apache.cxf.service.factory.SimpleMethodDispatcher;
 import org.apache.cxf.service.invoker.FactoryInvoker;
@@ -92,36 +89,52 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 public class Abagtha {
 
+	private static SimpleServiceBuilder simpleServiceBuilder;
+	private static ReflectionServiceFactoryBean reflectionServiceFactoryBean;
+	private static ServiceInfo serviceInfo;
+	private static EndpointInfo endpointInfo;
+	private static Endpoint endpoint;
+	private static Bus bus;
+	private static ExtensionManagerBus extensionManagerBus;
+	private static BindingConfiguration bindingConfig;
+	private static SoapBindingConfiguration soapBindingConfiguration;
+	private static BindingFactory bindingFactory;
+	private static SoapBindingFactory soapBindingFactory;
+	private static DestinationFactory destinationFactory;
+	private static SoapTransportFactory soapTransportFactory;
+	private static DataBinding dataBinding;
+	private static Service service;
+	private static MethodDispatcher methodDispatcher;
+	private static SimpleMethodDispatcher simpleMethodDispatcher;
+	private static AbstractServiceConfiguration abstractServiceConfiguration1;
+	private static AbstractServiceConfiguration abstractServiceConfiguration2;
+	private static DefaultServiceConfiguration defaultServiceConfiguration;
+	private static AbstractServiceConfiguration soapBindingServiceConfiguration;
+
 	public String foo(String bar) {
 		return bar + "!" + bar;
 	}
 
 	public static void main(String[] args) throws IOException, EndpointException {
 
-		Map<String, Object> items = new HashMap<>();
-
-		SimpleServiceBuilder simpleServiceBuilder = new SimpleServiceBuilder();
-		items.put("simpleServiceBuilder", simpleServiceBuilder);
-
-		ReflectionServiceFactoryBean reflectionServiceFactoryBean = simpleServiceBuilder.getServiceFactory();
-		items.put("reflectionServiceFactoryBean", reflectionServiceFactoryBean);
-
+		simpleServiceBuilder = new SimpleServiceBuilder();
 		simpleServiceBuilder.setServiceClass(Abagtha.class);
 
-		ServiceInfo serviceInfo = simpleServiceBuilder.createService();
-		items.put("serviceInfo", serviceInfo);
+		reflectionServiceFactoryBean = simpleServiceBuilder.getServiceFactory();
+		azzert(reflectionServiceFactoryBean != null);
 
-		EndpointInfo endpointInfo = reflectionServiceFactoryBean.getEndpointInfo();
-		items.put("endpointInfo", endpointInfo);
+		serviceInfo = simpleServiceBuilder.createService();
+		azzert(serviceInfo != null);
 
-		Endpoint endpoint = reflectionServiceFactoryBean.createEndpoint(endpointInfo);
-		items.put("endpoint", endpoint);
+		endpointInfo = reflectionServiceFactoryBean.getEndpointInfo();
+		azzert(endpointInfo != null);
 
-		azzertSSB(simpleServiceBuilder, items);
-		azzertRSFB(reflectionServiceFactoryBean, items);
+		endpoint = reflectionServiceFactoryBean.createEndpoint(endpointInfo);
+		azzert(endpoint != null);
 
-		SoapBindingConfiguration soapBindingConfiguration = (SoapBindingConfiguration) items
-				.get("simpleServiceBuilder/bindingConfig");
+		azzertSSB();
+
+		azzertRSFB();
 
 		SoapVersion version = soapBindingConfiguration.getVersion();
 		azzert(version != null);
@@ -136,21 +149,15 @@ public class Abagtha {
 
 		azzert(soapBindingConfiguration.isMtomEnabled() == false);
 
-		SoapBindingFactory soapBindingFactory = (SoapBindingFactory) items.get("simpleServiceBuilder/bindingFactory");
 		azzert(soapBindingFactory.getActivationNamespaces() != null);
 		azzert(soapBindingFactory.getActivationNamespaces().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size());
-		azzert(soapBindingFactory.getBus() == items.get("simpleServiceBuilder/bus"));
-
-		SoapTransportFactory soapTransportFactory = (SoapTransportFactory) items
-				.get("simpleServiceBuilder/destinationFactory");
+		azzert(soapBindingFactory.getBus() == bus);
 
 		azzert(soapTransportFactory.getTransportIds().size() == SoapBindingFactory.DEFAULT_NAMESPACES.size() + 1);
 
 		azzert(soapTransportFactory.getUriPrefixes().size() == 1);
 		azzert("soap.udp".equals(soapTransportFactory.getUriPrefixes().iterator().next()));
 
-		DefaultServiceConfiguration defaultServiceConfiguration = (DefaultServiceConfiguration) items
-				.get("defaultServiceConfiguration");
 		azzert("http://cxf.xdptdr.github.com/".equals(defaultServiceConfiguration.getEndpointName().getNamespaceURI()));
 		azzert("AbagthaPort".equals(defaultServiceConfiguration.getEndpointName().getLocalPart()));
 
@@ -165,8 +172,6 @@ public class Abagtha {
 		azzert(defaultServiceConfiguration.getWsdlURL() == null);
 		azzert(defaultServiceConfiguration.isWrapped() == null);
 
-		AbstractServiceConfiguration soapBindingServiceConfiguration = (AbstractServiceConfiguration) items
-				.get("soapBindingServiceConfiguration");
 		azzert(soapBindingServiceConfiguration.getEndpointName() == null);
 		azzert(soapBindingServiceConfiguration.getInterfaceName() == null);
 		azzert(soapBindingServiceConfiguration.getServiceName() == null);
@@ -349,7 +354,7 @@ public class Abagtha {
 
 		EndpointImpl endpointImpl = (EndpointImpl) endpoint;
 		azzert("{http://cxf.xdptdr.github.com/}AbagthaPort.endpoint".equals(endpointImpl.getBeanName()));
-		azzert(endpointImpl.getBus() == items.get("simpleServiceBuilder/bus"));
+		azzert(endpointImpl.getBus() == bus);
 
 		Binding binding = endpoint.getBinding();
 		azzert(binding instanceof SoapBinding);
@@ -383,9 +388,7 @@ public class Abagtha {
 		MessageObserver outFaultObserver = endpoint.getOutFaultObserver();
 		azzert(outFaultObserver instanceof OutFaultChainInitiatorObserver);
 
-		Service service = endpoint.getService();
-		azzert(service instanceof ServiceImpl);
-		azzert(service == items.get("service"));
+		azzert(endpoint.getService() == service);
 
 		azzert(service.getDataBinding() != null);
 		azzert(service.getEndpoints().size() == 1);
@@ -396,7 +399,6 @@ public class Abagtha {
 		azzert(service.getName() != null);
 		azzert(service.getServiceInfos().size() > 0);
 
-		DataBinding dataBinding = (DataBinding) items.get("dataBinding");
 		assert (dataBinding instanceof JAXBDataBinding);
 
 		azzert(dataBinding.getDeclaredNamespaceMappings() == null);
@@ -435,9 +437,6 @@ public class Abagtha {
 		azzert(serviceInfos.size() == 1);
 		azzert(serviceInfos.get(0) == serviceInfo);
 
-		SimpleMethodDispatcher simpleMethodDispatcher = (SimpleMethodDispatcher) items.get("simpleMethodDispatcher");
-
-		Bus bus = (Bus) items.get("simpleServiceBuilder/bus");
 		ServerRegistry serverRegistry = bus.getExtension(ServerRegistry.class);
 		azzert(serverRegistry != null);
 		azzert(serverRegistry.getServers().size() == 0);
@@ -503,11 +502,11 @@ public class Abagtha {
 
 	}
 
-	private static void azzertSSB(SimpleServiceBuilder simpleServiceBuilder, Map<String, Object> items) {
+	private static void azzertSSB() {
 
-		Bus bus = simpleServiceBuilder.getBus(false);
+		bus = simpleServiceBuilder.getBus(false);
 		azzert(bus instanceof ExtensionManagerBus);
-		items.put("simpleServiceBuilder/bus", bus);
+		extensionManagerBus = (ExtensionManagerBus) bus;
 
 		azzert(simpleServiceBuilder.getAddress() == null);
 		azzert(simpleServiceBuilder.getOutputFile() == null);
@@ -517,31 +516,20 @@ public class Abagtha {
 		azzert(simpleServiceBuilder.getFeatures().size() == 0);
 		azzert(simpleServiceBuilder.getProperties(false) == null);
 
-		final BindingConfiguration bindingConfig = simpleServiceBuilder.getBindingConfig();
+		bindingConfig = simpleServiceBuilder.getBindingConfig();
 		azzert(bindingConfig instanceof SoapBindingConfiguration);
-		items.put("simpleServiceBuilder/bindingConfig", bindingConfig);
+		soapBindingConfiguration = (SoapBindingConfiguration) bindingConfig;
 
-		final BindingFactory bindingFactory = simpleServiceBuilder.getBindingFactory();
+		bindingFactory = simpleServiceBuilder.getBindingFactory();
 		azzert(bindingFactory instanceof SoapBindingFactory);
-		items.put("simpleServiceBuilder/bindingFactory", bindingFactory);
+		soapBindingFactory = (SoapBindingFactory) bindingFactory;
 
-		final DestinationFactory destinationFactory = simpleServiceBuilder.getDestinationFactory();
+		destinationFactory = simpleServiceBuilder.getDestinationFactory();
 		azzert(destinationFactory instanceof SoapTransportFactory);
-		items.put("simpleServiceBuilder/destinationFactory", destinationFactory);
+		soapTransportFactory = (SoapTransportFactory) destinationFactory;
 	}
 
-	private static void azzertRSFB(ReflectionServiceFactoryBean reflectionServiceFactoryBean,
-			Map<String, Object> items) {
-
-		azzert(reflectionServiceFactoryBean.getConfigurations().size() == 2);
-		final AbstractServiceConfiguration dsc = reflectionServiceFactoryBean.getConfigurations().get(0);
-		final AbstractServiceConfiguration sbsc = reflectionServiceFactoryBean.getConfigurations().get(1);
-		azzert(dsc instanceof DefaultServiceConfiguration);
-		azzert(sbsc instanceof AbstractServiceConfiguration);
-		items.put("defaultServiceConfiguration", dsc);
-		items.put("soapBindingServiceConfiguration", sbsc);
-
-		azzert(items.get("endpointInfo") != null);
+	private static void azzertRSFB() {
 
 		azzert(!reflectionServiceFactoryBean.getAnonymousWrapperTypes());
 		azzert(reflectionServiceFactoryBean.getExecutor() == null);
@@ -558,36 +546,37 @@ public class Abagtha {
 
 		azzert(reflectionServiceFactoryBean.getIgnoredMethods().size() == 0);
 		azzert(reflectionServiceFactoryBean.getInvoker() == null);
-		final MethodDispatcher md = reflectionServiceFactoryBean.getMethodDispatcher();
-		azzert(md instanceof SimpleMethodDispatcher);
-		items.put("simpleMethodDispatcher", md);
 
 		azzert(reflectionServiceFactoryBean.getProperties() == null);
-
 		azzert(reflectionServiceFactoryBean.getQualifyWrapperSchema());
-
 		azzert("document".equals(reflectionServiceFactoryBean.getStyle()));
 		azzert(reflectionServiceFactoryBean.getWrapped() == null);
 		azzert(!reflectionServiceFactoryBean.isAnonymousWrapperTypes());
 		azzert(reflectionServiceFactoryBean.isPopulateFromClass());
 		azzert(reflectionServiceFactoryBean.isQualifyWrapperSchema());
 		azzert(reflectionServiceFactoryBean.isWrapped());
-
 		azzert(reflectionServiceFactoryBean.getWsdlURL() == null);
-
-		final Bus bus = reflectionServiceFactoryBean.getBus();
-		items.put("reflectionServiceFactoryBean/bus", bus);
-		azzert(items.get("reflectionServiceFactoryBean/bus") == items.get("simpleServiceBuilder/bus"));
-
-		final DataBinding db = reflectionServiceFactoryBean.getDataBinding();
-		azzert(db != null);
-		items.put("dataBinding", db);
-
-		Service s = reflectionServiceFactoryBean.getService();
-		azzert(s != null);
-		items.put("service", s);
-
 		azzert(reflectionServiceFactoryBean.getSessionState().size() == 0);
+
+		azzert(reflectionServiceFactoryBean.getBus() == bus);
+
+		dataBinding = reflectionServiceFactoryBean.getDataBinding();
+		azzert(dataBinding != null);
+
+		service = reflectionServiceFactoryBean.getService();
+		azzert(service != null);
+
+		methodDispatcher = reflectionServiceFactoryBean.getMethodDispatcher();
+		azzert(methodDispatcher instanceof SimpleMethodDispatcher);
+		simpleMethodDispatcher = (SimpleMethodDispatcher) methodDispatcher;
+
+		azzert(reflectionServiceFactoryBean.getConfigurations().size() == 2);
+		abstractServiceConfiguration1 = reflectionServiceFactoryBean.getConfigurations().get(0);
+		abstractServiceConfiguration2 = reflectionServiceFactoryBean.getConfigurations().get(1);
+		azzert(abstractServiceConfiguration1 instanceof DefaultServiceConfiguration);
+		azzert(abstractServiceConfiguration2 instanceof AbstractServiceConfiguration);
+		defaultServiceConfiguration = (DefaultServiceConfiguration) abstractServiceConfiguration1;
+		soapBindingServiceConfiguration = abstractServiceConfiguration2;
 
 	}
 
