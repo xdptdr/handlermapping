@@ -1,6 +1,5 @@
 package com.github.xdptdr.cxf;
 
-import java.io.OutputStream;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -11,40 +10,33 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointException;
-import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.WSDLGetInterceptor;
 import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.interceptor.StaxOutInterceptor;
-import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 import org.apache.cxf.jaxws.JaxwsServiceBuilder;
 import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
-import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.EndpointInfo;
-import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.wsdl.service.factory.ReflectionServiceFactoryBean;
 import org.w3c.dom.Document;
 
+import com.github.xdptdr.cxf.abarim.AbarimCompare;
+
 public class Abarim {
 
 	public static enum DoWith {
-		SERVER, INTERCEPTOR, UTILS
+		INTERCEPTOR
 	};
 
 	private static JaxwsServiceBuilder jaxwsServiceBuilder;
-	private static ServiceInfo serviceInfo;
 	private static ReflectionServiceFactoryBean reflectionServiceFactoryBean;
 	private static EndpointInfo endpointInfo;
 	private static Endpoint freshEndpoint;
-	private static Server server;
 	private static WSDLGetInterceptor wsdlGetInterceptor;
-	private static Message message;
-	private static DoWith doWith = DoWith.SERVER;
 	private static Service service;
 	private static Endpoint serviceEndpoint;
 	private static Bus bus;
@@ -56,15 +48,11 @@ public class Abarim {
 
 	private static void init() throws EndpointException {
 
-		frobnicate(serviceInfo);
-		frobnicate(server);
-		frobnicate(message);
-
 		jaxwsServiceBuilder = new JaxwsServiceBuilder();
 		reflectionServiceFactoryBean = jaxwsServiceBuilder.getServiceFactory();
 		bus = jaxwsServiceBuilder.getBus();
 		jaxwsServiceBuilder.setServiceClass(Abarim.class);
-		serviceInfo = jaxwsServiceBuilder.createService();
+		jaxwsServiceBuilder.createService();
 		endpointInfo = reflectionServiceFactoryBean.getEndpointInfo();
 		freshEndpoint = reflectionServiceFactoryBean.createEndpoint(endpointInfo);
 		service = reflectionServiceFactoryBean.getService();
@@ -78,13 +66,7 @@ public class Abarim {
 		}
 	}
 
-	private static void frobnicate(Object o) {
-
-	}
-
 	private static void withInterceptor() throws XMLStreamException {
-		// org.apache.cxf.transport.ChainInitiationObserver.onMessage(Message)
-		// service.getEndpoints()
 		for (Interceptor<? extends Message> interceptor : serviceEndpoint.getInInterceptors()) {
 			if (interceptor instanceof WSDLGetInterceptor) {
 				wsdlGetInterceptor = (WSDLGetInterceptor) interceptor;
@@ -121,36 +103,12 @@ public class Abarim {
 		StaxUtils.writeDocument(doc, xwriter, true, false);
 	}
 
-	private static void withUtils() {
-		// org.apache.cxf.frontend.WSDLGetUtils.writeWSDLDocument(Message,
-		// Map<String, Definition>, Map<String, SchemaReference>, String,
-		// String, EndpointInfo)
-	}
-
-	private static void startServer() {
-		JaxWsServerFactoryBean jaxWsServerFactoryBean = new JaxWsServerFactoryBean();
-		jaxWsServerFactoryBean.setServiceClass(jaxwsServiceBuilder.getServiceClass());
-		jaxWsServerFactoryBean.setAddress("http://localhost:9000/Abarim");
-		jaxWsServerFactoryBean.setServiceBean(new Abarim());
-		server = jaxWsServerFactoryBean.create();
-	}
-
 	public static void main(String[] args) throws EndpointException, XMLStreamException {
 
-		doWith = DoWith.INTERCEPTOR;
-
 		init();
-		switch (doWith) {
-		case INTERCEPTOR:
-			withInterceptor();
-			break;
-		case UTILS:
-			withUtils();
-			break;
-		case SERVER:
-			startServer();
-			break;
-		}
+		withInterceptor();
+		
+		AbarimCompare.compare(freshEndpoint, serviceEndpoint);
 
 	}
 }
