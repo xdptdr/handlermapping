@@ -717,6 +717,8 @@ import org.apache.cxf.wsdl11.WSDLServiceUtils;
 import com.github.xdptdr.cxf.Aaron;
 import com.github.xdptdr.cxf.Abaddon;
 import com.github.xdptdr.cxf.Abba;
+import com.github.xdptdr.cxf.Abda;
+import com.github.xdptdr.cxf.AbdaInterceptor;
 import com.github.xdptdr.notes.N;
 
 public class Notes {
@@ -764,6 +766,10 @@ public class Notes {
 	 */
 
 	private static void notes(N n) {
+
+		n.k(Abda.class, AbdaInterceptor.class).s(" illustrates how to use")
+				.k(Message.class, MessageImpl.class, Exchange.class, ExchangeImpl.class, Interceptor.class)
+				.s(" to send and receive messages with interceptor through an exchange");
 
 		n.o(Aaron.class, BusFactory.class, Bus.class, ExtensionManagerBus.class, Feature.class);
 
