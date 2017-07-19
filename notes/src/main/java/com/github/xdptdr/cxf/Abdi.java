@@ -1,7 +1,11 @@
 package com.github.xdptdr.cxf;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.BusException;
+import org.apache.cxf.BusFactory;
+import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.InterceptorProvider;
+import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.addressing.MAPAggregator;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.apache.cxf.ws.addressing.impl.AddressingFeatureApplier;
@@ -17,36 +21,73 @@ import org.apache.cxf.ws.addressing.soap.DecoupledFaultHandler;
 import org.apache.cxf.ws.addressing.soap.MAPCodec;
 import org.apache.cxf.ws.addressing.soap.VersionTransformer;
 import org.apache.cxf.wsdl.WSDLManager;
+import org.apache.cxf.wsdl11.WSDLManagerImpl;
 import org.apache.neethi.AssertionBuilderFactory;
 import org.w3c.dom.Element;
 
 public class Abdi {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws BusException {
 
+		WSAddressingFeature wsAddressingFeature = new WSAddressingFeature();
+		Bus bus = BusFactory.getDefaultBus();
+		bus.getInInterceptors().clear();
+		bus.getInFaultInterceptors().clear();
+		bus.getOutInterceptors().clear();
+		bus.getOutFaultInterceptors().clear();
+
+		WSDLManager wsdlManager = new WSDLManagerImpl();
+		Element elem = null;
+		AssertionBuilderFactory factory = null;
+		Element element = null;
+		AssertionBuilderFactory fact = null;
+
+		// complex
+		MAPAggregatorImpl mapAggregatorImpl = null;
+
+		// complex
+		MAPCodec mapCodec = null;
+
+		// simple
 		AddressingFeatureApplier addressingFeatureApplier = new AddressingFeatureApplier();
-		WSAddressingFeature feature = null;
-		InterceptorProvider provider = null;
-		Bus bus = null;
-		addressingFeatureApplier.initializeProvider(feature, provider, bus);
+		addressingFeatureApplier.initializeProvider(wsAddressingFeature, bus, bus);
+		for (Interceptor<? extends Message> interceptor : bus.getInInterceptors()) {
+			if (interceptor instanceof MAPAggregatorImpl) {
+				mapAggregatorImpl = (MAPAggregatorImpl) interceptor;
+			}
+			if (interceptor instanceof MAPCodec) {
+				mapCodec = (MAPCodec) interceptor;
+			}
+		}
+
+		bus.setExtension(wsdlManager, WSDLManager.class);
 		AddressingWSDLExtensionLoader addressingWSDLExtensionLoader = new AddressingWSDLExtensionLoader(bus);
-		WSDLManager manager = null;
-		Class<?> parentType = null;
-		Class<?> elementType = null;
-		addressingWSDLExtensionLoader.createExtensor(manager, parentType, elementType);
 
-		MAPAggregator mag = null;
-		MAPAggregatorImpl mapAggregatorImpl = new MAPAggregatorImpl(mag);
 		DefaultMessageIdCache defaultMessageIdCache = new DefaultMessageIdCache();
+		azzert(!defaultMessageIdCache.checkUniquenessAndCacheId("foo"));
+		azzert(defaultMessageIdCache.checkUniquenessAndCacheId("foo"));
 
+		// simple
+		// effectively returns clones of MAPAggregator
 		MAPAggregatorImplLoader mapAggregatorImplLoader = new MAPAggregatorImplLoader();
 		MAPAggregator mapAggregator = mapAggregatorImplLoader.createImplementation(mapAggregatorImpl);
 
+		// simple
+		UsingAddressingAssertionBuilder usingAddressingAssertionBuilder = new UsingAddressingAssertionBuilder();
+		usingAddressingAssertionBuilder.build(element, fact);
+
+		// complex
 		AddressingAssertionBuilder addressingAssertionBuilder = new AddressingAssertionBuilder();
-		Element elem = null;
-		AssertionBuilderFactory factory = null;
 		addressingAssertionBuilder.build(elem, factory);
 
+		// simple
+		// adds MAP_AGGREGATOR and MAP_CODEC to all interceptors
 		AddressingPolicyInterceptorProvider addressingPolicyInterceptorProvider = new AddressingPolicyInterceptorProvider();
+
+		// mild
+		DecoupledFaultHandler decoupledFaultHandler = new DecoupledFaultHandler();
+
+		// mild
+		VersionTransformer versionTransformer = new VersionTransformer(mapCodec);
 
 		foo(MetadataConstants.ADDR_POLICY_2004_NAMESPACE_URI);
 		foo(MetadataConstants.ADDR_WSDL_2005_NAMESPACE_URI);
@@ -67,16 +108,12 @@ public class Abdi {
 		foo(MetadataConstants.USING_ADDRESSING_2006_QNAME);
 		foo(MetadataConstants.USING_ADDRESSING_ELEM_NAME);
 
-		UsingAddressingAssertionBuilder usingAddressingAssertionBuilder = new UsingAddressingAssertionBuilder();
-		Element element = null;
-		AssertionBuilderFactory fact = null;
-		usingAddressingAssertionBuilder.build(element, fact);
+	}
 
-		DecoupledFaultHandler decoupledFaultHandler = new DecoupledFaultHandler();
-
-		MAPCodec mapCodec = new MAPCodec();
-
-		VersionTransformer versionTransformer = new VersionTransformer(mapCodec);
+	private static void azzert(boolean b) {
+		if (!b) {
+			throw new RuntimeException("Assertion Error");
+		}
 
 	}
 
