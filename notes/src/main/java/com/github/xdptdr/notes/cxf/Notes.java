@@ -38,6 +38,13 @@ import org.apache.cxf.binding.Binding;
 import org.apache.cxf.binding.BindingConfiguration;
 import org.apache.cxf.binding.BindingFactory;
 import org.apache.cxf.binding.BindingFactoryManager;
+import org.apache.cxf.binding.object.LocalServerListener;
+import org.apache.cxf.binding.object.ObjectBinding;
+import org.apache.cxf.binding.object.ObjectBindingConfiguration;
+import org.apache.cxf.binding.object.ObjectBindingFactory;
+import org.apache.cxf.binding.object.ObjectDispatchInInterceptor;
+import org.apache.cxf.binding.object.ObjectDispatchOutInterceptor;
+import org.apache.cxf.binding.object.blueprint.ObjectBindingBPHandler;
 import org.apache.cxf.binding.soap.HeaderUtil;
 import org.apache.cxf.binding.soap.Soap11;
 import org.apache.cxf.binding.soap.Soap12;
@@ -96,6 +103,21 @@ import org.apache.cxf.binding.soap.wsdl.extensions.SoapBody;
 import org.apache.cxf.binding.soap.wsdl.extensions.SoapHeaderFault;
 import org.apache.cxf.binding.soap.wsdl.extensions.SoapOperation;
 import org.apache.cxf.binding.soap.wsdl11.SoapAddressPlugin;
+import org.apache.cxf.binding.xml.XMLBinding;
+import org.apache.cxf.binding.xml.XMLBindingFactory;
+import org.apache.cxf.binding.xml.XMLConstants;
+import org.apache.cxf.binding.xml.XMLFault;
+import org.apache.cxf.binding.xml.XMLFormatValidator;
+import org.apache.cxf.binding.xml.interceptor.XMLFaultInInterceptor;
+import org.apache.cxf.binding.xml.interceptor.XMLFaultOutInterceptor;
+import org.apache.cxf.binding.xml.interceptor.XMLMessageInInterceptor;
+import org.apache.cxf.binding.xml.interceptor.XMLMessageOutInterceptor;
+import org.apache.cxf.binding.xml.wsdl11.HttpAddressPlugin;
+import org.apache.cxf.binding.xml.wsdl11.XMLWSDLExtensionLoader;
+import org.apache.cxf.binding.xml.wsdl11.XmlBindingPlugin;
+import org.apache.cxf.binding.xml.wsdl11.XmlIoPlugin;
+import org.apache.cxf.bindings.xformat.XMLBindingMessageFormat;
+import org.apache.cxf.bindings.xformat.XMLFormatBinding;
 import org.apache.cxf.bus.CXFBusFactory;
 import org.apache.cxf.bus.ManagedBus;
 import org.apache.cxf.bus.blueprint.BlueprintBeanLocator;
@@ -399,6 +421,20 @@ import org.apache.cxf.io.CipherPair;
 import org.apache.cxf.io.CopyingOutputStream;
 import org.apache.cxf.io.Transferable;
 import org.apache.cxf.io.WriteOnCloseOutputStream;
+import org.apache.cxf.jaxb.DatatypeFactory;
+import org.apache.cxf.jaxb.JAXBDataBase;
+import org.apache.cxf.jaxb.JAXBDataBinding;
+import org.apache.cxf.jaxb.JAXBEncoderDecoder;
+import org.apache.cxf.jaxb.JAXBWrapperHelper;
+import org.apache.cxf.jaxb.MarshallerAwareXMLWriter;
+import org.apache.cxf.jaxb.MarshallerEventHandler;
+import org.apache.cxf.jaxb.UnmarshallerAwareXMLReader;
+import org.apache.cxf.jaxb.UnmarshallerEventHandler;
+import org.apache.cxf.jaxb.attachment.JAXBAttachmentMarshaller;
+import org.apache.cxf.jaxb.attachment.JAXBAttachmentSchemaValidationHack;
+import org.apache.cxf.jaxb.attachment.JAXBAttachmentUnmarshaller;
+import org.apache.cxf.jaxb.io.DataReaderImpl;
+import org.apache.cxf.jaxb.io.DataWriterImpl;
 import org.apache.cxf.logging.FaultListener;
 import org.apache.cxf.logging.NoOpFaultListener;
 import org.apache.cxf.management.InstrumentationManager;
@@ -441,6 +477,29 @@ import org.apache.cxf.resource.ResourceManager;
 import org.apache.cxf.resource.ResourceResolver;
 import org.apache.cxf.resource.SinglePropertyResolver;
 import org.apache.cxf.resource.URIResolver;
+import org.apache.cxf.rt.security.claims.ClaimCollection;
+import org.apache.cxf.rt.security.claims.ClaimsSecurityContext;
+import org.apache.cxf.rt.security.crypto.BouncyCastleInstaller;
+import org.apache.cxf.rt.security.crypto.CryptoUtils;
+import org.apache.cxf.rt.security.crypto.HmacUtils;
+import org.apache.cxf.rt.security.crypto.KeyProperties;
+import org.apache.cxf.rt.security.crypto.MessageDigestUtils;
+import org.apache.cxf.rt.security.saml.claims.ClaimBean;
+import org.apache.cxf.rt.security.saml.claims.SAMLClaim;
+import org.apache.cxf.rt.security.saml.claims.SAMLSecurityContext;
+import org.apache.cxf.rt.security.saml.interceptor.ClaimsAuthorizingInterceptor;
+import org.apache.cxf.rt.security.saml.interceptor.WSS4JBasicAuthValidator;
+import org.apache.cxf.rt.security.saml.utils.SAMLUtils;
+import org.apache.cxf.rt.security.saml.xacml.CXFMessageParser;
+import org.apache.cxf.rt.security.saml.xacml.XACMLConstants;
+import org.apache.cxf.rt.security.saml.xacml2.AbstractXACMLAuthorizingInterceptor;
+import org.apache.cxf.rt.security.saml.xacml2.DefaultXACMLRequestBuilder;
+import org.apache.cxf.rt.security.saml.xacml2.PolicyDecisionPoint;
+import org.apache.cxf.rt.security.saml.xacml2.RequestComponentBuilder;
+import org.apache.cxf.rt.security.saml.xacml2.SamlRequestComponentBuilder;
+import org.apache.cxf.rt.security.saml.xacml2.XACMLAuthorizingInterceptor;
+import org.apache.cxf.rt.security.saml.xacml2.XACMLRequestBuilder;
+import org.apache.cxf.rt.security.utils.SecurityUtils;
 import org.apache.cxf.security.LoginSecurityContext;
 import org.apache.cxf.security.SecurityContext;
 import org.apache.cxf.security.claims.authorization.Claim;
@@ -953,17 +1012,17 @@ public class Notes {
 		( ) cxf-xjc-runtime
 		(x) cxf-core
 		( ) cxf-rt-bindings-coloc
-		( ) cxf-rt-bindings-object
+		(x) cxf-rt-bindings-object
 		(x) cxf-rt-bindings-soap
-		( ) cxf-rt-bindings-xml
+		(x) cxf-rt-bindings-xml
 		( ) cxf-rt-databinding-aegis
-		( ) cxf-rt-databinding-jaxb
+		(x) cxf-rt-databinding-jaxb
 		( ) cxf-rt-features-clustering
-		( ) cxf-rt-frontend-jaxws
+		(x) cxf-rt-frontend-jaxws
 		(x) cxf-rt-frontend-simple
 		( ) cxf-rt-management
-		( ) cxf-rt-security
-		( ) cxf-rt-security-saml
+		(x) cxf-rt-security
+		(x) cxf-rt-security-saml
 		(x) cxf-rt-transports-http
 		( ) cxf-rt-transports-http-hc
 		( ) cxf-rt-transports-jms
@@ -1009,6 +1068,10 @@ public class Notes {
 
 		todoFrontendSimple(n);
 
+		todoSecurity(n);
+
+		todoSecuritySaml(n);
+
 		todoWsdl(n);
 
 		todoWsAddr(n);
@@ -1019,7 +1082,13 @@ public class Notes {
 
 		todoTransportLocal(n);
 
+		todoBindingsObject(n);
+
 		todoBindingsSoap(n);
+
+		todoBindingsXml(n);
+
+		todoDataBindingsJaxb(n);
 	}
 
 	private static void todoCore(N n) {
@@ -1340,13 +1409,48 @@ public class Notes {
 				org.apache.cxf.frontend.spring.ClientProxyFactoryBeanDefinitionParser.class, NamespaceHandler.class,
 				org.apache.cxf.frontend.spring.ServerFactoryBeanDefinitionParser.class,
 
-				SimpleServiceBuilder.class,
+				SimpleServiceBuilder.class
 
-				Object.class };
+		};
 
-		for (Class<?> clazz : classes) {
-			n.todo(clazz);
-		}
+		n.todo(classes);
+	}
+
+	private static void todoSecurity(N n) {
+		Class<?>[] classes = new Class<?>[] {
+
+				org.apache.cxf.rt.security.SecurityConstants.class,
+
+				org.apache.cxf.rt.security.claims.Claim.class, ClaimCollection.class, ClaimsSecurityContext.class,
+
+				BouncyCastleInstaller.class, CryptoUtils.class, HmacUtils.class, KeyProperties.class,
+				MessageDigestUtils.class,
+
+				SecurityUtils.class,
+
+		};
+
+		n.todo(classes);
+	}
+
+	private static void todoSecuritySaml(N n) {
+		Class<?>[] classes = new Class<?>[] {
+
+				ClaimBean.class, SAMLClaim.class, SAMLSecurityContext.class,
+
+				ClaimsAuthorizingInterceptor.class, WSS4JBasicAuthValidator.class,
+
+				SAMLUtils.class,
+
+				CXFMessageParser.class, XACMLConstants.class,
+
+				AbstractXACMLAuthorizingInterceptor.class, DefaultXACMLRequestBuilder.class, PolicyDecisionPoint.class,
+				RequestComponentBuilder.class, SamlRequestComponentBuilder.class, XACMLAuthorizingInterceptor.class,
+				XACMLRequestBuilder.class
+
+		};
+
+		n.todo(classes);
 	}
 
 	private static void todoWsdl(N n) {
@@ -1583,6 +1687,21 @@ public class Notes {
 
 	}
 
+	private static void todoBindingsObject(N n) {
+
+		Class<?>[] classes = new Class<?>[] {
+
+				LocalServerListener.class, ObjectBinding.class, ObjectBindingConfiguration.class,
+				ObjectBindingFactory.class, ObjectDispatchInInterceptor.class, ObjectDispatchOutInterceptor.class,
+
+				org.apache.cxf.binding.object.blueprint.Activator.class, ObjectBindingBPHandler.class,
+
+				org.apache.cxf.binding.object.spring.NamespaceHandler.class
+
+		};
+		n.todo(classes);
+	}
+
 	private static void todoBindingsSoap(N n) {
 
 		Class<?>[] classes = new Class<?>[] {
@@ -1625,10 +1744,54 @@ public class Notes {
 
 		};
 
-		for (Class<?> clazz : classes) {
-			n.todo(clazz);
-		}
+		n.todo(classes);
 
+	}
+
+	private static void todoBindingsXml(N n) {
+		Class<?>[] classes = new Class<?>[] {
+
+				XMLBinding.class, XMLBindingFactory.class, XMLConstants.class, XMLFault.class, XMLFormatValidator.class,
+				org.apache.cxf.binding.xml.XMLMessage.class,
+
+				XMLFaultInInterceptor.class, XMLFaultOutInterceptor.class, XMLMessageInInterceptor.class,
+				XMLMessageOutInterceptor.class,
+
+				HttpAddressPlugin.class, XmlBindingPlugin.class, XmlIoPlugin.class, XMLWSDLExtensionLoader.class,
+
+				org.apache.cxf.bindings.xformat.ObjectFactory.class, XMLBindingMessageFormat.class,
+				XMLFormatBinding.class,
+
+				Object.class
+
+		};
+
+		n.todo(classes);
+	}
+
+	private static void todoDataBindingsJaxb(N n) {
+		Class<?>[] classes = new Class<?>[] {
+
+			DatatypeFactory.class,
+			JAXBDataBase.class,
+			JAXBDataBinding.class,
+			JAXBEncoderDecoder.class,
+			JAXBWrapperHelper.class,
+			MarshallerAwareXMLWriter.class,
+			MarshallerEventHandler.class,
+			UnmarshallerAwareXMLReader.class,
+			UnmarshallerEventHandler.class,
+			
+			JAXBAttachmentMarshaller.class,
+			JAXBAttachmentSchemaValidationHack.class,
+			JAXBAttachmentUnmarshaller.class,
+			
+			DataReaderImpl.class,
+			DataWriterImpl.class
+			
+		};
+
+		n.todo(classes);
 	}
 
 	public static void main(String[] args) {
