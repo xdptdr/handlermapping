@@ -19,6 +19,10 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
+import org.apache.cxf.transport.common.gzip.GZIPInInterceptor;
+import org.apache.cxf.transport.common.gzip.GZIPOutInterceptor;
+
+import com.github.xdptdr.notes.N;
 
 public class Abdeel {
 
@@ -133,5 +137,11 @@ public class Abdeel {
 		if (!b) {
 			throw new RuntimeException("Assertion Error");
 		}
+	}
+
+	public static void n(N n) {
+
+		n.k(Abdeel.class).s(" illustrates how to use ").k(GZIPFeature.class).s(", which sets up ")
+				.k(GZIPInInterceptor.class, GZIPOutInterceptor.class);
 	}
 }

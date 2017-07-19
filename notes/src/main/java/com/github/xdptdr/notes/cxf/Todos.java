@@ -44,7 +44,6 @@ import org.apache.cxf.binding.object.ObjectBindingConfiguration;
 import org.apache.cxf.binding.object.ObjectBindingFactory;
 import org.apache.cxf.binding.object.ObjectDispatchInInterceptor;
 import org.apache.cxf.binding.object.ObjectDispatchOutInterceptor;
-import org.apache.cxf.binding.object.blueprint.ObjectBindingBPHandler;
 import org.apache.cxf.binding.soap.HeaderUtil;
 import org.apache.cxf.binding.soap.Soap11;
 import org.apache.cxf.binding.soap.Soap12;
@@ -59,9 +58,6 @@ import org.apache.cxf.binding.soap.SoapTransportFactory;
 import org.apache.cxf.binding.soap.SoapVersion;
 import org.apache.cxf.binding.soap.SoapVersionEditor;
 import org.apache.cxf.binding.soap.SoapVersionFactory;
-import org.apache.cxf.binding.soap.blueprint.SoapBindingBPHandler;
-import org.apache.cxf.binding.soap.blueprint.SoapBindingBPInfoConfigDefinitionParser;
-import org.apache.cxf.binding.soap.blueprint.SoapVersionTypeConverter;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.binding.soap.interceptor.CheckFaultInterceptor;
 import org.apache.cxf.binding.soap.interceptor.EndpointSelectionInterceptor;
@@ -96,8 +92,6 @@ import org.apache.cxf.binding.soap.saaj.SAAJInInterceptor;
 import org.apache.cxf.binding.soap.saaj.SAAJOutInterceptor;
 import org.apache.cxf.binding.soap.saaj.SAAJStreamWriter;
 import org.apache.cxf.binding.soap.saaj.SAAJUtils;
-import org.apache.cxf.binding.soap.spring.SoapBindingInfoConfigBeanDefinitionParser;
-import org.apache.cxf.binding.soap.spring.SoapVersionRegistrar;
 import org.apache.cxf.binding.soap.wsdl.extensions.SoapAddress;
 import org.apache.cxf.binding.soap.wsdl.extensions.SoapBody;
 import org.apache.cxf.binding.soap.wsdl.extensions.SoapHeaderFault;
@@ -330,11 +324,6 @@ import org.apache.cxf.frontend.WSDLGetInterceptor;
 import org.apache.cxf.frontend.WSDLGetOutInterceptor;
 import org.apache.cxf.frontend.WSDLGetUtils;
 import org.apache.cxf.frontend.WSDLQueryException;
-import org.apache.cxf.frontend.blueprint.Activator;
-import org.apache.cxf.frontend.blueprint.ClientProxyFactoryBeanDefinitionParser;
-import org.apache.cxf.frontend.blueprint.ServerFactoryBeanDefinitionParser;
-import org.apache.cxf.frontend.blueprint.SimpleBPNamespaceHandler;
-import org.apache.cxf.frontend.spring.NamespaceHandler;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.headers.HeaderManager;
 import org.apache.cxf.headers.HeaderProcessor;
@@ -636,19 +625,11 @@ import org.apache.cxf.transport.http.auth.HttpAuthHeader;
 import org.apache.cxf.transport.http.auth.HttpAuthSupplier;
 import org.apache.cxf.transport.http.auth.SpnegoAuthSupplier;
 import org.apache.cxf.transport.http.auth.WSDLGetAuthenticatorInterceptor;
-import org.apache.cxf.transport.http.blueprint.HttpBPHandler;
-import org.apache.cxf.transport.http.blueprint.HttpConduitBPBeanDefinitionParser;
-import org.apache.cxf.transport.http.blueprint.HttpDestinationBPBeanDefinitionParser;
-import org.apache.cxf.transport.http.osgi.HTTPTransportActivator;
 import org.apache.cxf.transport.http.policy.HTTPClientAssertionBuilder;
 import org.apache.cxf.transport.http.policy.HTTPServerAssertionBuilder;
 import org.apache.cxf.transport.http.policy.NoOpPolicyInterceptorProvider;
 import org.apache.cxf.transport.http.policy.impl.ClientPolicyCalculator;
 import org.apache.cxf.transport.http.policy.impl.ServerPolicyCalculator;
-import org.apache.cxf.transport.http.spring.HttpAuthSupplierBeanDefinitionParser;
-import org.apache.cxf.transport.http.spring.HttpConduitBeanDefinitionParser;
-import org.apache.cxf.transport.http.spring.HttpDestinationBeanDefinitionParser;
-import org.apache.cxf.transport.http.spring.MessageTrustDeciderBeanDefinitionParser;
 import org.apache.cxf.transport.https.AliasedX509ExtendedKeyManager;
 import org.apache.cxf.transport.https.CertConstraints;
 import org.apache.cxf.transport.https.CertConstraintsFeature;
@@ -720,7 +701,6 @@ import org.apache.cxf.ws.addressing.RelatesToType;
 import org.apache.cxf.ws.addressing.VersionTransformer;
 import org.apache.cxf.ws.addressing.WSAContextUtils;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
-import org.apache.cxf.ws.addressing.blueprint.WsBPHandler;
 import org.apache.cxf.ws.addressing.impl.AddressingFeatureApplier;
 import org.apache.cxf.ws.addressing.impl.AddressingWSDLExtensionLoader;
 import org.apache.cxf.ws.addressing.impl.DefaultMessageIdCache;
@@ -732,7 +712,6 @@ import org.apache.cxf.ws.addressing.policy.MetadataConstants;
 import org.apache.cxf.ws.addressing.policy.UsingAddressingAssertionBuilder;
 import org.apache.cxf.ws.addressing.soap.DecoupledFaultHandler;
 import org.apache.cxf.ws.addressing.soap.MAPCodec;
-import org.apache.cxf.ws.addressing.spring.AddressingBeanDefinitionParser;
 import org.apache.cxf.ws.addressing.v200403.AttributedQName;
 import org.apache.cxf.ws.addressing.v200403.AttributedURI;
 import org.apache.cxf.ws.addressing.v200403.ReferencePropertiesType;
@@ -1294,9 +1273,7 @@ public class Todos {
 				//
 		};
 
-		for (Class<?> clazz : classes) {
-			n.todo(clazz);
-		}
+		n.todo(classes);
 
 	}
 
@@ -1310,11 +1287,14 @@ public class Todos {
 				ClientProxy.class, ClientProxyFactoryBean.class, FaultInfoException.class, ServerFactoryBean.class,
 				WSDLGetInterceptor.class, WSDLGetOutInterceptor.class, WSDLGetUtils.class, WSDLQueryException.class,
 
-				Activator.class, ClientProxyFactoryBeanDefinitionParser.class, ServerFactoryBeanDefinitionParser.class,
-				SimpleBPNamespaceHandler.class,
+				// Activator.class,
+				// ClientProxyFactoryBeanDefinitionParser.class,
+				// ServerFactoryBeanDefinitionParser.class,
+				// SimpleBPNamespaceHandler.class,
 
-				org.apache.cxf.frontend.spring.ClientProxyFactoryBeanDefinitionParser.class, NamespaceHandler.class,
-				org.apache.cxf.frontend.spring.ServerFactoryBeanDefinitionParser.class,
+				// org.apache.cxf.frontend.spring.ClientProxyFactoryBeanDefinitionParser.class,
+				// NamespaceHandler.class,
+				// org.apache.cxf.frontend.spring.ServerFactoryBeanDefinitionParser.class,
 
 				SimpleServiceBuilder.class
 
@@ -1362,32 +1342,37 @@ public class Todos {
 
 	public static void todoWsdl(N n) {
 
-		n.todo(AbstractWSDLPlugin.class, JAXBExtensibilityElement.class, JAXBExtensionHelper.class,
+		Class<?>[] classes = new Class<?>[] {
+
+				AbstractWSDLPlugin.class, JAXBExtensibilityElement.class, JAXBExtensionHelper.class,
 				TExtensibilityElementImpl.class, WSAEndpointReferenceUtils.class, WSDLBuilder.class,
 				WSDLConstants.class, WSDLExtensibilityPlugin.class, WSDLExtensionLoader.class, WSDLHelper.class,
-				WSDLLibrary.class, WSDLManager.class);
+				WSDLLibrary.class, WSDLManager.class,
 
-		n.todo(AbstractWSDLBindingFactory.class, WSDLBindingFactory.class);
+				AbstractWSDLBindingFactory.class, WSDLBindingFactory.class,
 
-		n.todo(AbstractEndpointSelectionInterceptor.class, BareInInterceptor.class, BareOutInterceptor.class,
-				DocLiteralInInterceptor.class, WrappedOutInterceptor.class);
+				AbstractEndpointSelectionInterceptor.class, BareInInterceptor.class, BareOutInterceptor.class,
+				DocLiteralInInterceptor.class, WrappedOutInterceptor.class,
 
-		n.todo(AbstractServiceConfiguration.class, DefaultServiceConfiguration.class,
+				AbstractServiceConfiguration.class, DefaultServiceConfiguration.class,
 				MethodNameSoapActionServiceConfiguration.class, ReflectionServiceFactoryBean.class,
-				WSDLBasedServiceConfiguration.class);
+				WSDLBasedServiceConfiguration.class,
 
-		n.todo(AbstractWrapperWSDLLocator.class, CatalogWSDLLocator.class, PartialWSDLProcessor.class,
+				AbstractWrapperWSDLLocator.class, CatalogWSDLLocator.class, PartialWSDLProcessor.class,
 				ResourceManagerWSDLLocator.class, SchemaSerializer.class, SchemaUtil.class, ServiceWSDLBuilder.class,
 				SOAPBindingUtil.class, WSDLEndpointFactory.class, WSDLManagerImpl.class, WSDLRuntimeException.class,
 				WSDLServiceBuilder.class, WSDLServiceFactory.class, WSDLServiceUtils.class
 
-		);
+		};
+
+		n.todo(classes);
 	}
 
 	public static void todoWsAddr(N n) {
 		Class<?>[] classes = new Class<?>[] {
 
-				org.apache.cxf.ws.addressing.blueprint.Activator.class, WsBPHandler.class,
+				// org.apache.cxf.ws.addressing.blueprint.Activator.class,
+				// WsBPHandler.class,
 
 				AddressingFeatureApplier.class, AddressingWSDLExtensionLoader.class, DefaultMessageIdCache.class,
 				MAPAggregatorImpl.class, MAPAggregatorImplLoader.class,
@@ -1395,9 +1380,10 @@ public class Todos {
 				AddressingAssertionBuilder.class, AddressingPolicyInterceptorProvider.class, MetadataConstants.class,
 				UsingAddressingAssertionBuilder.class,
 
-				DecoupledFaultHandler.class, MAPCodec.class, org.apache.cxf.ws.addressing.soap.VersionTransformer.class,
+				DecoupledFaultHandler.class, MAPCodec.class, org.apache.cxf.ws.addressing.soap.VersionTransformer.class
 
-				AddressingBeanDefinitionParser.class, org.apache.cxf.ws.addressing.spring.NamespaceHandler.class,
+				// AddressingBeanDefinitionParser.class,
+				// org.apache.cxf.ws.addressing.spring.NamespaceHandler.class,
 
 		};
 
@@ -1512,9 +1498,7 @@ public class Todos {
 				SignedEndorsingTokenPolicyValidator.class, SignedTokenPolicyValidator.class,
 				SymmetricBindingPolicyValidator.class, TransportBindingPolicyValidator.class,
 				UsernameTokenPolicyValidator.class, ValidatorUtils.class, WSS11PolicyValidator.class,
-				X509TokenPolicyValidator.class,
-
-				Object.class
+				X509TokenPolicyValidator.class
 
 		};
 
@@ -1539,19 +1523,21 @@ public class Todos {
 				HttpAuthHeader.class, HttpAuthSupplier.class, SpnegoAuthSupplier.class,
 				WSDLGetAuthenticatorInterceptor.class,
 
-				HttpBPHandler.class, HttpConduitBPBeanDefinitionParser.class,
-				HttpDestinationBPBeanDefinitionParser.class,
+				// HttpBPHandler.class, HttpConduitBPBeanDefinitionParser.class,
+				// HttpDestinationBPBeanDefinitionParser.class,
 
-				HTTPTransportActivator.class,
+				// HTTPTransportActivator.class,
 
 				HTTPClientAssertionBuilder.class, HTTPServerAssertionBuilder.class, NoOpPolicyInterceptorProvider.class,
 
 				ClientPolicyCalculator.class, ServerPolicyCalculator.class,
 				org.apache.cxf.transport.http.policy.impl.StringUtils.class,
 
-				HttpAuthSupplierBeanDefinitionParser.class, HttpConduitBeanDefinitionParser.class,
-				HttpDestinationBeanDefinitionParser.class, MessageTrustDeciderBeanDefinitionParser.class,
-				NamespaceHandler.class,
+				// HttpAuthSupplierBeanDefinitionParser.class,
+				// HttpConduitBeanDefinitionParser.class,
+				// HttpDestinationBeanDefinitionParser.class,
+				// MessageTrustDeciderBeanDefinitionParser.class,
+				// NamespaceHandler.class,
 
 				AliasedX509ExtendedKeyManager.class, CertConstraints.class, CertConstraintsFeature.class,
 				CertConstraintsInterceptor.class, CertConstraintsJaxBUtils.class, HttpsURLConnectionFactory.class,
@@ -1574,9 +1560,7 @@ public class Todos {
 
 		};
 
-		for (Class<?> clazz : classes) {
-			n.todo(clazz);
-		}
+		n.todo(classes);
 
 	}
 
@@ -1588,9 +1572,7 @@ public class Todos {
 
 		};
 
-		for (Class<?> clazz : classes) {
-			n.todo(clazz);
-		}
+		n.todo(classes);
 
 	}
 
@@ -1599,11 +1581,12 @@ public class Todos {
 		Class<?>[] classes = new Class<?>[] {
 
 				LocalServerListener.class, ObjectBinding.class, ObjectBindingConfiguration.class,
-				ObjectBindingFactory.class, ObjectDispatchInInterceptor.class, ObjectDispatchOutInterceptor.class,
+				ObjectBindingFactory.class, ObjectDispatchInInterceptor.class, ObjectDispatchOutInterceptor.class
 
-				org.apache.cxf.binding.object.blueprint.Activator.class, ObjectBindingBPHandler.class,
+				// org.apache.cxf.binding.object.blueprint.Activator.class,
+				// ObjectBindingBPHandler.class,
 
-				org.apache.cxf.binding.object.spring.NamespaceHandler.class
+				// org.apache.cxf.binding.object.spring.NamespaceHandler.class
 
 		};
 		n.todo(classes);
@@ -1618,8 +1601,10 @@ public class Todos {
 				SoapFault.class, SoapHeader.class, SoapMessage.class, SoapTransportFactory.class, SoapVersion.class,
 				SoapVersionEditor.class, SoapVersionFactory.class,
 
-				org.apache.cxf.binding.soap.blueprint.Activator.class, SoapBindingBPHandler.class,
-				SoapBindingBPInfoConfigDefinitionParser.class, SoapVersionTypeConverter.class,
+				// org.apache.cxf.binding.soap.blueprint.Activator.class,
+				// SoapBindingBPHandler.class,
+				// SoapBindingBPInfoConfigDefinitionParser.class,
+				// SoapVersionTypeConverter.class,
 
 				AbstractSoapInterceptor.class, CheckFaultInterceptor.class, EndpointSelectionInterceptor.class,
 				MustUnderstandInterceptor.class, ReadHeadersInterceptor.class, RPCInInterceptor.class,
@@ -1637,19 +1622,16 @@ public class Todos {
 				SAAJFactoryResolver.class, SAAJInInterceptor.class, SAAJOutInterceptor.class, SAAJStreamWriter.class,
 				SAAJUtils.class,
 
-				org.apache.cxf.binding.soap.spring.NamespaceHandler.class,
-				SoapBindingInfoConfigBeanDefinitionParser.class, SoapVersionRegistrar.class,
+				// org.apache.cxf.binding.soap.spring.NamespaceHandler.class,
+				// SoapBindingInfoConfigBeanDefinitionParser.class,
+				// SoapVersionRegistrar.class,
 
 				SoapAddress.class, org.apache.cxf.binding.soap.wsdl.extensions.SoapBinding.class, SoapBody.class,
 				org.apache.cxf.binding.soap.wsdl.extensions.SoapFault.class,
 				org.apache.cxf.binding.soap.wsdl.extensions.SoapHeader.class, SoapHeaderFault.class,
 				SoapOperation.class,
 
-				SoapAddressPlugin.class,
-
-				Object.class
-
-		};
+				SoapAddressPlugin.class };
 
 		n.todo(classes);
 
@@ -1667,9 +1649,7 @@ public class Todos {
 				HttpAddressPlugin.class, XmlBindingPlugin.class, XmlIoPlugin.class, XMLWSDLExtensionLoader.class,
 
 				org.apache.cxf.bindings.xformat.ObjectFactory.class, XMLBindingMessageFormat.class,
-				XMLFormatBinding.class,
-
-				Object.class
+				XMLFormatBinding.class
 
 		};
 
