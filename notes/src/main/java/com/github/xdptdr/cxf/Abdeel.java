@@ -26,6 +26,12 @@ import com.github.xdptdr.notes.N;
 
 public class Abdeel {
 
+	public static void n(N n) {
+
+		n.k(Abdeel.class).s(" illustrates how to use ").k(GZIPFeature.class).s(", which sets up ")
+				.k(GZIPInInterceptor.class, GZIPOutInterceptor.class);
+	}
+
 	public static enum Path {
 
 		GET(true, false, false, false), GZIP_NOT_REQUESTOR(false, true, false, false), XGZIP_NOT_REQUESTOR(false, false,
@@ -139,9 +145,4 @@ public class Abdeel {
 		}
 	}
 
-	public static void n(N n) {
-
-		n.k(Abdeel.class).s(" illustrates how to use ").k(GZIPFeature.class).s(", which sets up ")
-				.k(GZIPInInterceptor.class, GZIPOutInterceptor.class);
-	}
 }
