@@ -6,6 +6,8 @@ import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 
+import com.github.xdptdr.cxf.abda.AbdaInterceptor;
+
 public class Abda {
 	public static void main(String[] args) {
 

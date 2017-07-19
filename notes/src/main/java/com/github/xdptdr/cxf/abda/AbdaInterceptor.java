@@ -1,4 +1,4 @@
-package com.github.xdptdr.cxf;
+package com.github.xdptdr.cxf.abda;
 
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.Interceptor;
