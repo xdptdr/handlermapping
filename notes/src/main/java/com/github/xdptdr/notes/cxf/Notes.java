@@ -661,6 +661,19 @@ import org.apache.cxf.ws.addressing.RelatesToType;
 import org.apache.cxf.ws.addressing.VersionTransformer;
 import org.apache.cxf.ws.addressing.WSAContextUtils;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
+import org.apache.cxf.ws.addressing.blueprint.WsBPHandler;
+import org.apache.cxf.ws.addressing.impl.AddressingFeatureApplier;
+import org.apache.cxf.ws.addressing.impl.AddressingWSDLExtensionLoader;
+import org.apache.cxf.ws.addressing.impl.DefaultMessageIdCache;
+import org.apache.cxf.ws.addressing.impl.MAPAggregatorImpl;
+import org.apache.cxf.ws.addressing.impl.MAPAggregatorImplLoader;
+import org.apache.cxf.ws.addressing.policy.AddressingAssertionBuilder;
+import org.apache.cxf.ws.addressing.policy.AddressingPolicyInterceptorProvider;
+import org.apache.cxf.ws.addressing.policy.MetadataConstants;
+import org.apache.cxf.ws.addressing.policy.UsingAddressingAssertionBuilder;
+import org.apache.cxf.ws.addressing.soap.DecoupledFaultHandler;
+import org.apache.cxf.ws.addressing.soap.MAPCodec;
+import org.apache.cxf.ws.addressing.spring.AddressingBeanDefinitionParser;
 import org.apache.cxf.ws.addressing.v200403.AttributedQName;
 import org.apache.cxf.ws.addressing.v200403.AttributedURI;
 import org.apache.cxf.ws.addressing.v200403.ReferencePropertiesType;
@@ -670,6 +683,214 @@ import org.apache.cxf.ws.addressing.v200403.ServiceNameType;
 import org.apache.cxf.ws.addressing.wsdl.Anonymous;
 import org.apache.cxf.ws.addressing.wsdl.AnonymousType;
 import org.apache.cxf.ws.addressing.wsdl.UsingAddressing;
+import org.apache.cxf.ws.security.SecurityConstants;
+import org.apache.cxf.ws.security.cache.CXFEHCacheReplayCache;
+import org.apache.cxf.ws.security.cache.CacheCleanupListener;
+import org.apache.cxf.ws.security.cache.EHCacheUtils;
+import org.apache.cxf.ws.security.kerberos.KerberosClient;
+import org.apache.cxf.ws.security.kerberos.KerberosUtils;
+import org.apache.cxf.ws.security.policy.PolicyUtils;
+import org.apache.cxf.ws.security.policy.WSSecurityPolicyLoader;
+import org.apache.cxf.ws.security.policy.custom.AlgorithmSuiteBuilder;
+import org.apache.cxf.ws.security.policy.custom.AlgorithmSuiteLoader;
+import org.apache.cxf.ws.security.policy.custom.DefaultAlgorithmSuiteLoader;
+import org.apache.cxf.ws.security.policy.interceptors.HttpsTokenInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.IssuedTokenInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.KerberosTokenInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.STSTokenOutInterceptor;
+import org.apache.cxf.ws.security.policy.interceptors.SamlTokenInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.SecureConversationTokenInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.SecurityVerificationOutInterceptor;
+import org.apache.cxf.ws.security.policy.interceptors.SpnegoTokenInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.UsernameTokenInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.WSSecurityInterceptorProvider;
+import org.apache.cxf.ws.security.policy.interceptors.WSSecurityPolicyInterceptorProvider;
+import org.apache.cxf.ws.security.sts.provider.STSException;
+import org.apache.cxf.ws.security.sts.provider.SecurityTokenService;
+import org.apache.cxf.ws.security.sts.provider.SecurityTokenServiceImpl;
+import org.apache.cxf.ws.security.sts.provider.SecurityTokenServiceProvider;
+import org.apache.cxf.ws.security.sts.provider.model.AllowPostdatingType;
+import org.apache.cxf.ws.security.sts.provider.model.AuthenticatorType;
+import org.apache.cxf.ws.security.sts.provider.model.BinaryExchangeType;
+import org.apache.cxf.ws.security.sts.provider.model.BinarySecretType;
+import org.apache.cxf.ws.security.sts.provider.model.CancelTargetType;
+import org.apache.cxf.ws.security.sts.provider.model.ClaimsType;
+import org.apache.cxf.ws.security.sts.provider.model.DelegateToType;
+import org.apache.cxf.ws.security.sts.provider.model.EncryptionType;
+import org.apache.cxf.ws.security.sts.provider.model.EntropyType;
+import org.apache.cxf.ws.security.sts.provider.model.KeyExchangeTokenType;
+import org.apache.cxf.ws.security.sts.provider.model.LifetimeType;
+import org.apache.cxf.ws.security.sts.provider.model.OnBehalfOfType;
+import org.apache.cxf.ws.security.sts.provider.model.ParticipantType;
+import org.apache.cxf.ws.security.sts.provider.model.ParticipantsType;
+import org.apache.cxf.ws.security.sts.provider.model.ProofEncryptionType;
+import org.apache.cxf.ws.security.sts.provider.model.RenewTargetType;
+import org.apache.cxf.ws.security.sts.provider.model.RenewingType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestKETType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestSecurityTokenCollectionType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestSecurityTokenResponseCollectionType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestSecurityTokenResponseType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestSecurityTokenType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestedProofTokenType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestedReferenceType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestedSecurityTokenType;
+import org.apache.cxf.ws.security.sts.provider.model.RequestedTokenCancelledType;
+import org.apache.cxf.ws.security.sts.provider.model.SignChallengeType;
+import org.apache.cxf.ws.security.sts.provider.model.StatusType;
+import org.apache.cxf.ws.security.sts.provider.model.UseKeyType;
+import org.apache.cxf.ws.security.sts.provider.model.ValidateTargetType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.AttributedString;
+import org.apache.cxf.ws.security.sts.provider.model.secext.BinarySecurityTokenType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.EmbeddedType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.EncodedString;
+import org.apache.cxf.ws.security.sts.provider.model.secext.KeyIdentifierType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.PasswordString;
+import org.apache.cxf.ws.security.sts.provider.model.secext.ReferenceType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.SecurityHeaderType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.SecurityTokenReferenceType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.TransformationParametersType;
+import org.apache.cxf.ws.security.sts.provider.model.secext.UsernameTokenType;
+import org.apache.cxf.ws.security.sts.provider.model.utility.AttributedDateTime;
+import org.apache.cxf.ws.security.sts.provider.model.utility.TimestampType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.ActAsType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.ChoiceChallengeResponseType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.ChoiceChallengeType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.ChoiceSelectedType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.ChoiceType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.ContextDataType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.ImageType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.InteractiveChallengeResponseType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.InteractiveChallengeType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.TextChallengeResponseType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.TextChallengeType;
+import org.apache.cxf.ws.security.sts.provider.model.wstrust14.TitleType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.CanonicalizationMethodType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.DSAKeyValueType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.DigestMethodType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.KeyInfoType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.KeyValueType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.ManifestType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.ObjectType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.PGPDataType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.RSAKeyValueType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.RetrievalMethodType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.SPKIDataType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.SignatureMethodType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.SignaturePropertiesType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.SignaturePropertyType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.SignatureType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.SignatureValueType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.SignedInfoType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.TransformType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.TransformsType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.X509DataType;
+import org.apache.cxf.ws.security.sts.provider.model.xmldsig.X509IssuerSerialType;
+import org.apache.cxf.ws.security.sts.provider.operation.CancelOperation;
+import org.apache.cxf.ws.security.sts.provider.operation.IssueOperation;
+import org.apache.cxf.ws.security.sts.provider.operation.IssueSingleOperation;
+import org.apache.cxf.ws.security.sts.provider.operation.KeyExchangeTokenOperation;
+import org.apache.cxf.ws.security.sts.provider.operation.RenewOperation;
+import org.apache.cxf.ws.security.sts.provider.operation.RequestCollectionOperation;
+import org.apache.cxf.ws.security.sts.provider.operation.ValidateOperation;
+import org.apache.cxf.ws.security.tokenstore.EHCacheTokenStore;
+import org.apache.cxf.ws.security.tokenstore.EHCacheTokenStoreFactory;
+import org.apache.cxf.ws.security.tokenstore.MemoryTokenStore;
+import org.apache.cxf.ws.security.tokenstore.MemoryTokenStoreFactory;
+import org.apache.cxf.ws.security.tokenstore.TokenStore;
+import org.apache.cxf.ws.security.tokenstore.TokenStoreFactory;
+import org.apache.cxf.ws.security.tokenstore.TokenStoreUtils;
+import org.apache.cxf.ws.security.trust.AbstractSTSClient;
+import org.apache.cxf.ws.security.trust.AuthPolicyValidatingInterceptor;
+import org.apache.cxf.ws.security.trust.DefaultSymmetricBinding;
+import org.apache.cxf.ws.security.trust.STSClient;
+import org.apache.cxf.ws.security.trust.STSLoginModule;
+import org.apache.cxf.ws.security.trust.STSSamlAssertionValidator;
+import org.apache.cxf.ws.security.trust.STSStaxTokenValidator;
+import org.apache.cxf.ws.security.trust.STSTokenRetriever;
+import org.apache.cxf.ws.security.trust.STSTokenValidator;
+import org.apache.cxf.ws.security.trust.STSUtils;
+import org.apache.cxf.ws.security.trust.TrustException;
+import org.apache.cxf.ws.security.trust.claims.ClaimsCallback;
+import org.apache.cxf.ws.security.trust.claims.RoleClaimsCallbackHandler;
+import org.apache.cxf.ws.security.trust.delegation.DelegationCallback;
+import org.apache.cxf.ws.security.trust.delegation.ReceivedTokenCallbackHandler;
+import org.apache.cxf.ws.security.trust.delegation.WSSUsernameCallbackHandler;
+import org.apache.cxf.ws.security.wss4j.AbstractTokenInterceptor;
+import org.apache.cxf.ws.security.wss4j.AbstractUsernameTokenAuthenticatingInterceptor;
+import org.apache.cxf.ws.security.wss4j.AbstractWSS4JInterceptor;
+import org.apache.cxf.ws.security.wss4j.AbstractWSS4JStaxInterceptor;
+import org.apache.cxf.ws.security.wss4j.AlgorithmSuiteTranslater;
+import org.apache.cxf.ws.security.wss4j.AttachmentCallbackHandler;
+import org.apache.cxf.ws.security.wss4j.BinarySecurityTokenInterceptor;
+import org.apache.cxf.ws.security.wss4j.CXFCallbackLookup;
+import org.apache.cxf.ws.security.wss4j.CXFRequestData;
+import org.apache.cxf.ws.security.wss4j.CryptoCoverageChecker;
+import org.apache.cxf.ws.security.wss4j.CryptoCoverageUtil;
+import org.apache.cxf.ws.security.wss4j.DefaultCryptoCoverageChecker;
+import org.apache.cxf.ws.security.wss4j.DefaultWSS4JSecurityContextCreator;
+import org.apache.cxf.ws.security.wss4j.DelegatingCallbackHandler;
+import org.apache.cxf.ws.security.wss4j.KerberosTokenInterceptor;
+import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
+import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JOutInterceptor;
+import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JStaxInInterceptor;
+import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JStaxOutInterceptor;
+import org.apache.cxf.ws.security.wss4j.SamlTokenInterceptor;
+import org.apache.cxf.ws.security.wss4j.StaxActionInInterceptor;
+import org.apache.cxf.ws.security.wss4j.StaxCryptoCoverageChecker;
+import org.apache.cxf.ws.security.wss4j.StaxSecurityContextInInterceptor;
+import org.apache.cxf.ws.security.wss4j.TokenStoreCallbackHandler;
+import org.apache.cxf.ws.security.wss4j.UsernameTokenInterceptor;
+import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
+import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
+import org.apache.cxf.ws.security.wss4j.WSS4JPolicyAsserter;
+import org.apache.cxf.ws.security.wss4j.WSS4JSecurityContextCreator;
+import org.apache.cxf.ws.security.wss4j.WSS4JStaxInInterceptor;
+import org.apache.cxf.ws.security.wss4j.WSS4JStaxOutInterceptor;
+import org.apache.cxf.ws.security.wss4j.WSS4JTokenConverter;
+import org.apache.cxf.ws.security.wss4j.WSS4JUtils;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.AbstractBindingBuilder;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.AbstractCommonBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.AbstractStaxBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.AsymmetricBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.StaxAsymmetricBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.StaxSymmetricBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.StaxTransportBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.SymmetricBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.TransportBindingHandler;
+import org.apache.cxf.ws.security.wss4j.policyhandlers.WSSecurityTokenHolder;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.AbstractBindingPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.AbstractSamlPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.AbstractSecurityPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.AbstractSupportingTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.AlgorithmSuitePolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.AsymmetricBindingPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.ClaimsPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.ConcreteSupportingTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.DefaultClaimsPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.EncryptedTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.EndorsingEncryptedTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.EndorsingTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.IssuedTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.KerberosTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.LayoutPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.PolicyValidatorParameters;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.RequiredElementsPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.RequiredPartsPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SamlTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SecuredElementsPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SecuredPartsPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SecurityContextTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SecurityPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SignedEncryptedTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SignedEndorsingEncryptedTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SignedEndorsingTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SignedTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.SymmetricBindingPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.TransportBindingPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.UsernameTokenPolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.ValidatorUtils;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.WSS11PolicyValidator;
+import org.apache.cxf.ws.security.wss4j.policyvalidators.X509TokenPolicyValidator;
 import org.apache.cxf.wsdl.AbstractWSDLPlugin;
 import org.apache.cxf.wsdl.JAXBExtensibilityElement;
 import org.apache.cxf.wsdl.JAXBExtensionHelper;
@@ -747,12 +968,12 @@ public class Notes {
 		( ) cxf-rt-transports-http-hc
 		( ) cxf-rt-transports-jms
 		(x) cxf-rt-transports-local
-		( ) cxf-rt-ws-addr
+		(x) cxf-rt-ws-addr
 		(x) cxf-rt-wsdl
 		( ) cxf-rt-ws-mex
 		( ) cxf-rt-ws-policy
 		( ) cxf-rt-ws-rm
-		( ) cxf-rt-ws-security
+		(x) cxf-rt-ws-security
 		( ) cxf-tools-common
 		( ) cxf-tools-java2ws
 		( ) cxf-tools-validator
@@ -789,6 +1010,10 @@ public class Notes {
 		todoFrontendSimple(n);
 
 		todoWsdl(n);
+
+		todoWsAddr(n);
+
+		todoWsSecurity(n);
 
 		todoTransportHttp(n);
 
@@ -1146,6 +1371,143 @@ public class Notes {
 				WSDLServiceBuilder.class, WSDLServiceFactory.class, WSDLServiceUtils.class
 
 		);
+	}
+
+	private static void todoWsAddr(N n) {
+		Class<?>[] classes = new Class<?>[] {
+
+				org.apache.cxf.ws.addressing.blueprint.Activator.class, WsBPHandler.class,
+
+				AddressingFeatureApplier.class, AddressingWSDLExtensionLoader.class, DefaultMessageIdCache.class,
+				MAPAggregatorImpl.class, MAPAggregatorImplLoader.class,
+
+				AddressingAssertionBuilder.class, AddressingPolicyInterceptorProvider.class, MetadataConstants.class,
+				UsingAddressingAssertionBuilder.class,
+
+				DecoupledFaultHandler.class, MAPCodec.class, org.apache.cxf.ws.addressing.soap.VersionTransformer.class,
+
+				AddressingBeanDefinitionParser.class, org.apache.cxf.ws.addressing.spring.NamespaceHandler.class,
+
+		};
+
+		n.todo(classes);
+	}
+
+	private static void todoWsSecurity(N n) {
+
+		Class<?>[] classes = new Class<?>[] {
+
+				SecurityConstants.class,
+
+				CacheCleanupListener.class, CXFEHCacheReplayCache.class, EHCacheUtils.class,
+
+				KerberosClient.class, KerberosUtils.class,
+
+				PolicyUtils.class, WSSecurityPolicyLoader.class,
+
+				AlgorithmSuiteBuilder.class, AlgorithmSuiteLoader.class, DefaultAlgorithmSuiteLoader.class,
+
+				HttpsTokenInterceptorProvider.class, IssuedTokenInterceptorProvider.class,
+				KerberosTokenInterceptorProvider.class, SamlTokenInterceptorProvider.class,
+				SecureConversationTokenInterceptorProvider.class, SecurityVerificationOutInterceptor.class,
+				SpnegoTokenInterceptorProvider.class, STSTokenOutInterceptor.class,
+				UsernameTokenInterceptorProvider.class, WSSecurityInterceptorProvider.class,
+				WSSecurityPolicyInterceptorProvider.class,
+
+				SecurityTokenService.class, SecurityTokenServiceImpl.class, SecurityTokenServiceProvider.class,
+				STSException.class,
+
+				AllowPostdatingType.class, AuthenticatorType.class, BinaryExchangeType.class, BinarySecretType.class,
+				CancelTargetType.class, ClaimsType.class, DelegateToType.class, EncryptionType.class, EntropyType.class,
+				KeyExchangeTokenType.class, LifetimeType.class,
+				org.apache.cxf.ws.security.sts.provider.model.ObjectFactory.class, OnBehalfOfType.class,
+				ParticipantsType.class, ParticipantType.class, ProofEncryptionType.class, RenewingType.class,
+				RenewTargetType.class, RequestedProofTokenType.class, RequestedReferenceType.class,
+				RequestedSecurityTokenType.class, RequestedTokenCancelledType.class, RequestKETType.class,
+				RequestSecurityTokenCollectionType.class, RequestSecurityTokenResponseCollectionType.class,
+				RequestSecurityTokenResponseType.class, RequestSecurityTokenType.class, SignChallengeType.class,
+				StatusType.class, UseKeyType.class, ValidateTargetType.class,
+
+				AttributedString.class, BinarySecurityTokenType.class, EmbeddedType.class, EncodedString.class,
+				KeyIdentifierType.class, org.apache.cxf.ws.security.sts.provider.model.secext.ObjectFactory.class,
+				PasswordString.class, ReferenceType.class, SecurityHeaderType.class, SecurityTokenReferenceType.class,
+				TransformationParametersType.class, UsernameTokenType.class,
+
+				AttributedDateTime.class, org.apache.cxf.ws.security.sts.provider.model.utility.AttributedURI.class,
+				org.apache.cxf.ws.security.sts.provider.model.utility.ObjectFactory.class, TimestampType.class,
+
+				ActAsType.class, ChoiceChallengeResponseType.class, ChoiceChallengeType.class, ChoiceSelectedType.class,
+				ChoiceType.class, ContextDataType.class, ImageType.class, InteractiveChallengeResponseType.class,
+				InteractiveChallengeType.class,
+				org.apache.cxf.ws.security.sts.provider.model.wstrust14.ObjectFactory.class,
+				TextChallengeResponseType.class, TextChallengeType.class, TitleType.class,
+
+				CanonicalizationMethodType.class, DigestMethodType.class, DSAKeyValueType.class, KeyInfoType.class,
+				KeyValueType.class, ManifestType.class,
+				org.apache.cxf.ws.security.sts.provider.model.xmldsig.ObjectFactory.class, ObjectType.class,
+				PGPDataType.class, org.apache.cxf.ws.security.sts.provider.model.xmldsig.ReferenceType.class,
+				RetrievalMethodType.class, RSAKeyValueType.class, SignatureMethodType.class,
+				SignaturePropertiesType.class, SignaturePropertyType.class, SignatureType.class,
+				SignatureValueType.class, SignedInfoType.class, SPKIDataType.class, TransformsType.class,
+				TransformType.class, X509DataType.class, X509IssuerSerialType.class,
+
+				CancelOperation.class, IssueOperation.class, IssueSingleOperation.class,
+				KeyExchangeTokenOperation.class, RenewOperation.class, RequestCollectionOperation.class,
+				ValidateOperation.class,
+
+				EHCacheTokenStore.class, EHCacheTokenStoreFactory.class, MemoryTokenStore.class,
+				MemoryTokenStoreFactory.class, org.apache.cxf.ws.security.tokenstore.SecurityToken.class,
+				TokenStore.class, TokenStoreFactory.class, TokenStoreUtils.class,
+
+				AbstractSTSClient.class, AuthPolicyValidatingInterceptor.class, DefaultSymmetricBinding.class,
+				STSClient.class, STSLoginModule.class, STSSamlAssertionValidator.class, STSStaxTokenValidator.class,
+				STSTokenRetriever.class, STSTokenValidator.class, STSUtils.class, TrustException.class,
+
+				ClaimsCallback.class, RoleClaimsCallbackHandler.class,
+
+				DelegationCallback.class, ReceivedTokenCallbackHandler.class, WSSUsernameCallbackHandler.class,
+
+				AbstractTokenInterceptor.class, AbstractUsernameTokenAuthenticatingInterceptor.class,
+				AbstractWSS4JInterceptor.class, AbstractWSS4JStaxInterceptor.class, AlgorithmSuiteTranslater.class,
+				AttachmentCallbackHandler.class, BinarySecurityTokenInterceptor.class, CryptoCoverageChecker.class,
+				CryptoCoverageUtil.class, CXFCallbackLookup.class, CXFRequestData.class,
+				DefaultCryptoCoverageChecker.class, DefaultWSS4JSecurityContextCreator.class,
+				DelegatingCallbackHandler.class, KerberosTokenInterceptor.class, PolicyBasedWSS4JInInterceptor.class,
+				PolicyBasedWSS4JOutInterceptor.class, PolicyBasedWSS4JStaxInInterceptor.class,
+				PolicyBasedWSS4JStaxOutInterceptor.class, SamlTokenInterceptor.class, StaxActionInInterceptor.class,
+				StaxCryptoCoverageChecker.class, StaxSecurityContextInInterceptor.class,
+				TokenStoreCallbackHandler.class, UsernameTokenInterceptor.class, WSS4JInInterceptor.class,
+				WSS4JOutInterceptor.class, WSS4JPolicyAsserter.class, WSS4JSecurityContextCreator.class,
+				WSS4JStaxInInterceptor.class, WSS4JStaxOutInterceptor.class, WSS4JTokenConverter.class,
+				WSS4JUtils.class,
+
+				AbstractBindingBuilder.class, AbstractCommonBindingHandler.class, AbstractStaxBindingHandler.class,
+				AsymmetricBindingHandler.class, StaxAsymmetricBindingHandler.class, StaxSymmetricBindingHandler.class,
+				StaxTransportBindingHandler.class, SymmetricBindingHandler.class, TransportBindingHandler.class,
+				WSSecurityTokenHolder.class,
+
+				AbstractBindingPolicyValidator.class, AbstractSamlPolicyValidator.class,
+				AbstractSecurityPolicyValidator.class, AbstractSupportingTokenPolicyValidator.class,
+				AlgorithmSuitePolicyValidator.class, AsymmetricBindingPolicyValidator.class,
+				ClaimsPolicyValidator.class, ConcreteSupportingTokenPolicyValidator.class,
+				DefaultClaimsPolicyValidator.class, EncryptedTokenPolicyValidator.class,
+				EndorsingEncryptedTokenPolicyValidator.class, EndorsingTokenPolicyValidator.class,
+				IssuedTokenPolicyValidator.class, KerberosTokenPolicyValidator.class, LayoutPolicyValidator.class,
+				PolicyValidatorParameters.class, RequiredElementsPolicyValidator.class,
+				RequiredPartsPolicyValidator.class, SamlTokenPolicyValidator.class,
+				SecuredElementsPolicyValidator.class, SecuredPartsPolicyValidator.class,
+				SecurityContextTokenPolicyValidator.class, SecurityPolicyValidator.class,
+				SignedEncryptedTokenPolicyValidator.class, SignedEndorsingEncryptedTokenPolicyValidator.class,
+				SignedEndorsingTokenPolicyValidator.class, SignedTokenPolicyValidator.class,
+				SymmetricBindingPolicyValidator.class, TransportBindingPolicyValidator.class,
+				UsernameTokenPolicyValidator.class, ValidatorUtils.class, WSS11PolicyValidator.class,
+				X509TokenPolicyValidator.class,
+
+				Object.class
+
+		};
+
+		n.todo(classes);
 	}
 
 	private static void todoTransportHttp(N n) {
