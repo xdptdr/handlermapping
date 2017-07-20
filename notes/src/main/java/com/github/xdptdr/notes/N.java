@@ -79,4 +79,11 @@ public class N {
 
 	}
 
+	public static void azzert(boolean b) {
+		if (!b) {
+			throw new RuntimeException("Assertion Error");
+		}
+
+	}
+
 }

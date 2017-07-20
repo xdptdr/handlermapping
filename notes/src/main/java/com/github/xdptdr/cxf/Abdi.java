@@ -3,9 +3,14 @@ package com.github.xdptdr.cxf;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusException;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.binding.soap.Soap11;
+import org.apache.cxf.binding.soap.SoapMessage;
+import org.apache.cxf.binding.soap.SoapVersion;
 import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.interceptor.InterceptorProvider;
+import org.apache.cxf.message.Exchange;
+import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.phase.Phase;
 import org.apache.cxf.ws.addressing.MAPAggregator;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.apache.cxf.ws.addressing.impl.AddressingFeatureApplier;
@@ -25,8 +30,88 @@ import org.apache.cxf.wsdl11.WSDLManagerImpl;
 import org.apache.neethi.AssertionBuilderFactory;
 import org.w3c.dom.Element;
 
+import com.github.xdptdr.cxf.Abdi.CodePath;
+import com.github.xdptdr.notes.N;
+
 public class Abdi {
-	public static void main(String[] args) throws BusException {
+
+	public static class CodePath {
+
+		private boolean oneway;
+		private boolean requestor;
+		private boolean addressingDisabled;
+		private boolean outbound;
+
+		public CodePath oneway(boolean b) {
+			this.oneway = b;
+			return this;
+		}
+
+		public boolean isOneway() {
+			return oneway;
+		}
+
+		public CodePath requestor(boolean b) {
+			this.requestor = b;
+			return this;
+		}
+
+		public boolean isRequestor() {
+			return requestor;
+		}
+
+		public CodePath addressingDisabled(boolean b) {
+			this.addressingDisabled = b;
+			return this;
+		}
+
+		public boolean isAddressingDisabled() {
+			return addressingDisabled;
+		}
+
+		public CodePath outbound(boolean b) {
+			this.outbound = b;
+			return this;
+
+		}
+
+		public boolean isOutbound() {
+			return outbound;
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		CodePath codePath = new CodePath();
+		codePath.addressingDisabled(false).outbound(true);
+
+		MAPCodec mapCodec = new MAPCodec();
+		N.azzert(Phase.PRE_PROTOCOL.equals(mapCodec.getPhase()));
+		N.azzert(mapCodec.getUnderstoodHeaders() == VersionTransformer.HEADERS);
+		SoapVersion ver = Soap11.getInstance();
+
+		Exchange exchange = new ExchangeImpl();
+		if (codePath.isOneway()) {
+			exchange.setOneWay(true);
+		}
+
+		SoapMessage message = new SoapMessage(ver);
+		message.setExchange(exchange);
+
+		if (codePath.isAddressingDisabled()) {
+			message.put(MAPAggregator.ADDRESSING_DISABLED, true);
+		}
+		
+		if(codePath.isOutbound()) {
+			exchange.setOutMessage(message);
+		}
+
+		mapCodec.handleMessage(message);
+
+	}
+
+	public static void foo() throws BusException {
 
 		WSAddressingFeature wsAddressingFeature = new WSAddressingFeature();
 		Bus bus = BusFactory.getDefaultBus();
