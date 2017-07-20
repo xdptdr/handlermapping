@@ -33,6 +33,8 @@ public class P {
 		ex(1, 2, new Ex() {
 			@Override
 			public void ex() {
+				N.azzertEquals(si(1, 5) * si(1, -4), si(1, 1));
+				N.azzertEquals(si(1, -4) / si(1, 5), si(1, -9));
 			}
 
 		});
