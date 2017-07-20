@@ -1,18 +1,33 @@
 package com.github.xdptdr.cxf;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.faces.flow.builder.ReturnBuilder;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusException;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.binding.soap.Soap11;
+import org.apache.cxf.binding.soap.SoapHeader;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.SoapVersion;
+import org.apache.cxf.headers.Header;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.ws.addressing.AddressingProperties;
+import org.apache.cxf.ws.addressing.AttributedURIType;
+import org.apache.cxf.ws.addressing.JAXWSAConstants;
 import org.apache.cxf.ws.addressing.MAPAggregator;
+import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
+import org.apache.cxf.ws.addressing.VersionTransformer.Names200403;
+import org.apache.cxf.ws.addressing.VersionTransformer.Names200408;
 import org.apache.cxf.ws.addressing.impl.AddressingFeatureApplier;
 import org.apache.cxf.ws.addressing.impl.AddressingWSDLExtensionLoader;
 import org.apache.cxf.ws.addressing.impl.DefaultMessageIdCache;
@@ -30,61 +45,67 @@ import org.apache.cxf.wsdl11.WSDLManagerImpl;
 import org.apache.neethi.AssertionBuilderFactory;
 import org.w3c.dom.Element;
 
-import com.github.xdptdr.cxf.Abdi.CodePath;
 import com.github.xdptdr.notes.N;
 
 public class Abdi {
 
+	private static final String NAMESPACE_URI = "namespaceURI";
+	private static final String HAS_ACTION = "hasAction";
+	private static final String REQUESTOR = "requestor";
+	private static final String OUTBOUND = "outbound";
+	private static final String ADDRESSING_DISABLED = "addressingDisabled";
+	private static final String ONEWAY = "oneway";
+
+	public static enum NURI {
+
+		NULL(null),
+
+		RECENT(Names.WSA_NAMESPACE_NAME),
+
+		OLD(Names200408.WSA_NAMESPACE_NAME),
+
+		OLDER(Names200403.WSA_NAMESPACE_NAME);
+
+		private final String namespaceURI;
+
+		private NURI(String namespaceURI) {
+			this.namespaceURI = namespaceURI;
+		}
+
+		public String getNamespaceURI() {
+			return namespaceURI;
+		}
+
+	};
+
 	public static class CodePath {
 
-		private boolean oneway;
-		private boolean requestor;
-		private boolean addressingDisabled;
-		private boolean outbound;
+		Map<String, Object> p = new HashMap<>();
 
-		public CodePath oneway(boolean b) {
-			this.oneway = b;
+		public CodePath() {
+			p.put(NAMESPACE_URI, NURI.NULL);
+		}
+
+		public CodePath s(String id, Object b) {
+			p.put(id, b);
 			return this;
 		}
 
-		public boolean isOneway() {
-			return oneway;
+		public boolean t(String id) {
+			return Boolean.TRUE.equals(p.get(id));
 		}
 
-		public CodePath requestor(boolean b) {
-			this.requestor = b;
-			return this;
-		}
-
-		public boolean isRequestor() {
-			return requestor;
-		}
-
-		public CodePath addressingDisabled(boolean b) {
-			this.addressingDisabled = b;
-			return this;
-		}
-
-		public boolean isAddressingDisabled() {
-			return addressingDisabled;
-		}
-
-		public CodePath outbound(boolean b) {
-			this.outbound = b;
-			return this;
-
-		}
-
-		public boolean isOutbound() {
-			return outbound;
+		@SuppressWarnings("unchecked")
+		public <T> T g(String id, Class<T> clazz) {
+			return (T) p.get(id);
 		}
 
 	}
 
 	public static void main(String[] args) {
 
-		CodePath codePath = new CodePath();
-		codePath.addressingDisabled(false).outbound(true);
+		CodePath c = new CodePath();
+		c.s(OUTBOUND, true);
 
 		MAPCodec mapCodec = new MAPCodec();
 		N.azzert(Phase.PRE_PROTOCOL.equals(mapCodec.getPhase()));
@@ -92,22 +113,53 @@ public class Abdi {
 		SoapVersion ver = Soap11.getInstance();
 
 		Exchange exchange = new ExchangeImpl();
-		if (codePath.isOneway()) {
-			exchange.setOneWay(true);
-		}
 
 		SoapMessage message = new SoapMessage(ver);
 		message.setExchange(exchange);
 
-		if (codePath.isAddressingDisabled()) {
-			message.put(MAPAggregator.ADDRESSING_DISABLED, true);
+		AddressingProperties addressingProperties = null;
+		String namespaceURI = c.g(NAMESPACE_URI, NURI.class).getNamespaceURI();
+		if (namespaceURI == null) {
+			addressingProperties = new AddressingProperties();
+		} else {
+			addressingProperties = new AddressingProperties(namespaceURI);
 		}
-		
-		if(codePath.isOutbound()) {
+
+		if (c.t(REQUESTOR)) {
+			message.put(Message.REQUESTOR_ROLE, true);
+			message.put(JAXWSAConstants.CLIENT_ADDRESSING_PROPERTIES, addressingProperties);
+		}
+
+		if (c.t(OUTBOUND)) {
+			message.put(JAXWSAConstants.ADDRESSING_PROPERTIES_OUTBOUND, addressingProperties);
 			exchange.setOutMessage(message);
 		}
 
+		if (!c.t(REQUESTOR) && !c.t(OUTBOUND)) {
+			message.put(JAXWSAConstants.ADDRESSING_PROPERTIES_INBOUND, addressingProperties);
+		}
+
+		AttributedURIType action = new AttributedURIType();
+		action.setValue("toto");
+		if (c.t(HAS_ACTION)) {
+			addressingProperties.setAction(action);
+		}
+
 		mapCodec.handleMessage(message);
+
+		if (c.t(HAS_ACTION)) {
+			SoapHeader actionHeader = (SoapHeader) message
+					.getHeader(new QName("http://www.w3.org/2005/08/addressing", "Action"));
+			N.azzert(actionHeader != null);
+			N.azzert(!actionHeader.isMustUnderstand());
+			N.azzert(actionHeader.getActor() == null);
+			JAXBElement<?> actionObject = (JAXBElement<?>) actionHeader.getObject();
+			N.azzert(actionObject != null);
+			Object v = actionObject.getValue();
+			N.azzert(v == action);
+		}
+
+		System.out.println("End.");
 
 	}
 
@@ -148,8 +200,8 @@ public class Abdi {
 		AddressingWSDLExtensionLoader addressingWSDLExtensionLoader = new AddressingWSDLExtensionLoader(bus);
 
 		DefaultMessageIdCache defaultMessageIdCache = new DefaultMessageIdCache();
-		azzert(!defaultMessageIdCache.checkUniquenessAndCacheId("foo"));
-		azzert(defaultMessageIdCache.checkUniquenessAndCacheId("foo"));
+		N.azzert(!defaultMessageIdCache.checkUniquenessAndCacheId("foo"));
+		N.azzert(defaultMessageIdCache.checkUniquenessAndCacheId("foo"));
 
 		// simple
 		// effectively returns clones of MAPAggregator
@@ -192,13 +244,6 @@ public class Abdi {
 		foo(MetadataConstants.USING_ADDRESSING_2005_QNAME);
 		foo(MetadataConstants.USING_ADDRESSING_2006_QNAME);
 		foo(MetadataConstants.USING_ADDRESSING_ELEM_NAME);
-
-	}
-
-	private static void azzert(boolean b) {
-		if (!b) {
-			throw new RuntimeException("Assertion Error");
-		}
 
 	}
 

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
@@ -84,6 +86,15 @@ public class N {
 			throw new RuntimeException("Assertion Error");
 		}
 
+	}
+
+	public static String qns(QName qn) {
+		if (qn == null) {
+			return "!null!";
+		} else {
+			return qn.getNamespaceURI() + " " + qn.getPrefix() + " " + qn.getLocalPart();
+
+		}
 	}
 
 }
