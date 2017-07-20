@@ -97,4 +97,9 @@ public class N {
 		}
 	}
 
+	public static void azzertEquals(double a, double b) {
+		azzert(a == b);
+
+	}
+
 }
