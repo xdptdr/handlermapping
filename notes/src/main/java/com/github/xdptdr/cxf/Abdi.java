@@ -32,6 +32,7 @@ import com.github.xdptdr.cxf.abdi.CodePath;
 import com.github.xdptdr.cxf.abdi.DUP;
 import com.github.xdptdr.cxf.abdi.MU;
 import com.github.xdptdr.cxf.abdi.NURI;
+import com.github.xdptdr.dump.Dumper;
 import com.github.xdptdr.notes.N;
 
 public class Abdi {
@@ -145,6 +146,8 @@ public class Abdi {
 			Object v = actionObject.getValue();
 			N.azzert(v == iri);
 		}
+
+		Dumper.dump(message);
 
 		System.out.println("End.");
 
