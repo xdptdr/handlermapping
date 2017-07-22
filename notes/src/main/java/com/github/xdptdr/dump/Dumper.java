@@ -23,7 +23,7 @@ public class Dumper {
 	public static void dump(String id, Object o) {
 
 		if (o == null) {
-			System.out.println("null");
+			System.out.println(id + " : null");
 			return;
 		}
 		try {
@@ -32,7 +32,8 @@ public class Dumper {
 			dumper.getMethod("dump", String.class, Object.class).invoke(null, id, o);
 		} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			System.out.println(id + " : " + o.getClass().getName());
+			System.out.println("  " + e.getClass().getSimpleName() + " : " + e.getMessage());
 		}
 	}
 }

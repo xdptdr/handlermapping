@@ -147,7 +147,7 @@ public class Abdi {
 			N.azzert(v == iri);
 		}
 
-		Dumper.dump(message);
+		Dumper.dump("message",message);
 
 		System.out.println("End.");
 

@@ -7,28 +7,28 @@ import org.apache.cxf.message.Attachment;
 import com.github.xdptdr.dump.Dumper;
 
 public class SoapMessageDumper {
-	public static void dump(Object o) {
+	public static void dump(String id, Object o) {
 		SoapMessage m = (SoapMessage) o;
-		Dumper.dump(m.getEnvelopeNs());
+		Dumper.dump(id + ".envelopeNs", m.getEnvelopeNs());
 		for (Header h : m.getHeaders()) {
-			Dumper.dump(h);
+			Dumper.dump(id + ".header." + h.getName().getLocalPart(), h);
 		}
-		Dumper.dump(m.getVersion());
-		Dumper.dump(m.getAttachmentMimeType());
+		Dumper.dump(id + ".version", m.getVersion());
+		Dumper.dump(id + ".attachmentMimeTypes", m.getAttachmentMimeType());
 		if (m.getAttachments() != null) {
 			for (Attachment a : m.getAttachments()) {
-				Dumper.dump(a);
+				Dumper.dump(id + ".attachment" + a);
 			}
 		}
 		for (Class<?> f : m.getContentFormats()) {
-			Dumper.dump(m.getContent(f));
+			Dumper.dump(id + ".content", m.getContent(f));
 		}
 		for (String k : m.getContextualPropertyKeys()) {
-			Dumper.dump(m.getContextualProperty(k));
+			Dumper.dump(id + ".contextualProperty." + k, m.getContextualProperty(k));
 		}
-		Dumper.dump(m.getDestination());
-		Dumper.dump(m.getExchange());
-		Dumper.dump(m.getId());
-		Dumper.dump(m.getInterceptorChain());
+		Dumper.dump(id + ".destination", m.getDestination());
+		Dumper.dump(id + ".exchange", m.getExchange());
+		Dumper.dump(id + ".id", m.getId());
+		Dumper.dump(id + ".interceptorChain", m.getInterceptorChain());
 	}
 }

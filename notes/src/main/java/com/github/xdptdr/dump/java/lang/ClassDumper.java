@@ -1,7 +1,7 @@
 package com.github.xdptdr.dump.java.lang;
 
-public class BooleanDumper {
+public class ClassDumper {
 	public static void dump(String id, Object o) {
-		System.out.println(id + " : " + o.toString());
+		System.out.println(id + " : " + ((Class<?>) o).getName());
 	}
 }
