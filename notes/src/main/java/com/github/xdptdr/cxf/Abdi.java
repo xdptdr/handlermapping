@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.cxf.binding.soap.Soap11;
 import org.apache.cxf.binding.soap.SoapHeader;
@@ -30,6 +32,9 @@ import org.apache.cxf.ws.addressing.RelatesToType;
 import org.apache.cxf.ws.addressing.VersionTransformer.Names200408;
 import org.apache.cxf.ws.addressing.soap.MAPCodec;
 import org.apache.cxf.ws.addressing.soap.VersionTransformer;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.github.xdptdr.cxf.abdi.CodePath;
 import com.github.xdptdr.cxf.abdi.DUP;
@@ -39,6 +44,7 @@ import com.github.xdptdr.notes.N;
 
 public class Abdi {
 
+	private static final String ADDRESSING_PROPERTIES_LOCATION = "addressingPropertiesLocation";
 	private static final String IS_ADDRESSING_DISABLED = "isAddressingDisabled";
 	private static final String T_DUPLICATE = "duplicate";
 	private static final String FAULT_PROPERTY_NAME = "faultPropertyName";
@@ -77,17 +83,14 @@ public class Abdi {
 
 	/**
 	 * @param args
+	 * @throws ParserConfigurationException
+	 * @throws DOMException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws DOMException, ParserConfigurationException {
 
-		int d = 15;
-		int H = 80;
-		int L = 120;
-		System.out.println(Math.sqrt(H*H+L*L)+2*d);
-		System.out.println(16/Math.sqrt(2));
-		
 		CodePath c = new CodePath();
-		c.s(IS_OUTBOUND, true).s(T_DUPLICATE, DUP.ACTION);
+		c.s(IS_ADDRESSING_DISABLED, false).s(NAMESPACE_URI, NURI.RECENT).s(IS_OUTBOUND, false).s(HAS_ACTION, true)
+				.s(T_DUPLICATE, DUP.ACTION).s(ADDRESSING_PROPERTIES_LOCATION, null);
 
 		MAPCodec mapCodec = new MAPCodec();
 		N.azzert(Phase.PRE_PROTOCOL.equals(mapCodec.getPhase()));
@@ -113,16 +116,20 @@ public class Abdi {
 
 		if (c.t(IS_REQUESTOR)) {
 			message.put(Message.REQUESTOR_ROLE, true);
-			message.put(JAXWSAConstants.CLIENT_ADDRESSING_PROPERTIES, maps);
 		}
 
 		if (c.t(IS_OUTBOUND)) {
-			message.put(JAXWSAConstants.ADDRESSING_PROPERTIES_OUTBOUND, maps);
 			exchange.setOutMessage(message);
 		}
 
-		if (!c.t(IS_REQUESTOR) && !c.t(IS_OUTBOUND)) {
-			message.put(JAXWSAConstants.ADDRESSING_PROPERTIES_INBOUND, maps);
+		APL apl = c.g(ADDRESSING_PROPERTIES_LOCATION, APL.class);
+		if (apl != null) {
+			message.put(apl.getKey(), maps);
+		} else {
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+			Element hello = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_MESSAGEID_NAME);
+			hello.appendChild(doc.createTextNode("hello"));
+			message.getHeaders().add(new SoapHeader(new QName("foo", "bar"), hello));
 		}
 
 		if (c.t(HAS_FAULT_PROPERTY)) {
@@ -239,9 +246,50 @@ public class Abdi {
 	}
 
 	private static void check(CodePath c, SoapMessage m) {
-		checkDuplicates(c, m);
-		checkMustUnderstand(c, m);
+		dumpHeaderNames(m);
+		if (c.t(IS_ADDRESSING_DISABLED)) {
+			checkNone(c, m);
+		} else {
+			checkNamespaces(c, m);
+			checkAction(c, m);
+			checkDuplicates(c, m);
+			checkMustUnderstand(c, m);
+		}
 
+	}
+
+	private static void checkNamespaces(CodePath c, SoapMessage m) {
+		NURI nuri = c.g(NAMESPACE_URI, NURI.class);
+		if (nuri == null) {
+			nuri = NURI.RECENT;
+		}
+		String ns = nuri.getNamespaceURI();
+		for (Header h : m.getHeaders()) {
+			N.azzert(ns.equals(h.getName().getNamespaceURI()));
+		}
+	}
+
+	private static void dumpHeaderNames(SoapMessage m) {
+		for (Header h : m.getHeaders()) {
+			System.out.println(h.getName());
+		}
+
+	}
+
+	private static void checkNone(CodePath c, SoapMessage m) {
+		N.azzert(m.getHeaders().size() == 0);
+
+	}
+
+	private static void checkAction(CodePath c, SoapMessage m) {
+		boolean headerFound = false;
+		for (Header h : m.getHeaders()) {
+			if ("Action".equals(h.getName().getLocalPart())) {
+				headerFound = true;
+				break;
+			}
+		}
+		N.azzert(headerFound == c.t(HAS_ACTION));
 	}
 
 	private static void checkDuplicates(CodePath c, SoapMessage m) {
