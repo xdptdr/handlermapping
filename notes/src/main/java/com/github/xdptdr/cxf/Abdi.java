@@ -23,6 +23,7 @@ import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.JAXWSAConstants;
+import org.apache.cxf.ws.addressing.MAPAggregator;
 import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 import org.apache.cxf.ws.addressing.RelatesToType;
@@ -79,6 +80,12 @@ public class Abdi {
 	 */
 	public static void main(String[] args) {
 
+		int d = 15;
+		int H = 80;
+		int L = 120;
+		System.out.println(Math.sqrt(H*H+L*L)+2*d);
+		System.out.println(16/Math.sqrt(2));
+		
 		CodePath c = new CodePath();
 		c.s(IS_OUTBOUND, true).s(T_DUPLICATE, DUP.ACTION);
 
@@ -98,6 +105,10 @@ public class Abdi {
 			maps = new AddressingProperties();
 		} else {
 			maps = new AddressingProperties(nuri.getNamespaceURI());
+		}
+
+		if (c.t(IS_ADDRESSING_DISABLED)) {
+			message.put(MAPAggregator.ADDRESSING_DISABLED, true);
 		}
 
 		if (c.t(IS_REQUESTOR)) {
