@@ -44,6 +44,11 @@ import com.github.xdptdr.notes.N;
 
 public class Abdi {
 
+	private static final String DUMMY_ACTION = "dummyAction";
+	private static final String ACTION_TEXT_NODE = "actionTextNode";
+	private static final String DUMMY_MESSAGE_ID = "dummyMessageId";
+	private static final String DUMMY_NS = "dummyNs";
+	private static final String MESSAGE_ID_TEXT_NODE = "messageIdTextNode";
 	private static final String ADDRESSING_PROPERTIES_LOCATION = "addressingPropertiesLocation";
 	private static final String IS_ADDRESSING_DISABLED = "isAddressingDisabled";
 	private static final String T_DUPLICATE = "duplicate";
@@ -102,14 +107,6 @@ public class Abdi {
 		SoapMessage message = new SoapMessage(ver);
 		message.setExchange(exchange);
 
-		AddressingProperties maps = null;
-		NURI nuri = c.g(NAMESPACE_URI, NURI.class);
-		if (nuri == null) {
-			maps = new AddressingProperties();
-		} else {
-			maps = new AddressingProperties(nuri.getNamespaceURI());
-		}
-
 		if (c.t(IS_ADDRESSING_DISABLED)) {
 			message.put(MAPAggregator.ADDRESSING_DISABLED, true);
 		}
@@ -124,12 +121,104 @@ public class Abdi {
 
 		APL apl = c.g(ADDRESSING_PROPERTIES_LOCATION, APL.class);
 		if (apl != null) {
+			AddressingProperties maps = new AddressingProperties();
 			message.put(apl.getKey(), maps);
+
+			NURI nuri = c.g(NAMESPACE_URI, NURI.class);
+			if (nuri != null) {
+				maps.exposeAs(nuri.getNamespaceURI());
+			}
+
+			if (c.t(HAS_ACTION)) {
+				AttributedURIType actionAURIT = new AttributedURIType();
+				actionAURIT.setValue("actionAURIT");
+				maps.setAction(actionAURIT);
+			}
+
+			if (c.t(HAS_MESSAGE_ID)) {
+				AttributedURIType messageIdAURIT = new AttributedURIType();
+				messageIdAURIT.setValue("messageIdAURIT");
+				maps.setMessageID(messageIdAURIT);
+			}
+
+			if (c.t(HAS_TO)) {
+				AttributedURIType toAURIT = new AttributedURIType();
+				toAURIT.setValue("toAURIT");
+				maps.setMessageID(toAURIT);
+			}
+
+			if (c.t(HAS_RELATES_TO)) {
+				RelatesToType rel = new RelatesToType();
+				rel.setValue(RELATES_TO_VALUE);
+				maps.setRelatesTo(rel);
+			}
+			if (c.t(HAS_REPLY_TO)) {
+				AttributedURIType replyToAddressAURIT = new AttributedURIType();
+				if (c.t(IS_REPLY_TO_NONE)) {
+					replyToAddressAURIT.setValue(Names.WSA_NONE_ADDRESS);
+				} else {
+					replyToAddressAURIT.setValue(REPLY_TO_ADDRESS);
+				}
+				EndpointReferenceType replyToERT = new EndpointReferenceType();
+				replyToERT.setAddress(replyToAddressAURIT);
+				maps.setReplyTo(replyToERT);
+			}
+
+			if (c.t(HAS_FROM)) {
+				AttributedURIType fromAddressAURIT = new AttributedURIType();
+				fromAddressAURIT.setValue("fromAddress");
+				EndpointReferenceType fromERT = new EndpointReferenceType();
+				fromERT.setAddress(fromAddressAURIT);
+				maps.setFrom(fromERT);
+			}
+
+			if (c.t(HAS_FAULT_TO)) {
+				AttributedURIType faultToAURIT = new AttributedURIType();
+				faultToAURIT.setValue(FAULT_TO_ADDRESS);
+				EndpointReferenceType faultToERT = new EndpointReferenceType();
+				faultToERT.setAddress(faultToAURIT);
+				maps.setFaultTo(faultToERT);
+			}
+
+			if (c.t(HAS_TO)) {
+				AttributedURIType toAURIT = new AttributedURIType();
+				toAURIT.setValue(TO_ADDRESS);
+				EndpointReferenceType toERT = new EndpointReferenceType();
+				toERT.setAddress(toAURIT);
+				if (c.t(HAS_TO_REFERENCE_PARAMETERS)) {
+					ReferenceParametersType rpt = new ReferenceParametersType();
+					rpt.getAny().add(new JAXBElement<String>(new QName(TO_REF_PARAM_NS, TO_REF_PARAM_NAME),
+							String.class, TO_REF_PARAM_VALUE));
+					toERT.setReferenceParameters(rpt);
+				}
+
+				maps.setTo(toERT);
+			}
+
+			DUP dup = c.g(T_DUPLICATE, DUP.class);
+			if (dup != null) {
+				maps.setDuplicate(dup.getQn());
+			}
+
+			List<MU> mus = c.l(L_MUST_UNDERSTAND, MU.class);
+			if (mus != null) {
+				for (MU mu : mus) {
+					maps.getMustUnderstand().add(mu.getQn());
+				}
+			}
+
 		} else {
 			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-			Element hello = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_MESSAGEID_NAME);
-			hello.appendChild(doc.createTextNode("hello"));
-			message.getHeaders().add(new SoapHeader(new QName("foo", "bar"), hello));
+			if (c.t(HAS_MESSAGE_ID)) {
+				Element messageIdElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_MESSAGEID_NAME);
+				messageIdElement.appendChild(doc.createTextNode(MESSAGE_ID_TEXT_NODE));
+				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_MESSAGE_ID), messageIdElement));
+			}
+			if (c.t(HAS_ACTION)) {
+				Element actionElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_ACTION_NAME);
+				actionElement.appendChild(doc.createTextNode(ACTION_TEXT_NODE));
+				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_ACTION), actionElement));
+			}
 		}
 
 		if (c.t(HAS_FAULT_PROPERTY)) {
@@ -156,85 +245,6 @@ public class Abdi {
 			values.add(MIME_HEADER_VALUE);
 			mimeHeaders.put("SOAPAction", values);
 			message.put(Message.MIME_HEADERS, mimeHeaders);
-		}
-
-		if (c.t(HAS_ACTION)) {
-			AttributedURIType actionAURIT = new AttributedURIType();
-			actionAURIT.setValue("actionAURIT");
-			maps.setAction(actionAURIT);
-		}
-
-		if (c.t(HAS_MESSAGE_ID)) {
-			AttributedURIType messageIdAURIT = new AttributedURIType();
-			messageIdAURIT.setValue("messageIdAURIT");
-			maps.setMessageID(messageIdAURIT);
-		}
-
-		if (c.t(HAS_TO)) {
-			AttributedURIType toAURIT = new AttributedURIType();
-			toAURIT.setValue("toAURIT");
-			maps.setMessageID(toAURIT);
-		}
-
-		if (c.t(HAS_RELATES_TO)) {
-			RelatesToType rel = new RelatesToType();
-			rel.setValue(RELATES_TO_VALUE);
-			maps.setRelatesTo(rel);
-		}
-
-		if (c.t(HAS_REPLY_TO)) {
-			AttributedURIType replyToAddressAURIT = new AttributedURIType();
-			if (c.t(IS_REPLY_TO_NONE)) {
-				replyToAddressAURIT.setValue(Names.WSA_NONE_ADDRESS);
-			} else {
-				replyToAddressAURIT.setValue(REPLY_TO_ADDRESS);
-			}
-			EndpointReferenceType replyToERT = new EndpointReferenceType();
-			replyToERT.setAddress(replyToAddressAURIT);
-			maps.setReplyTo(replyToERT);
-		}
-
-		if (c.t(HAS_FROM)) {
-			AttributedURIType fromAddressAURIT = new AttributedURIType();
-			fromAddressAURIT.setValue("fromAddress");
-			EndpointReferenceType fromERT = new EndpointReferenceType();
-			fromERT.setAddress(fromAddressAURIT);
-			maps.setFrom(fromERT);
-		}
-
-		if (c.t(HAS_FAULT_TO)) {
-			AttributedURIType faultToAURIT = new AttributedURIType();
-			faultToAURIT.setValue(FAULT_TO_ADDRESS);
-			EndpointReferenceType faultToERT = new EndpointReferenceType();
-			faultToERT.setAddress(faultToAURIT);
-			maps.setFaultTo(faultToERT);
-		}
-
-		if (c.t(HAS_TO)) {
-			AttributedURIType toAURIT = new AttributedURIType();
-			toAURIT.setValue(TO_ADDRESS);
-			EndpointReferenceType toERT = new EndpointReferenceType();
-			toERT.setAddress(toAURIT);
-			if (c.t(HAS_TO_REFERENCE_PARAMETERS)) {
-				ReferenceParametersType rpt = new ReferenceParametersType();
-				rpt.getAny().add(new JAXBElement<String>(new QName(TO_REF_PARAM_NS, TO_REF_PARAM_NAME), String.class,
-						TO_REF_PARAM_VALUE));
-				toERT.setReferenceParameters(rpt);
-			}
-
-			maps.setTo(toERT);
-		}
-
-		DUP dup = c.g(T_DUPLICATE, DUP.class);
-		if (dup != null) {
-			maps.setDuplicate(dup.getQn());
-		}
-
-		List<MU> mus = c.l(L_MUST_UNDERSTAND, MU.class);
-		if (mus != null) {
-			for (MU mu : mus) {
-				maps.getMustUnderstand().add(mu.getQn());
-			}
 		}
 
 		mapCodec.handleMessage(message);
@@ -265,6 +275,9 @@ public class Abdi {
 		}
 		String ns = nuri.getNamespaceURI();
 		for (Header h : m.getHeaders()) {
+			if (DUMMY_NS.equals(h.getName().getNamespaceURI())) {
+				break;
+			}
 			N.azzert(ns.equals(h.getName().getNamespaceURI()));
 		}
 	}
@@ -282,6 +295,7 @@ public class Abdi {
 	}
 
 	private static void checkAction(CodePath c, SoapMessage m) {
+		APL apl = c.g(ADDRESSING_PROPERTIES_LOCATION, APL.class);
 		boolean headerFound = false;
 		for (Header h : m.getHeaders()) {
 			if ("Action".equals(h.getName().getLocalPart())) {
@@ -289,7 +303,16 @@ public class Abdi {
 				break;
 			}
 		}
-		N.azzert(headerFound == c.t(HAS_ACTION));
+		if (apl != null) {
+			N.azzert(headerFound == c.t(HAS_ACTION));
+		} else {
+			N.azzert(!headerFound);
+			AddressingProperties maps = (AddressingProperties) m
+					.getContextualProperty(JAXWSAConstants.ADDRESSING_PROPERTIES_INBOUND);
+			N.azzert(maps != null);
+			N.azzert(maps.getAction() != null);
+			N.azzert(ACTION_TEXT_NODE.equals(maps.getAction().getValue()));
+		}
 	}
 
 	private static void checkDuplicates(CodePath c, SoapMessage m) {
