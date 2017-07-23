@@ -44,6 +44,8 @@ import com.github.xdptdr.notes.N;
 
 public class Abdi {
 
+	private static final String DUMMY_TO = "dummyTo";
+	private static final String TO_TEXT_NODE = "toTextNode";
 	private static final String DUMMY_ACTION = "dummyAction";
 	private static final String ACTION_TEXT_NODE = "actionTextNode";
 	private static final String DUMMY_MESSAGE_ID = "dummyMessageId";
@@ -94,8 +96,8 @@ public class Abdi {
 	public static void main(String[] args) throws DOMException, ParserConfigurationException {
 
 		CodePath c = new CodePath();
-		c.s(IS_ADDRESSING_DISABLED, false).s(NAMESPACE_URI, NURI.RECENT).s(IS_OUTBOUND, false).s(HAS_ACTION, true)
-				.s(T_DUPLICATE, DUP.ACTION).s(ADDRESSING_PROPERTIES_LOCATION, null);
+		c.s(IS_ADDRESSING_DISABLED, false).s(NAMESPACE_URI, NURI.RECENT).s(IS_OUTBOUND, false)
+				.s(ADDRESSING_PROPERTIES_LOCATION, null).s(HAS_TO, true);
 
 		MAPCodec mapCodec = new MAPCodec();
 		N.azzert(Phase.PRE_PROTOCOL.equals(mapCodec.getPhase()));
@@ -219,6 +221,11 @@ public class Abdi {
 				actionElement.appendChild(doc.createTextNode(ACTION_TEXT_NODE));
 				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_ACTION), actionElement));
 			}
+			if (c.t(HAS_TO)) {
+				Element toElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_TO_NAME);
+				toElement.appendChild(doc.createTextNode(TO_TEXT_NODE));
+				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_TO), toElement));
+			}
 		}
 
 		if (c.t(HAS_FAULT_PROPERTY)) {
@@ -261,7 +268,7 @@ public class Abdi {
 			checkNone(c, m);
 		} else {
 			checkNamespaces(c, m);
-			checkAction(c, m);
+			checkActionTo(c, m);
 			checkDuplicates(c, m);
 			checkMustUnderstand(c, m);
 		}
@@ -294,24 +301,41 @@ public class Abdi {
 
 	}
 
-	private static void checkAction(CodePath c, SoapMessage m) {
+	private static void checkActionTo(CodePath c, SoapMessage m) {
 		APL apl = c.g(ADDRESSING_PROPERTIES_LOCATION, APL.class);
-		boolean headerFound = false;
+		Set<String> headersFound = new HashSet<>();
 		for (Header h : m.getHeaders()) {
-			if ("Action".equals(h.getName().getLocalPart())) {
-				headerFound = true;
-				break;
-			}
+			headersFound.add(h.getName().getLocalPart());
 		}
 		if (apl != null) {
-			N.azzert(headerFound == c.t(HAS_ACTION));
+			N.azzert(headersFound.contains(Names.WSA_ACTION_NAME) == c.t(HAS_ACTION));
+			N.azzert(headersFound.contains(Names.WSA_TO_NAME) == c.t(HAS_TO));
+			N.azzert(headersFound.contains(Names.WSA_MESSAGEID_NAME) == c.t(HAS_MESSAGE_ID));
 		} else {
-			N.azzert(!headerFound);
+			N.azzert(!headersFound.contains(Names.WSA_ACTION_NAME));
+			N.azzert(!headersFound.contains(Names.WSA_TO_NAME));
+			N.azzert(!headersFound.contains(Names.WSA_MESSAGEID_NAME));
 			AddressingProperties maps = (AddressingProperties) m
 					.getContextualProperty(JAXWSAConstants.ADDRESSING_PROPERTIES_INBOUND);
 			N.azzert(maps != null);
-			N.azzert(maps.getAction() != null);
-			N.azzert(ACTION_TEXT_NODE.equals(maps.getAction().getValue()));
+			if (c.t(HAS_ACTION)) {
+				N.azzert(maps.getAction() != null);
+				N.azzert(ACTION_TEXT_NODE.equals(maps.getAction().getValue()));
+			} else {
+				N.azzert(maps.getAction() == null);
+			}
+			if (c.t(HAS_TO)) {
+				N.azzert(maps.getTo() != null);
+				N.azzert(TO_TEXT_NODE.equals(maps.getTo().getValue()));
+			} else {
+				N.azzert(maps.getTo() == null);
+			}
+			if (c.t(HAS_MESSAGE_ID)) {
+				N.azzert(maps.getMessageID() != null);
+				N.azzert(MESSAGE_ID_TEXT_NODE.equals(maps.getMessageID().getValue()));
+			} else {
+				N.azzert(maps.getMessageID() == null);
+			}
 		}
 	}
 
