@@ -44,10 +44,14 @@ import com.github.xdptdr.notes.N;
 
 public class Abdi {
 
+	private static final String IS_STRICT_ACTION_CHECKING = "isStrictActionChecking";
 	private static final String DUMMY_REPLY = "dummyReply";
 	private static final String REPLY_TO_TEXT_NODE = "replyToTextNode";
 	private static final String DUMMY_TO = "dummyTo";
 	private static final String TO_TEXT_NODE = "toTextNode";
+	private static final String FROM_TEXT_NODE = "fromTextNode";
+	private static final String FAULT_TO_TEXT_NODE = "faultToTextNode";
+	private static final String RELATES_TO_TEXT_NODE = "relatesToTextNode";
 	private static final String DUMMY_ACTION = "dummyAction";
 	private static final String ACTION_TEXT_NODE = "actionTextNode";
 	private static final String DUMMY_MESSAGE_ID = "dummyMessageId";
@@ -99,7 +103,7 @@ public class Abdi {
 
 		CodePath c = new CodePath();
 		c.s(IS_ADDRESSING_DISABLED, false).s(NAMESPACE_URI, NURI.RECENT).s(IS_OUTBOUND, false)
-				.s(ADDRESSING_PROPERTIES_LOCATION, null).s(HAS_REPLY_TO, true);
+				.s(ADDRESSING_PROPERTIES_LOCATION, null).s(HAS_ACTION, true).s(IS_STRICT_ACTION_CHECKING, true);
 
 		MAPCodec mapCodec = new MAPCodec();
 		N.azzert(Phase.PRE_PROTOCOL.equals(mapCodec.getPhase()));
@@ -228,6 +232,25 @@ public class Abdi {
 				toElement.appendChild(doc.createTextNode(TO_TEXT_NODE));
 				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_TO), toElement));
 			}
+			if (c.t(HAS_FROM)) {
+				Element fromElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_FROM_NAME);
+				Element addressElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_ADDRESS_NAME);
+				addressElement.appendChild(doc.createTextNode(FROM_TEXT_NODE));
+				fromElement.appendChild(addressElement);
+				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_REPLY), fromElement));
+			}
+			if (c.t(HAS_FAULT_TO)) {
+				Element faultToElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_FAULTTO_NAME);
+				Element addressElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_ADDRESS_NAME);
+				addressElement.appendChild(doc.createTextNode(FAULT_TO_TEXT_NODE));
+				faultToElement.appendChild(addressElement);
+				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_REPLY), faultToElement));
+			}
+			if (c.t(HAS_RELATES_TO)) {
+				Element relatesToElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_RELATESTO_NAME);
+				relatesToElement.appendChild(doc.createTextNode(RELATES_TO_TEXT_NODE));
+				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_REPLY), relatesToElement));
+			}
 			if (c.t(HAS_REPLY_TO)) {
 				Element replyElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_REPLYTO_NAME);
 				Element addressElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_ADDRESS_NAME);
@@ -244,6 +267,10 @@ public class Abdi {
 
 		if (c.t(IS_REPLY_TO_OPTIONAL)) {
 			message.put("ws-addressing.write.optional.replyto", true);
+		}
+
+		if (c.t(IS_STRICT_ACTION_CHECKING)) {
+			message.put("ws-addressing.strict.action.checking", true);
 		}
 
 		if (c.t(HAS_WSA_HEADER)) {
