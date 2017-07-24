@@ -143,10 +143,10 @@ public class Abdiel {
 		cp.set(CP_MAPS_INBOUND, new Boolean[] { false, true }, 0);
 		cp.set(CP_MAPS_OUTBOUND, new Boolean[] { false, true }, 0);
 		cp.set(CP_MAPS_CLIENT, new Boolean[] { false, true }, 0);
-		cp.set(CP_MESSAGE_CONTENT_IS_FAULT, new Boolean[] { false, true }, 0);
+		cp.set(CP_MESSAGE_CONTENT_IS_FAULT, new Boolean[] { false, true }, 1);
 		cp.set(CP_WSA_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_CONTENT_IS_FAULT_WITH_FAULT_ACTION_ANNOTATION, new Boolean[] { false, true }, 0);
-		cp.set(CP_NULL_BINDING_OPERATION_INFO, new Boolean[] { false, true }, 1);
+		cp.set(CP_NULL_BINDING_OPERATION_INFO, new Boolean[] { false, true }, 0);
 		cp.set(CP_UNWRAPPED_CAPABLE, new Boolean[] { false, true }, 1);
 		cp.set(CP_HAS_CONTEXT_UTILS_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(CP_HAS_SOAP_BINDING_CONSTANTS_ACTION, new Boolean[] { false, true }, 0);
