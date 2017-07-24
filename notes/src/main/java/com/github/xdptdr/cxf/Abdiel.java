@@ -26,6 +26,7 @@ import org.apache.cxf.service.ServiceImpl;
 import org.apache.cxf.service.model.BindingInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.EndpointInfo;
+import org.apache.cxf.service.model.Extensible;
 import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.ws.addressing.AddressingProperties;
@@ -43,7 +44,7 @@ import com.github.xdptdr.cxf.abdiel.AbdielFault;
 
 public class Abdiel {
 
-	private static final String CP_UNWRAPPED_OPERATION_HAS_SOAP_EXTENSOR = "unwrappedOperationHasSoapExtensor";
+	private static final String SOAP_EXTENSOR = "soapExtensor";
 	private static final String CP_MESSAGE_INFO_HAS_OLD_ACTION = "messageInfoHasOLDAction";
 	private static final String CP_MESSAGE_INFO_HAS_NSWSA_ACTION = "messageInfoHasNSWSAAction";
 	private static final String CP_MESSAGE_INFO_HAS_WSAW_WSDL_ACTION = "messageInfoHasWSAWWSDLAction";
@@ -145,7 +146,7 @@ public class Abdiel {
 		cp.set(CP_MESSAGE_CONTENT_IS_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_WSA_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_CONTENT_IS_FAULT_WITH_FAULT_ACTION_ANNOTATION, new Boolean[] { false, true }, 0);
-		cp.set(CP_NULL_BINDING_OPERATION_INFO, new Boolean[] { false, true }, 0);
+		cp.set(CP_NULL_BINDING_OPERATION_INFO, new Boolean[] { false, true }, 1);
 		cp.set(CP_UNWRAPPED_CAPABLE, new Boolean[] { false, true }, 1);
 		cp.set(CP_HAS_CONTEXT_UTILS_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(CP_HAS_SOAP_BINDING_CONSTANTS_ACTION, new Boolean[] { false, true }, 0);
@@ -156,7 +157,7 @@ public class Abdiel {
 		cp.set(CP_MESSAGE_INFO_HAS_WSAW_WSDL_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_INFO_HAS_NSWSA_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_INFO_HAS_OLD_ACTION, new Boolean[] { false, true }, 0);
-		cp.set(CP_UNWRAPPED_OPERATION_HAS_SOAP_EXTENSOR, new Boolean[] { false, true }, 1);
+		cp.set(SOAP_EXTENSOR, new Boolean[] { false, true }, 1);
 
 		Exchange exchange = null;
 		boolean nullExchange = (boolean) cp.get(CP_NULL_EXCHANGE);
@@ -164,47 +165,36 @@ public class Abdiel {
 			exchange = new ExchangeImpl();
 
 			if (!(boolean) cp.get(CP_NULL_BINDING_OPERATION_INFO)) {
-				OperationInfo operationInfo = new OperationInfo();
-				if ((boolean) cp.get(CP_UNWRAPPED_OPERATION_HAS_SOAP_EXTENSOR)) {
-					final SoapOperationInfo soapOperationInfo = new SoapOperationInfo();
-					soapOperationInfo.setAction("actionName");
-					operationInfo.addExtensor(soapOperationInfo);
-				}
+				OperationInfo wrappedOperationInfo = new OperationInfo();
+				setSoapExtensor(wrappedOperationInfo, cp);
 				if ((boolean) cp.get(CP_UNWRAPPED_CAPABLE)) {
 					OperationInfo unwrappedOperationInfo = new OperationInfo();
-					if ((boolean) cp.get(CP_UNWRAPPED_OPERATION_HAS_SOAP_EXTENSOR)) {
-						final SoapOperationInfo soapOperationInfo = new SoapOperationInfo();
-						soapOperationInfo.setAction("actionName");
-						unwrappedOperationInfo.addExtensor(soapOperationInfo);
-					}
-					operationInfo.setUnwrappedOperation(unwrappedOperationInfo);
+					setSoapExtensor(unwrappedOperationInfo, cp);
+					wrappedOperationInfo.setUnwrappedOperation(unwrappedOperationInfo);
 				}
 
 				if ((boolean) cp.get(CP_OPERATION_INFO_HAS_INPUT)) {
-					MessageInfo messageInfo = getMessageInfo(cp, operationInfo);
-					if (operationInfo.getUnwrappedOperation() != null) {
-						MessageInfo messageInfo2 = getMessageInfo(cp, operationInfo.getUnwrappedOperation());
-						operationInfo.getUnwrappedOperation().setInput("", messageInfo2);
+					MessageInfo messageInfo = getMessageInfo(cp, wrappedOperationInfo);
+					if (wrappedOperationInfo.getUnwrappedOperation() != null) {
+						MessageInfo messageInfo2 = getMessageInfo(cp, wrappedOperationInfo.getUnwrappedOperation());
+						wrappedOperationInfo.getUnwrappedOperation().setInput("", messageInfo2);
 					}
-					operationInfo.setInput("", messageInfo);
+					wrappedOperationInfo.setInput("", messageInfo);
 				}
 				if ((boolean) cp.get(CP_OPERATION_INFO_HAS_OUTPUT)) {
-					MessageInfo messageInfo = getMessageInfo(cp, operationInfo);
-					if (operationInfo.getUnwrappedOperation() != null) {
-						MessageInfo messageInfo2 = getMessageInfo(cp, operationInfo.getUnwrappedOperation());
-						operationInfo.getUnwrappedOperation().setOutput("", messageInfo2);
+					MessageInfo messageInfo = getMessageInfo(cp, wrappedOperationInfo);
+					if (wrappedOperationInfo.getUnwrappedOperation() != null) {
+						MessageInfo messageInfo2 = getMessageInfo(cp, wrappedOperationInfo.getUnwrappedOperation());
+						wrappedOperationInfo.getUnwrappedOperation().setOutput("", messageInfo2);
 					}
-					operationInfo.setOutput("", messageInfo);
+					wrappedOperationInfo.setOutput("", messageInfo);
 				}
 
-				BindingOperationInfo bindingOperationInfo = new BindingOperationInfo(null, operationInfo);
-
-				if ((boolean) cp.get(CP_UNWRAPPED_OPERATION_HAS_SOAP_EXTENSOR)) {
-					final SoapOperationInfo soapOperationInfo = new SoapOperationInfo();
-					soapOperationInfo.setAction("actionName");
-					bindingOperationInfo.addExtensor(soapOperationInfo);
+				BindingOperationInfo bindingOperationInfo = new BindingOperationInfo(null, wrappedOperationInfo);
+				setSoapExtensor(bindingOperationInfo, cp);
+				if ((boolean) cp.get(CP_UNWRAPPED_CAPABLE)) {
+					setSoapExtensor(bindingOperationInfo.getUnwrappedOperation(), cp);
 				}
-
 				exchange.put(BindingOperationInfo.class, bindingOperationInfo);
 			}
 		}
@@ -343,6 +333,14 @@ public class Abdiel {
 
 		mapAggregatorImpl.handleMessage(message);
 
+	}
+
+	private static void setSoapExtensor(Extensible extensible, CodePath cp) {
+		if ((boolean) cp.get(SOAP_EXTENSOR)) {
+			SoapOperationInfo soapOperationInfo = new SoapOperationInfo();
+			soapOperationInfo.setAction("actionName");
+			extensible.addExtensor(soapOperationInfo);
+		}
 	}
 
 	private static MessageInfo getMessageInfo(CodePath cp, OperationInfo operationInfo) {
