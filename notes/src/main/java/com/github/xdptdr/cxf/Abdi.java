@@ -44,6 +44,8 @@ import com.github.xdptdr.notes.N;
 
 public class Abdi {
 
+	private static final String DUMMY_REPLY = "dummyReply";
+	private static final String REPLY_TO_TEXT_NODE = "replyToTextNode";
 	private static final String DUMMY_TO = "dummyTo";
 	private static final String TO_TEXT_NODE = "toTextNode";
 	private static final String DUMMY_ACTION = "dummyAction";
@@ -97,7 +99,7 @@ public class Abdi {
 
 		CodePath c = new CodePath();
 		c.s(IS_ADDRESSING_DISABLED, false).s(NAMESPACE_URI, NURI.RECENT).s(IS_OUTBOUND, false)
-				.s(ADDRESSING_PROPERTIES_LOCATION, null).s(HAS_TO, true);
+				.s(ADDRESSING_PROPERTIES_LOCATION, null).s(HAS_REPLY_TO, true);
 
 		MAPCodec mapCodec = new MAPCodec();
 		N.azzert(Phase.PRE_PROTOCOL.equals(mapCodec.getPhase()));
@@ -226,6 +228,13 @@ public class Abdi {
 				toElement.appendChild(doc.createTextNode(TO_TEXT_NODE));
 				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_TO), toElement));
 			}
+			if (c.t(HAS_REPLY_TO)) {
+				Element replyElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_REPLYTO_NAME);
+				Element addressElement = doc.createElementNS(Names.WSA_NAMESPACE_NAME, Names.WSA_ADDRESS_NAME);
+				addressElement.appendChild(doc.createTextNode(REPLY_TO_TEXT_NODE));
+				replyElement.appendChild(addressElement);
+				message.getHeaders().add(new SoapHeader(new QName(DUMMY_NS, DUMMY_REPLY), replyElement));
+			}
 		}
 
 		if (c.t(HAS_FAULT_PROPERTY)) {
@@ -268,7 +277,7 @@ public class Abdi {
 			checkNone(c, m);
 		} else {
 			checkNamespaces(c, m);
-			checkActionTo(c, m);
+			checkProps(c, m);
 			checkDuplicates(c, m);
 			checkMustUnderstand(c, m);
 		}
@@ -301,7 +310,7 @@ public class Abdi {
 
 	}
 
-	private static void checkActionTo(CodePath c, SoapMessage m) {
+	private static void checkProps(CodePath c, SoapMessage m) {
 		APL apl = c.g(ADDRESSING_PROPERTIES_LOCATION, APL.class);
 		Set<String> headersFound = new HashSet<>();
 		for (Header h : m.getHeaders()) {
@@ -311,6 +320,7 @@ public class Abdi {
 			N.azzert(headersFound.contains(Names.WSA_ACTION_NAME) == c.t(HAS_ACTION));
 			N.azzert(headersFound.contains(Names.WSA_TO_NAME) == c.t(HAS_TO));
 			N.azzert(headersFound.contains(Names.WSA_MESSAGEID_NAME) == c.t(HAS_MESSAGE_ID));
+			N.azzert(headersFound.contains(Names.WSA_REPLY_NAME) == c.t(HAS_REPLY_TO));
 		} else {
 			N.azzert(!headersFound.contains(Names.WSA_ACTION_NAME));
 			N.azzert(!headersFound.contains(Names.WSA_TO_NAME));
@@ -335,6 +345,15 @@ public class Abdi {
 				N.azzert(MESSAGE_ID_TEXT_NODE.equals(maps.getMessageID().getValue()));
 			} else {
 				N.azzert(maps.getMessageID() == null);
+			}
+			if (c.t(HAS_REPLY_TO)) {
+				N.azzert(maps.getReplyTo() != null);
+				N.azzert(maps.getReplyTo().getAddress() != null);
+				N.azzert(REPLY_TO_TEXT_NODE.equals(maps.getReplyTo().getAddress().getValue()));
+			} else {
+				N.azzert(maps.getReplyTo() != null);
+				N.azzert(maps.getReplyTo().getAddress() != null);
+				N.azzert(Names.WSA_ANONYMOUS_ADDRESS.equals(maps.getReplyTo().getAddress().getValue()));
 			}
 		}
 	}
