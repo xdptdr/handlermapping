@@ -8,8 +8,8 @@ public class AbdielFault extends Fault {
 
 	private static final long serialVersionUID = 1L;
 
-	public AbdielFault() {
-		super((Throwable) null);
+	public AbdielFault(Throwable t) {
+		super(t);
 	}
 
 }

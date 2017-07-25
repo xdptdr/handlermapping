@@ -23,11 +23,14 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.ServiceImpl;
+import org.apache.cxf.service.model.BindingFaultInfo;
 import org.apache.cxf.service.model.BindingInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.Extensible;
+import org.apache.cxf.service.model.FaultInfo;
 import org.apache.cxf.service.model.MessageInfo;
+import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.ContextUtils;
@@ -41,9 +44,18 @@ import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.neethi.builders.PrimitiveAssertion;
 
 import com.github.xdptdr.cxf.abdiel.AbdielFault;
+import com.github.xdptdr.cxf.abdiel.AbdielThrowableWebFault;
 
 public class Abdiel {
 
+	private static final String CP_FAULT_INFO_HAS_OLD_ACTION_EXTENSION_ATTRIBUTE = "faultInfoHasOldActionExtensionAttribute";
+	private static final String CP_FAULT_INFO_HAS_ACTION_EXTENSION_ATTRIBUTE = "faultInfoHasActionExtensionAttribute";
+	private static final String CP_THROWABLE_IS_WEB_FAULT = "throwableIsWebFault";
+	private static final String CP_MESSAGE_PART_INFO_CONCRETE_NAME_WEB_FAULT = "messagePartInfoConcreteNameWebFault";
+	private static final String CP_MESSAGE_PART_INFO_TYPE_CLASS_IS_THROWABLE = "messagePartInfoTypeClassIsThrowable";
+	private static final String CP_THROWABLE_NOT_NULL = "throwableNotNull";
+	private static final String CP_FAULT_INFO_SIZE_NOT_ZERO = "faultInfoSizeNotZero";
+	private static final String CP_HAS_FAULT_INFO = "hasFaultInfo";
 	private static final String SOAP_EXTENSOR = "soapExtensor";
 	private static final String CP_MESSAGE_INFO_HAS_OLD_ACTION = "messageInfoHasOLDAction";
 	private static final String CP_MESSAGE_INFO_HAS_NSWSA_ACTION = "messageInfoHasNSWSAAction";
@@ -158,6 +170,14 @@ public class Abdiel {
 		cp.set(CP_MESSAGE_INFO_HAS_NSWSA_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_INFO_HAS_OLD_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(SOAP_EXTENSOR, new Boolean[] { false, true }, 1);
+		cp.set(CP_HAS_FAULT_INFO, new Boolean[] { false, true }, 1);
+		cp.set(CP_FAULT_INFO_SIZE_NOT_ZERO, new Boolean[] { false, true }, 1);
+		cp.set(CP_THROWABLE_NOT_NULL, new Boolean[] { false, true }, 1);
+		cp.set(CP_MESSAGE_PART_INFO_TYPE_CLASS_IS_THROWABLE, new Boolean[] { false, true }, 0);
+		cp.set(CP_MESSAGE_PART_INFO_CONCRETE_NAME_WEB_FAULT, new Boolean[] { false, true }, 1);
+		cp.set(CP_THROWABLE_IS_WEB_FAULT, new Boolean[] { false, true }, 1);
+		cp.set(CP_FAULT_INFO_HAS_ACTION_EXTENSION_ATTRIBUTE, new Boolean[] { false, true }, 0);
+		cp.set(CP_FAULT_INFO_HAS_OLD_ACTION_EXTENSION_ATTRIBUTE, new Boolean[] { false, true }, 0);
 
 		Exchange exchange = null;
 		boolean nullExchange = (boolean) cp.get(CP_NULL_EXCHANGE);
@@ -169,6 +189,7 @@ public class Abdiel {
 				setSoapExtensor(wrappedOperationInfo, cp);
 				if ((boolean) cp.get(CP_UNWRAPPED_CAPABLE)) {
 					OperationInfo unwrappedOperationInfo = new OperationInfo();
+					addFault(unwrappedOperationInfo, cp);
 					setSoapExtensor(unwrappedOperationInfo, cp);
 					wrappedOperationInfo.setUnwrappedOperation(unwrappedOperationInfo);
 				}
@@ -190,6 +211,7 @@ public class Abdiel {
 					wrappedOperationInfo.setOutput("", messageInfo);
 				}
 
+				addFault(wrappedOperationInfo, cp);
 				BindingOperationInfo bindingOperationInfo = new BindingOperationInfo(null, wrappedOperationInfo);
 				setSoapExtensor(bindingOperationInfo, cp);
 				if ((boolean) cp.get(CP_UNWRAPPED_CAPABLE)) {
@@ -302,9 +324,19 @@ public class Abdiel {
 		}
 
 		if ((boolean) cp.get(CP_MESSAGE_CONTENT_IS_FAULT)) {
-			Fault fault = new Fault((Throwable) null);
+
+			Throwable t = null;
+			if ((boolean) cp.get(CP_THROWABLE_NOT_NULL)) {
+				if ((boolean) cp.get(CP_THROWABLE_IS_WEB_FAULT)) {
+					t = new AbdielThrowableWebFault();
+				} else {
+					t = new Throwable();
+				}
+			}
+
+			Fault fault = new Fault(t);
 			if ((boolean) cp.get(CP_MESSAGE_CONTENT_IS_FAULT_WITH_FAULT_ACTION_ANNOTATION)) {
-				fault = new AbdielFault();
+				fault = new AbdielFault(t);
 			}
 
 			if ((boolean) cp.get(CP_WSA_FAULT)) {
@@ -332,6 +364,53 @@ public class Abdiel {
 		}
 
 		mapAggregatorImpl.handleMessage(message);
+
+	}
+
+	private static void addFault(OperationInfo operationInfo, CodePath cp) {
+
+		if ((boolean) cp.get(CP_HAS_FAULT_INFO)) {
+
+			QName aqn = new QName("aNS", "aLP");
+			QName bqn = new QName("bNs", "bLP");
+			FaultInfo faultInfo = new FaultInfo(aqn, bqn, operationInfo);
+			if ((boolean) cp.get(CP_FAULT_INFO_SIZE_NOT_ZERO)) {
+				QName mpiQName = new QName("mpiNS", "mpiLP");
+				MessagePartInfo messagePartInfo = new MessagePartInfo(mpiQName, faultInfo);
+				if ((boolean) cp.get(CP_MESSAGE_PART_INFO_TYPE_CLASS_IS_THROWABLE)) {
+					messagePartInfo.setTypeClass(Throwable.class);
+				}
+
+				if ((boolean) cp.get(CP_MESSAGE_PART_INFO_CONCRETE_NAME_WEB_FAULT)) {
+					messagePartInfo.setConcreteName(new QName("webFaultNS", "webFaultLP"));
+				}
+
+				faultInfo.addMessagePart(messagePartInfo);
+			}
+
+			if ((boolean) cp.get(CP_FAULT_INFO_HAS_ACTION_EXTENSION_ATTRIBUTE)) {
+				faultInfo.addExtensionAttribute(Names.WSAW_ACTION_QNAME, "actionName");
+			}
+
+			if ((boolean) cp.get(CP_FAULT_INFO_HAS_OLD_ACTION_EXTENSION_ATTRIBUTE)) {
+				faultInfo.addExtensionAttribute(new QName(Names.WSA_NAMESPACE_WSDL_NAME_OLD, Names.WSAW_ACTION_NAME),
+						"actionName");
+			}
+
+			operationInfo.addFault(faultInfo);
+
+		}
+
+		// FaultInfo f = new FaultInfo(null, null,
+		// bindingOperationInfo.getOperationInfo());
+		// f.addExtensionAttribute(Names.WSAW_ACTION_QNAME, "actionName");
+		// f.addExtensionAttribute(new QName(Names.WSA_NAMESPACE_WSDL_NAME_OLD,
+		// Names.WSAW_ACTION_NAME), "actionName");
+		// MessagePartInfo part = new MessagePartInfo(null, f);
+		// QName concreteName = new QName("webFaultNS", "webFaultName");
+		// part.setConcreteName(concreteName);
+		// part.setTypeClass(Throwable.class);
+		// f.addMessagePart(part);
 
 	}
 
