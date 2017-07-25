@@ -424,6 +424,80 @@ import org.apache.cxf.jaxb.attachment.JAXBAttachmentSchemaValidationHack;
 import org.apache.cxf.jaxb.attachment.JAXBAttachmentUnmarshaller;
 import org.apache.cxf.jaxb.io.DataReaderImpl;
 import org.apache.cxf.jaxb.io.DataWriterImpl;
+import org.apache.cxf.jaxws.AbstractJAXWSMethodInvoker;
+import org.apache.cxf.jaxws.CXFService;
+import org.apache.cxf.jaxws.DispatchImpl;
+import org.apache.cxf.jaxws.EndpointReferenceBuilder;
+import org.apache.cxf.jaxws.EndpointUtils;
+import org.apache.cxf.jaxws.JAXWSMethodDispatcher;
+import org.apache.cxf.jaxws.JAXWSMethodInvoker;
+import org.apache.cxf.jaxws.JAXWSProviderMethodDispatcher;
+import org.apache.cxf.jaxws.JaxWsClientFactoryBean;
+import org.apache.cxf.jaxws.JaxWsClientProxy;
+import org.apache.cxf.jaxws.JaxWsConfigurationException;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
+import org.apache.cxf.jaxws.JaxwsServiceBuilder;
+import org.apache.cxf.jaxws.ServerAsyncResponse;
+import org.apache.cxf.jaxws.WrapperClassGenerator;
+import org.apache.cxf.jaxws.binding.AbstractBindingImpl;
+import org.apache.cxf.jaxws.binding.DefaultBindingImpl;
+import org.apache.cxf.jaxws.binding.http.HTTPBindingImpl;
+import org.apache.cxf.jaxws.binding.soap.JaxWsSoapBindingConfiguration;
+import org.apache.cxf.jaxws.binding.soap.SOAPBindingImpl;
+import org.apache.cxf.jaxws.context.WebServiceContextImpl;
+import org.apache.cxf.jaxws.context.WebServiceContextResourceResolver;
+import org.apache.cxf.jaxws.context.WrappedMessageContext;
+import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import org.apache.cxf.jaxws.handler.AbstractJAXWSHandlerInterceptor;
+import org.apache.cxf.jaxws.handler.AbstractProtocolHandlerInterceptor;
+import org.apache.cxf.jaxws.handler.AnnotationHandlerChainBuilder;
+import org.apache.cxf.jaxws.handler.HandlerChainBuilder;
+import org.apache.cxf.jaxws.handler.HandlerChainInvoker;
+import org.apache.cxf.jaxws.handler.HandlerResolverImpl;
+import org.apache.cxf.jaxws.handler.InitParamResourceResolver;
+import org.apache.cxf.jaxws.handler.PortInfoImpl;
+import org.apache.cxf.jaxws.handler.logical.LogicalHandlerFaultInInterceptor;
+import org.apache.cxf.jaxws.handler.logical.LogicalHandlerFaultOutInterceptor;
+import org.apache.cxf.jaxws.handler.logical.LogicalHandlerInInterceptor;
+import org.apache.cxf.jaxws.handler.logical.LogicalHandlerOutInterceptor;
+import org.apache.cxf.jaxws.handler.logical.LogicalMessageContextImpl;
+import org.apache.cxf.jaxws.handler.logical.LogicalMessageImpl;
+import org.apache.cxf.jaxws.handler.soap.SOAPHandlerFaultInInterceptor;
+import org.apache.cxf.jaxws.handler.soap.SOAPHandlerFaultOutInterceptor;
+import org.apache.cxf.jaxws.handler.soap.SOAPHandlerInterceptor;
+import org.apache.cxf.jaxws.handler.soap.SOAPMessageContextImpl;
+import org.apache.cxf.jaxws.handler.types.CString;
+import org.apache.cxf.jaxws.handler.types.DescriptionType;
+import org.apache.cxf.jaxws.handler.types.DisplayNameType;
+import org.apache.cxf.jaxws.handler.types.FullyQualifiedClassType;
+import org.apache.cxf.jaxws.handler.types.IconType;
+import org.apache.cxf.jaxws.handler.types.ParamValueType;
+import org.apache.cxf.jaxws.handler.types.PathType;
+import org.apache.cxf.jaxws.handler.types.PortComponentHandlerType;
+import org.apache.cxf.jaxws.handler.types.XsdQNameType;
+import org.apache.cxf.jaxws.handler.types.XsdStringType;
+import org.apache.cxf.jaxws.interceptors.HolderInInterceptor;
+import org.apache.cxf.jaxws.interceptors.HolderOutInterceptor;
+import org.apache.cxf.jaxws.interceptors.MessageModeInInterceptor;
+import org.apache.cxf.jaxws.interceptors.MessageModeOutInterceptor;
+import org.apache.cxf.jaxws.interceptors.SwAInInterceptor;
+import org.apache.cxf.jaxws.interceptors.SwAOutInterceptor;
+import org.apache.cxf.jaxws.interceptors.WebFaultOutInterceptor;
+import org.apache.cxf.jaxws.interceptors.WrapperClassInInterceptor;
+import org.apache.cxf.jaxws.interceptors.WrapperClassOutInterceptor;
+import org.apache.cxf.jaxws.spi.ProviderImpl;
+import org.apache.cxf.jaxws.support.BindingID;
+import org.apache.cxf.jaxws.support.DummyImpl;
+import org.apache.cxf.jaxws.support.JaxWsClientEndpointImpl;
+import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
+import org.apache.cxf.jaxws.support.JaxWsEndpointImplFactory;
+import org.apache.cxf.jaxws.support.JaxWsImplementorInfo;
+import org.apache.cxf.jaxws.support.JaxWsServiceConfiguration;
+import org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean;
+import org.apache.cxf.jaxws.support.ServiceDelegateAccessor;
+import org.apache.cxf.jaxws.support.WebServiceProviderConfiguration;
+import org.apache.cxf.jaxws22.JAXWS22Invoker;
 import org.apache.cxf.logging.FaultListener;
 import org.apache.cxf.logging.NoOpFaultListener;
 import org.apache.cxf.management.InstrumentationManager;
@@ -630,6 +704,9 @@ import org.apache.cxf.transport.http.policy.HTTPServerAssertionBuilder;
 import org.apache.cxf.transport.http.policy.NoOpPolicyInterceptorProvider;
 import org.apache.cxf.transport.http.policy.impl.ClientPolicyCalculator;
 import org.apache.cxf.transport.http.policy.impl.ServerPolicyCalculator;
+import org.apache.cxf.transport.http_jaxws_spi.HttpHandlerImpl;
+import org.apache.cxf.transport.http_jaxws_spi.JAXWSHttpSpiDestination;
+import org.apache.cxf.transport.http_jaxws_spi.JAXWSHttpSpiTransportFactory;
 import org.apache.cxf.transport.https.AliasedX509ExtendedKeyManager;
 import org.apache.cxf.transport.https.CertConstraints;
 import org.apache.cxf.transport.https.CertConstraintsFeature;
@@ -1300,6 +1377,71 @@ public class Todos {
 
 		};
 
+		n.todo(classes);
+	}
+
+	public static void todoFrontendJAXWS(N n) {
+		Class<?>[] classes = new Class<?>[] {
+
+				AbstractJAXWSMethodInvoker.class, CXFService.class, DispatchImpl.class,
+				org.apache.cxf.jaxws.EndpointImpl.class, EndpointReferenceBuilder.class, EndpointUtils.class,
+				JaxWsClientFactoryBean.class, JaxWsClientProxy.class, JaxWsConfigurationException.class,
+				JAXWSMethodDispatcher.class, JAXWSMethodInvoker.class, JAXWSProviderMethodDispatcher.class,
+				JaxWsProxyFactoryBean.class, JaxWsServerFactoryBean.class, JaxwsServiceBuilder.class,
+				ServerAsyncResponse.class, org.apache.cxf.jaxws.ServiceImpl.class, WrapperClassGenerator.class,
+
+				AbstractBindingImpl.class, DefaultBindingImpl.class,
+
+				HTTPBindingImpl.class,
+
+				JaxWsSoapBindingConfiguration.class, SOAPBindingImpl.class,
+
+				// Activator.class,
+				// JAXWSBPNamespaceHandler.class,
+
+				WebServiceContextImpl.class, WebServiceContextResourceResolver.class, WrappedMessageContext.class,
+
+				JaxWsDynamicClientFactory.class,
+
+				AbstractJAXWSHandlerInterceptor.class, AbstractProtocolHandlerInterceptor.class,
+				AnnotationHandlerChainBuilder.class, HandlerChainBuilder.class, HandlerChainInvoker.class,
+				HandlerResolverImpl.class, InitParamResourceResolver.class, PortInfoImpl.class,
+
+				LogicalHandlerFaultInInterceptor.class, LogicalHandlerFaultOutInterceptor.class,
+				LogicalHandlerInInterceptor.class, LogicalHandlerOutInterceptor.class, LogicalMessageContextImpl.class,
+				LogicalMessageImpl.class,
+
+				SOAPHandlerFaultInInterceptor.class, SOAPHandlerFaultOutInterceptor.class, SOAPHandlerInterceptor.class,
+				SOAPMessageContextImpl.class,
+
+				CString.class, DescriptionType.class, DisplayNameType.class, FullyQualifiedClassType.class,
+				IconType.class, ParamValueType.class, PathType.class, PortComponentHandlerType.class,
+				XsdQNameType.class, XsdStringType.class,
+
+				HolderInInterceptor.class, HolderOutInterceptor.class, MessageModeInInterceptor.class,
+				MessageModeOutInterceptor.class, SwAInInterceptor.class, SwAOutInterceptor.class,
+				WebFaultOutInterceptor.class, WrapperClassInInterceptor.class, WrapperClassOutInterceptor.class,
+
+				ProviderImpl.class,
+
+				// EndpointDefinitionParser.class,
+				// JaxWsProxyFactoryBeanDefinitionParser.class,
+				// JaxWsWebServicePublisherBeanPostProcessor.class,
+				// NamespaceHandler.class,
+
+				BindingID.class, DummyImpl.class, JaxWsClientEndpointImpl.class, JaxWsEndpointImpl.class,
+				JaxWsEndpointImplFactory.class, JaxWsImplementorInfo.class, JaxWsServiceConfiguration.class,
+				JaxWsServiceFactoryBean.class, ServiceDelegateAccessor.class, WebServiceProviderConfiguration.class,
+
+				org.apache.cxf.jaxws22.EndpointImpl.class, JAXWS22Invoker.class,
+
+				org.apache.cxf.jaxws22.spi.ProviderImpl.class,
+
+				HttpHandlerImpl.class, JAXWSHttpSpiDestination.class, JAXWSHttpSpiTransportFactory.class,
+
+				Object.class
+
+		};
 		n.todo(classes);
 	}
 

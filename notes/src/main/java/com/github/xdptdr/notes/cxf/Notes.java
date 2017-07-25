@@ -49,33 +49,6 @@ public class Notes {
 
 	private static void notes(N n) {
 
-		// n.k(Abda.class, AbdaInterceptor.class).s(" illustrates how to use")
-		// .k(Message.class, MessageImpl.class, Exchange.class,
-		// ExchangeImpl.class, Interceptor.class)
-		// .s(" to send and receive messages with interceptor through an
-		// exchange");
-		//
-		// n.o(Aaron.class, BusFactory.class, Bus.class,
-		// ExtensionManagerBus.class, Feature.class);
-		//
-		// n.o(Abba.class, DataBinding.class, EndpointProperties.class,
-		// EndpointProperty.class, EvaluateAllEndpoints.class,
-		// FactoryType.class, FastInfoset.class, GZIP.class, Logging.class,
-		// Policies.class, Policy.class,
-		// Provider.class, SchemaValidation.class, UseAsyncMethod.class,
-		// WSDLDocumentation.class,
-		// WSDLDocumentationCollection.class);
-		//
-		// n.o(Abaddon.class, AttachmentDataSource.class,
-		// AttachmentDeserializer.class, AttachmentImpl.class,
-		// AttachmentSerializer.class, AttachmentUtil.class,
-		// Base64DecoderStream.class, ByteDataSource.class,
-		// ContentDisposition.class, DelegatingInputStream.class,
-		// ImageDataContentHandler.class,
-		// LazyAttachmentCollection.class, LazyDataSource.class,
-		// MimeBodyPartInputStream.class,
-		// QuotedPrintableDecoderStream.class, Rfc5987Util.class);
-
 		Abdeel.n(n);
 
 	}
@@ -83,6 +56,7 @@ public class Notes {
 	private static void todos(N n) {
 		Todos.todoCore(n);
 		Todos.todoFrontendSimple(n);
+		Todos.todoFrontendJAXWS(n);
 		Todos.todoSecurity(n);
 		Todos.todoSecuritySaml(n);
 		Todos.todoWsdl(n);

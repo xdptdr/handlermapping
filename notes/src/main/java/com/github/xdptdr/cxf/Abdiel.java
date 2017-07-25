@@ -15,9 +15,11 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.binding.soap.SoapBindingConstants;
 import org.apache.cxf.binding.soap.model.SoapOperationInfo;
+import org.apache.cxf.endpoint.ConduitSelector;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.endpoint.EndpointException;
 import org.apache.cxf.endpoint.EndpointImpl;
+import org.apache.cxf.endpoint.PreexistingConduitSelector;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.ExchangeImpl;
@@ -25,7 +27,6 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.ServiceImpl;
-import org.apache.cxf.service.model.BindingFaultInfo;
 import org.apache.cxf.service.model.BindingInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.EndpointInfo;
@@ -36,11 +37,18 @@ import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceInfo;
+import org.apache.cxf.transport.Conduit;
+import org.apache.cxf.transport.local.LocalConduit;
+import org.apache.cxf.transport.local.LocalDestination;
+import org.apache.cxf.transport.local.LocalTransportFactory;
 import org.apache.cxf.ws.addressing.AddressingProperties;
+import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.ContextUtils;
+import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.JAXWSAConstants;
 import org.apache.cxf.ws.addressing.MAPAggregator;
 import org.apache.cxf.ws.addressing.Names;
+import org.apache.cxf.ws.addressing.WSAContextUtils;
 import org.apache.cxf.ws.addressing.impl.MAPAggregatorImpl;
 import org.apache.cxf.ws.addressing.policy.MetadataConstants;
 import org.apache.cxf.ws.policy.AssertionInfo;
@@ -52,6 +60,12 @@ import com.github.xdptdr.cxf.abdiel.AbdielWebFault;
 
 public class Abdiel {
 
+	private static final String CP_ENDPOINT_INFO_NAME_NOT_NULL = "endpointInfoNameNotNull";
+	private static final String CP_MESSAGE_HAS_REPLY_TO_PROPERTY = "messageHasReplyToProperty";
+	private static final String CP_HAS_REPLY_TO = "hasReplyTo";
+	private static final String CP_REPLY_TO_ADDRESS = "replyToAddress";
+	private static final String CP_MESSAGE_HAS_ENDPOINT_ADDRESS = "messageHasEndpointAddress";
+	private static final String CP_HAS_CONDUIT = "hasConduit";
 	private static final String CP_NULL_OP_INPUT_NAME = "nullOpInputName";
 	private static final String CP_NULL_OP_OUTPUT_NAME = "nullOpOutputName";
 	private static final String CP_BLP_VALUE = "blpValue";
@@ -96,7 +110,7 @@ public class Abdiel {
 	private static final String CP_ENDPOINT_INFO_HAS_USING_ADDRESSING_EXTENSOR = "endpointInfoHasUsingAddressingExtensor";
 	private static final String CP_IS_ENDPOINT_USING_ADDRESSING = "isEndpointUsingAddressing";
 	private static final String CP_NULL_ENDPOINT = "nullEndpoint";
-	private static final String CP_IS_REQUESTOR = "isRequestor";
+	private static final String CP_REQUESTOR = "requestor";
 	private static final String CP_MESSAGE_OUT = "messageOut";
 	private static final String CP_MESSAGE_OUT_FAULT = "messageOutFault";
 	private static final String CP_MESSAGE_IN_FAULT = "messageInFault";
@@ -147,7 +161,7 @@ public class Abdiel {
 		cp.set(CP_MESSAGE_IN_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_OUT_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_OUT, new Boolean[] { false, true }, 1);
-		cp.set(CP_IS_REQUESTOR, new Boolean[] { false, true, null }, 0);
+		cp.set(CP_REQUESTOR, new Boolean[] { false, true, null }, 1);
 		cp.set(CP_NULL_ENDPOINT, new Boolean[] { true, false }, 1);
 		cp.set(CP_IS_ENDPOINT_USING_ADDRESSING, new Boolean[] { false, true, null }, 1);
 		cp.set(CP_ENDPOINT_INFO_HAS_USING_ADDRESSING_EXTENSOR, new Boolean[] { false, true }, 0);
@@ -193,6 +207,12 @@ public class Abdiel {
 		cp.set(CP_BLP_VALUE, new String[] { "bLP", "Throwable" }, 0);
 		cp.set(CP_NULL_OP_INPUT_NAME, new Boolean[] { false, true }, 0);
 		cp.set(CP_NULL_OP_OUTPUT_NAME, new Boolean[] { false, true }, 0);
+		cp.set(CP_HAS_CONDUIT, new Boolean[] { false, true }, 0);
+		cp.set(CP_MESSAGE_HAS_ENDPOINT_ADDRESS, new Boolean[] { false, true }, 1);
+		cp.set(CP_HAS_REPLY_TO, new Boolean[] { false, true }, 0);
+		cp.set(CP_REPLY_TO_ADDRESS, new Object[] { null, Names.WSA_ANONYMOUS_ADDRESS, Names.WSA_NONE_ADDRESS }, 0);
+		cp.set(CP_MESSAGE_HAS_REPLY_TO_PROPERTY, new Boolean[] { false, true }, 1);
+		cp.set(CP_ENDPOINT_INFO_NAME_NOT_NULL, new Boolean[] { false, true }, 1);
 
 		Exchange exchange = null;
 		if (!(boolean) cp.get(CP_NULL_EXCHANGE)) {
@@ -286,7 +306,7 @@ public class Abdiel {
 			if (addressingDisabled != null) {
 				message.put(MAPAggregator.ADDRESSING_DISABLED, addressingDisabled.booleanValue());
 			}
-			Boolean isRequestor = (Boolean) cp.get(CP_IS_REQUESTOR);
+			Boolean isRequestor = (Boolean) cp.get(CP_REQUESTOR);
 			if (isRequestor != null) {
 				message.put(Message.REQUESTOR_ROLE, isRequestor.booleanValue());
 			}
@@ -296,6 +316,13 @@ public class Abdiel {
 			if ((boolean) cp.get(CP_HAS_SOAP_BINDING_CONSTANTS_ACTION)) {
 				message.put(SoapBindingConstants.SOAP_ACTION, "actionName");
 			}
+			if ((boolean) cp.get(CP_MESSAGE_HAS_ENDPOINT_ADDRESS)) {
+				message.put(Message.ENDPOINT_ADDRESS, "messageEndpointAddress");
+			}
+			if ((boolean) cp.get(CP_MESSAGE_HAS_REPLY_TO_PROPERTY)) {
+				message.put(WSAContextUtils.REPLYTO_PROPERTY, "messageReplyTo");
+			}
+
 		}
 
 		boolean messageInFault = (boolean) cp.get(CP_MESSAGE_IN_FAULT);
@@ -314,12 +341,17 @@ public class Abdiel {
 		}
 
 		Endpoint endpoint = null;
+		Bus bus = null;
+		EndpointInfo endpointInfo = null;
 		boolean nullEndpoint = (boolean) cp.get(CP_NULL_ENDPOINT);
 		if (!nullEndpoint) {
 			BindingInfo bindingInfo = new BindingInfo(null, "http://www.w3.org/2004/08/wsdl/http");
-			EndpointInfo endpointInfo = new EndpointInfo();
+			endpointInfo = new EndpointInfo();
+			if ((boolean) cp.get(CP_ENDPOINT_INFO_NAME_NOT_NULL)) {
+				endpointInfo.setName(new QName("endpointInfoNS", "endpointInfoLP"));
+			}
 			endpointInfo.setBinding(bindingInfo);
-			Bus bus = BusFactory.getDefaultBus();
+			bus = BusFactory.getDefaultBus();
 			Service service = null;
 			if (!(boolean) cp.get(CP_NULL_SERVICE)) {
 				service = new ServiceImpl();
@@ -374,6 +406,14 @@ public class Abdiel {
 
 		AddressingProperties maps = new AddressingProperties();
 
+		if ((boolean) cp.get(CP_HAS_REPLY_TO)) {
+			EndpointReferenceType replyToERT = new EndpointReferenceType();
+			AttributedURIType replyToAURIT = new AttributedURIType();
+			replyToAURIT.setValue((String) cp.get(CP_REPLY_TO_ADDRESS));
+			replyToERT.setAddress(replyToAURIT);
+			maps.setReplyTo(replyToERT);
+		}
+
 		if ((boolean) cp.get(CP_MAPS_CLIENT)) {
 			message.put(JAXWSAConstants.CLIENT_ADDRESSING_PROPERTIES, maps);
 		}
@@ -418,6 +458,22 @@ public class Abdiel {
 			message.put("org.apache.cxf.ws.addressing.using", usingProperty);
 		}
 
+		if (exchange != null && message != null && (boolean) cp.get(CP_HAS_CONDUIT)) {
+			LocalTransportFactory localTransportFactory = new LocalTransportFactory();
+			EndpointReferenceType endpointReferenceType = new EndpointReferenceType();
+			final AttributedURIType ertAURIT = new AttributedURIType();
+			ertAURIT.setValue("");
+			endpointReferenceType.setAddress(ertAURIT);
+			LocalDestination localDestination = new LocalDestination(localTransportFactory, endpointReferenceType,
+					endpointInfo, bus);
+			LocalConduit localConduit = new LocalConduit(localTransportFactory, localDestination);
+			PreexistingConduitSelector preexistingConduitSelector = new PreexistingConduitSelector(localConduit);
+			exchange.put(ConduitSelector.class, preexistingConduitSelector);
+		}
+
+		if (exchange != null) {
+			exchange.put(Bus.class, bus);
+		}
 		mapAggregatorImpl.handleMessage(message);
 
 	}
@@ -455,17 +511,6 @@ public class Abdiel {
 			operationInfo.addFault(faultInfo);
 
 		}
-
-		// FaultInfo f = new FaultInfo(null, null,
-		// bindingOperationInfo.getOperationInfo());
-		// f.addExtensionAttribute(Names.WSAW_ACTION_QNAME, "actionName");
-		// f.addExtensionAttribute(new QName(Names.WSA_NAMESPACE_WSDL_NAME_OLD,
-		// Names.WSAW_ACTION_NAME), "actionName");
-		// MessagePartInfo part = new MessagePartInfo(null, f);
-		// QName concreteName = new QName("webFaultNS", "webFaultName");
-		// part.setConcreteName(concreteName);
-		// part.setTypeClass(Throwable.class);
-		// f.addMessagePart(part);
 
 	}
 
