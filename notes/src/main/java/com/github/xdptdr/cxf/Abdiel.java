@@ -1,5 +1,7 @@
 package com.github.xdptdr.cxf;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,9 +31,11 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.Extensible;
 import org.apache.cxf.service.model.FaultInfo;
+import org.apache.cxf.service.model.InterfaceInfo;
 import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
+import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.JAXWSAConstants;
@@ -44,10 +48,15 @@ import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.neethi.builders.PrimitiveAssertion;
 
 import com.github.xdptdr.cxf.abdiel.AbdielFault;
-import com.github.xdptdr.cxf.abdiel.AbdielThrowableWebFault;
+import com.github.xdptdr.cxf.abdiel.AbdielWebFault;
 
 public class Abdiel {
 
+	private static final String CP_NULL_OP_INPUT_NAME = "nullOpInputName";
+	private static final String CP_NULL_OP_OUTPUT_NAME = "nullOpOutputName";
+	private static final String CP_BLP_VALUE = "blpValue";
+	private static final String CP_OPERATION_HAS_INTERFACE = "operationHasInterface";
+	private static final String CP_SYNTHETIC_BINDING_OPERATION_INFO = "syntheticBindingOperationInfo";
 	private static final String CP_FAULT_INFO_HAS_OLD_ACTION_EXTENSION_ATTRIBUTE = "faultInfoHasOldActionExtensionAttribute";
 	private static final String CP_FAULT_INFO_HAS_ACTION_EXTENSION_ATTRIBUTE = "faultInfoHasActionExtensionAttribute";
 	private static final String CP_THROWABLE_IS_WEB_FAULT = "throwableIsWebFault";
@@ -128,7 +137,8 @@ public class Abdiel {
 
 	}
 
-	private static void a() throws EndpointException {
+	private static void a() throws EndpointException, NoSuchMethodException, SecurityException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		CodePath cp = new CodePath();
 		cp.set(CP_ADDRESSING_DISABLED, new Boolean[] { null, true, false }, 0);
@@ -137,7 +147,7 @@ public class Abdiel {
 		cp.set(CP_MESSAGE_IN_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_OUT_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_OUT, new Boolean[] { false, true }, 1);
-		cp.set(CP_IS_REQUESTOR, new Boolean[] { false, true, null }, 1);
+		cp.set(CP_IS_REQUESTOR, new Boolean[] { false, true, null }, 0);
 		cp.set(CP_NULL_ENDPOINT, new Boolean[] { true, false }, 1);
 		cp.set(CP_IS_ENDPOINT_USING_ADDRESSING, new Boolean[] { false, true, null }, 1);
 		cp.set(CP_ENDPOINT_INFO_HAS_USING_ADDRESSING_EXTENSOR, new Boolean[] { false, true }, 0);
@@ -152,7 +162,7 @@ public class Abdiel {
 		cp.set(CP_USING_ADRESSING_ADVISORY, new Boolean[] { false, true, null }, 1);
 		cp.set(CP_USING_ADRESSING_ADVISORY, new Boolean[] { false, true, null }, 1);
 		cp.set(CP_USING_PROPERTY, new Boolean[] { false, true, null }, 0);
-		cp.set(CP_MAPS_INBOUND, new Boolean[] { false, true }, 0);
+		cp.set(CP_MAPS_INBOUND, new Boolean[] { false, true }, 1);
 		cp.set(CP_MAPS_OUTBOUND, new Boolean[] { false, true }, 0);
 		cp.set(CP_MAPS_CLIENT, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_CONTENT_IS_FAULT, new Boolean[] { false, true }, 1);
@@ -169,25 +179,52 @@ public class Abdiel {
 		cp.set(CP_MESSAGE_INFO_HAS_WSAW_WSDL_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_INFO_HAS_NSWSA_ACTION, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_INFO_HAS_OLD_ACTION, new Boolean[] { false, true }, 0);
-		cp.set(SOAP_EXTENSOR, new Boolean[] { false, true }, 1);
+		cp.set(SOAP_EXTENSOR, new Boolean[] { false, true }, 0);
 		cp.set(CP_HAS_FAULT_INFO, new Boolean[] { false, true }, 1);
 		cp.set(CP_FAULT_INFO_SIZE_NOT_ZERO, new Boolean[] { false, true }, 1);
 		cp.set(CP_THROWABLE_NOT_NULL, new Boolean[] { false, true }, 1);
 		cp.set(CP_MESSAGE_PART_INFO_TYPE_CLASS_IS_THROWABLE, new Boolean[] { false, true }, 0);
 		cp.set(CP_MESSAGE_PART_INFO_CONCRETE_NAME_WEB_FAULT, new Boolean[] { false, true }, 1);
-		cp.set(CP_THROWABLE_IS_WEB_FAULT, new Boolean[] { false, true }, 1);
+		cp.set(CP_THROWABLE_IS_WEB_FAULT, new Boolean[] { false, true }, 0);
 		cp.set(CP_FAULT_INFO_HAS_ACTION_EXTENSION_ATTRIBUTE, new Boolean[] { false, true }, 0);
 		cp.set(CP_FAULT_INFO_HAS_OLD_ACTION_EXTENSION_ATTRIBUTE, new Boolean[] { false, true }, 0);
+		cp.set(CP_SYNTHETIC_BINDING_OPERATION_INFO, new Boolean[] { false, true }, 0);
+		cp.set(CP_OPERATION_HAS_INTERFACE, new Boolean[] { false, true }, 1);
+		cp.set(CP_BLP_VALUE, new String[] { "bLP", "Throwable" }, 0);
+		cp.set(CP_NULL_OP_INPUT_NAME, new Boolean[] { false, true }, 0);
+		cp.set(CP_NULL_OP_OUTPUT_NAME, new Boolean[] { false, true }, 0);
 
 		Exchange exchange = null;
 		if (!(boolean) cp.get(CP_NULL_EXCHANGE)) {
 			exchange = new ExchangeImpl();
 
 			if (!(boolean) cp.get(CP_NULL_BINDING_OPERATION_INFO)) {
-				OperationInfo wrappedOperationInfo = new OperationInfo();
+				OperationInfo wrappedOperationInfo = null;
+				if ((boolean) cp.get(CP_OPERATION_HAS_INTERFACE)) {
+					ServiceInfo si = new ServiceInfo();
+					InterfaceInfo intf = new InterfaceInfo(si, new QName("interfaceNS", "interfaceLP"));
+					Constructor<OperationInfo> ctr = OperationInfo.class.getDeclaredConstructor(InterfaceInfo.class,
+							QName.class);
+					ctr.setAccessible(true);
+					wrappedOperationInfo = ctr.newInstance(intf, new QName("operationNS", "operationLP"));
+				} else {
+					wrappedOperationInfo = new OperationInfo();
+				}
+
 				setSoapExtensor(wrappedOperationInfo, cp);
+
 				if ((boolean) cp.get(CP_UNWRAPPED_CAPABLE)) {
-					OperationInfo unwrappedOperationInfo = new OperationInfo();
+					OperationInfo unwrappedOperationInfo = null;
+					if ((boolean) cp.get(CP_OPERATION_HAS_INTERFACE)) {
+						ServiceInfo si = new ServiceInfo();
+						InterfaceInfo intf = new InterfaceInfo(si, new QName("interfaceNS", "interfaceLP"));
+						Constructor<OperationInfo> ctr = OperationInfo.class.getDeclaredConstructor(InterfaceInfo.class,
+								QName.class);
+						ctr.setAccessible(true);
+						unwrappedOperationInfo = ctr.newInstance(intf, new QName("operationNS", "operationLP"));
+					} else {
+						unwrappedOperationInfo = new OperationInfo();
+					}
 					addFault(unwrappedOperationInfo, cp);
 					setSoapExtensor(unwrappedOperationInfo, cp);
 					wrappedOperationInfo.setUnwrappedOperation(unwrappedOperationInfo);
@@ -197,21 +234,41 @@ public class Abdiel {
 					MessageInfo messageInfo = getMessageInfo(cp, wrappedOperationInfo);
 					if (wrappedOperationInfo.getUnwrappedOperation() != null) {
 						MessageInfo messageInfo2 = getMessageInfo(cp, wrappedOperationInfo.getUnwrappedOperation());
-						wrappedOperationInfo.getUnwrappedOperation().setInput("", messageInfo2);
+						String inputName = null;
+						if (!(boolean) cp.get(CP_NULL_OP_INPUT_NAME)) {
+							inputName = "inputName";
+						}
+						wrappedOperationInfo.getUnwrappedOperation().setInput(inputName, messageInfo2);
 					}
-					wrappedOperationInfo.setInput("", messageInfo);
+					String inputName = null;
+					if (!(boolean) cp.get(CP_NULL_OP_INPUT_NAME)) {
+						inputName = "inputName";
+					}
+					wrappedOperationInfo.setInput(inputName, messageInfo);
 				}
 				if ((boolean) cp.get(CP_OPERATION_INFO_HAS_OUTPUT)) {
 					MessageInfo messageInfo = getMessageInfo(cp, wrappedOperationInfo);
 					if (wrappedOperationInfo.getUnwrappedOperation() != null) {
 						MessageInfo messageInfo2 = getMessageInfo(cp, wrappedOperationInfo.getUnwrappedOperation());
-						wrappedOperationInfo.getUnwrappedOperation().setOutput("", messageInfo2);
+						String outputName = null;
+						if (!(boolean) cp.get(CP_NULL_OP_OUTPUT_NAME)) {
+							outputName = "outputName";
+						}
+
+						wrappedOperationInfo.getUnwrappedOperation().setOutput(outputName, messageInfo2);
 					}
-					wrappedOperationInfo.setOutput("", messageInfo);
+					String outputName = null;
+					if (!(boolean) cp.get(CP_NULL_OP_OUTPUT_NAME)) {
+						outputName = "outputName";
+					}
+					wrappedOperationInfo.setOutput(outputName, messageInfo);
 				}
 
 				addFault(wrappedOperationInfo, cp);
 				BindingOperationInfo bindingOperationInfo = new BindingOperationInfo(null, wrappedOperationInfo);
+				if ((boolean) cp.get(CP_SYNTHETIC_BINDING_OPERATION_INFO)) {
+					bindingOperationInfo.setProperty("operation.is.synthetic", true);
+				}
 				setSoapExtensor(bindingOperationInfo, cp);
 				if ((boolean) cp.get(CP_UNWRAPPED_CAPABLE)) {
 					setSoapExtensor(bindingOperationInfo.getUnwrappedOperation(), cp);
@@ -332,7 +389,7 @@ public class Abdiel {
 			Throwable t = null;
 			if ((boolean) cp.get(CP_THROWABLE_NOT_NULL)) {
 				if ((boolean) cp.get(CP_THROWABLE_IS_WEB_FAULT)) {
-					t = new AbdielThrowableWebFault();
+					t = new AbdielWebFault();
 				} else {
 					t = new Throwable();
 				}
@@ -370,7 +427,7 @@ public class Abdiel {
 		if ((boolean) cp.get(CP_HAS_FAULT_INFO)) {
 
 			QName aqn = new QName("aNS", "aLP");
-			QName bqn = new QName("bNs", "bLP");
+			QName bqn = new QName("bNs", (String) cp.get(CP_BLP_VALUE));
 			FaultInfo faultInfo = new FaultInfo(aqn, bqn, operationInfo);
 			if ((boolean) cp.get(CP_FAULT_INFO_SIZE_NOT_ZERO)) {
 				QName mpiQName = new QName("mpiNS", "mpiLP");
@@ -445,7 +502,8 @@ public class Abdiel {
 		return messageInfo;
 	}
 
-	public static void main(String[] args) throws EndpointException {
+	public static void main(String[] args) throws EndpointException, NoSuchMethodException, SecurityException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		a();
 	}
 

@@ -2,12 +2,15 @@ package com.github.xdptdr.cxf.abdiel;
 
 import javax.xml.ws.WebFault;
 
+import org.apache.cxf.interceptor.Fault;
+
 @WebFault(targetNamespace = "webFaultNS", name = "webFaultLP")
-public class AbdielThrowableWebFault extends Throwable {
+public class AbdielWebFault extends Fault {
 
 	private static final long serialVersionUID = 1L;
 
-	public AbdielThrowableWebFault() {
+	public AbdielWebFault() {
+		super((Throwable) null);
 	}
 
 }
