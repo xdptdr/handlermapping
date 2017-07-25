@@ -180,8 +180,7 @@ public class Abdiel {
 		cp.set(CP_FAULT_INFO_HAS_OLD_ACTION_EXTENSION_ATTRIBUTE, new Boolean[] { false, true }, 0);
 
 		Exchange exchange = null;
-		boolean nullExchange = (boolean) cp.get(CP_NULL_EXCHANGE);
-		if (!nullExchange) {
+		if (!(boolean) cp.get(CP_NULL_EXCHANGE)) {
 			exchange = new ExchangeImpl();
 
 			if (!(boolean) cp.get(CP_NULL_BINDING_OPERATION_INFO)) {
@@ -230,6 +229,16 @@ public class Abdiel {
 			if (addressingDisabled != null) {
 				message.put(MAPAggregator.ADDRESSING_DISABLED, addressingDisabled.booleanValue());
 			}
+			Boolean isRequestor = (Boolean) cp.get(CP_IS_REQUESTOR);
+			if (isRequestor != null) {
+				message.put(Message.REQUESTOR_ROLE, isRequestor.booleanValue());
+			}
+			if ((boolean) cp.get(CP_HAS_CONTEXT_UTILS_ACTION)) {
+				message.put(ContextUtils.ACTION, "actionName");
+			}
+			if ((boolean) cp.get(CP_HAS_SOAP_BINDING_CONSTANTS_ACTION)) {
+				message.put(SoapBindingConstants.SOAP_ACTION, "actionName");
+			}
 		}
 
 		boolean messageInFault = (boolean) cp.get(CP_MESSAGE_IN_FAULT);
@@ -245,11 +254,6 @@ public class Abdiel {
 		boolean messageOut = (boolean) cp.get(CP_MESSAGE_OUT);
 		if (messageOut && exchange != null) {
 			exchange.setOutMessage(message);
-		}
-
-		Boolean isRequestor = (Boolean) cp.get(CP_IS_REQUESTOR);
-		if (isRequestor != null) {
-			message.put(Message.REQUESTOR_ROLE, isRequestor.booleanValue());
 		}
 
 		Endpoint endpoint = null;
@@ -345,12 +349,6 @@ public class Abdiel {
 			message.setContent(Exception.class, fault);
 		}
 
-		if ((boolean) cp.get(CP_HAS_CONTEXT_UTILS_ACTION)) {
-			message.put(ContextUtils.ACTION, "actionName");
-		}
-		if ((boolean) cp.get(CP_HAS_SOAP_BINDING_CONSTANTS_ACTION)) {
-			message.put(SoapBindingConstants.SOAP_ACTION, "actionName");
-		}
 		MAPAggregatorImpl mapAggregatorImpl = new MAPAggregatorImpl();
 
 		Boolean usingAdressingAdvisory = (Boolean) cp.get(CP_USING_ADRESSING_ADVISORY);
