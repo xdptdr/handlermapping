@@ -12,19 +12,27 @@ import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.factory.WSDLFactory;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.apache.cxf.wsdl.WSDLManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import com.ibm.wsdl.extensions.schema.SchemaImpl;
 import com.ibm.wsdl.extensions.soap.SOAPBindingImpl;
 
 public class VirgilAldrich {
-	public static void main(String[] args) throws WSDLException {
+	public static void main(String[] args) throws WSDLException, ParserConfigurationException {
 
 		QName definitionQN = new QName("definitionNS", "definitionLP");
 		QName serviceQN = new QName("serviceNS", "serviceLP");
@@ -46,8 +54,26 @@ public class VirgilAldrich {
 		definition.setDocumentBaseURI("documentBaseURI");
 		definition.setTargetNamespace("targetNamespace");
 
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document d = db.newDocument();
+
+		Element element = d.createElement("schema");
+		element.setAttribute("targetNamespace", "partNS");
+
+		Element hello = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "simpleType");
+		hello.setAttribute("name", "partLP");
+		element.appendChild(hello);
+
+		Schema schema = new SchemaImpl();
+		schema.setElementType(partQN);
+		schema.setElement(element);
+
 		Types types = definition.createTypes();
+		types.addExtensibilityElement(schema);
 		definition.setTypes(types);
+
+		// partQN
 
 		Part part = definition.createPart();
 		part.setName("partName");
