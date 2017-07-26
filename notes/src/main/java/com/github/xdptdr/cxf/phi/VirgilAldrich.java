@@ -34,8 +34,36 @@ import com.ibm.wsdl.extensions.soap.SOAPBindingImpl;
 public class VirgilAldrich {
 	public static void main(String[] args) throws WSDLException, ParserConfigurationException {
 
+		/*-
+			org.apache.cxf.transport.http.HTTPTransportFactory
+			http://cxf.apache.org/transports/http/configuration
+			http://schemas.xmlsoap.org/wsdl/http/
+			http://cxf.apache.org/transports/http
+			http://schemas.xmlsoap.org/wsdl/http
+			
+			org.apache.cxf.transport.jms.JMSTransportFactory
+			http://cxf.apache.org/transports/jms
+			http://cxf.apache.org/transports/jms/configuration
+			
+			http://cxf.apache.org/transports/udp
+			org.jboss.wsf.stack.cxf.addons.transports.udp.UDPTransportFactory
+			
+			http://cxf.apache.org/transports/local
+			org.apache.cxf.transport.local.LocalTransportFactory
+			
+			org.apache.cxf.binding.soap.SoapTransportFactory
+			http://schemas.xmlsoap.org/soap/http
+			http://schemas.xmlsoap.org/wsdl/soap12/
+			http://www.w3.org/2010/soapjms/
+			http://schemas.xmlsoap.org/soap/
+			http://schemas.xmlsoap.org/wsdl/soap/http
+			http://schemas.xmlsoap.org/wsdl/soap/
+			http://www.w3.org/2003/05/soap/bindings/HTTP/
+		
+		 */
+
 		QName definitionQN = new QName("definitionNS", "definitionLP");
-		QName serviceQN = new QName("serviceNS", "serviceLP");
+		QName serviceQN = new QName("portNS", "serviceLP");
 		QName portTypeQN = new QName("portTypeNS", "portTypeLP");
 		QName bindingQN = new QName("bindingNS", "bindingLP");
 		QName portQN = new QName("portNS", "portLP");
@@ -58,16 +86,27 @@ public class VirgilAldrich {
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document d = db.newDocument();
 
-		Element element = d.createElement("schema");
-		element.setAttribute("targetNamespace", "partNS");
+		Element schemaElement = d.createElement("schema");
+		schemaElement.setAttribute("targetNamespace", "partNS");
 
-		Element hello = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "simpleType");
-		hello.setAttribute("name", "partLP");
-		element.appendChild(hello);
+		Element elementElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
+		elementElement.setAttribute("name", "partLP");
+		schemaElement.appendChild(elementElement);
+
+		Element complexTypeElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "complexType");
+		elementElement.appendChild(complexTypeElement);
+
+		Element sequenceElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "sequence");
+		complexTypeElement.appendChild(sequenceElement);
+
+		Element subElementElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
+		subElementElement.setAttribute("name", "subElementName");
+		subElementElement.setAttribute("type", "string");
+		sequenceElement.appendChild(subElementElement);
 
 		Schema schema = new SchemaImpl();
 		schema.setElementType(partQN);
-		schema.setElement(element);
+		schema.setElement(schemaElement);
 
 		Types types = definition.createTypes();
 		types.addExtensibilityElement(schema);
@@ -89,7 +128,7 @@ public class VirgilAldrich {
 		input.setMessage(message);
 
 		Operation operation = definition.createOperation();
-		operation.setName("operationName");
+		operation.setName("partLP");
 		operation.setInput(input);
 		operation.setStyle(OperationType.ONE_WAY);
 
@@ -99,7 +138,8 @@ public class VirgilAldrich {
 		definition.addPortType(portType);
 
 		SOAPBindingImpl soapBinding = new SOAPBindingImpl();
-		soapBinding.setTransportURI("soapBindingTransportURI");
+
+		soapBinding.setTransportURI("http://schemas.xmlsoap.org/wsdl/soap/");
 
 		Binding binding = definition.createBinding();
 		binding.setQName(bindingQN);
@@ -107,6 +147,7 @@ public class VirgilAldrich {
 		binding.addExtensibilityElement(soapBinding);
 
 		Port port = definition.createPort();
+		port.setName("portLP");
 		port.setBinding(binding);
 
 		Service service = definition.createService();
