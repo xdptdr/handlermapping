@@ -86,7 +86,7 @@ public class VirgilAldrich {
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document d = db.newDocument();
 
-		Element schemaElement = d.createElement("schema");
+		Element schemaElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "schema");
 		schemaElement.setAttribute("targetNamespace", "partNS");
 
 		Element elementElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
@@ -109,7 +109,6 @@ public class VirgilAldrich {
 		schema.setElement(schemaElement);
 
 		d.appendChild(schemaElement);
-
 
 		Types types = definition.createTypes();
 		types.addExtensibilityElement(schema);
