@@ -108,6 +108,9 @@ public class VirgilAldrich {
 		schema.setElementType(partQN);
 		schema.setElement(schemaElement);
 
+		d.appendChild(schemaElement);
+
+
 		Types types = definition.createTypes();
 		types.addExtensibilityElement(schema);
 		definition.setTypes(types);
