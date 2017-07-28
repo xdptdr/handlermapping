@@ -87,6 +87,7 @@ public class VirgilAldrich {
 		Document d = db.newDocument();
 
 		Element schemaElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "schema");
+		schemaElement.setAttribute("xmlns", XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		schemaElement.setAttribute("targetNamespace", "partNS");
 
 		Element elementElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
