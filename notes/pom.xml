@@ -83,12 +83,8 @@
 			<version>3.0.19.Final</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-multipart-provider</artifactId>
-			<version>3.0.19.Final</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> <groupId>org.jboss.resteasy</groupId> <artifactId>resteasy-multipart-provider</artifactId> 
+			<version>3.0.19.Final</version> <scope>provided</scope> </dependency> -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson2-provider</artifactId>
@@ -101,12 +97,8 @@
 			<version>3.0.19.Final</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-atom-provider</artifactId>
-			<version>3.0.19.Final</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> <groupId>org.jboss.resteasy</groupId> <artifactId>resteasy-atom-provider</artifactId> 
+			<version>3.0.19.Final</version> <scope>provided</scope> </dependency> -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-json-p-provider</artifactId>
@@ -191,6 +183,31 @@
 			<artifactId>xsom</artifactId>
 			<version>2.3.0-b170127.1453</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.istack</groupId>
+			<artifactId>istack-commons-runtime</artifactId>
+			<version>2.21</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.xml.bind.external</groupId>
+			<artifactId>rngom</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>txw2</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+
 
 	</dependencies>
 </project>
