@@ -100,10 +100,10 @@ public class VirgilAldrich {
 		Element sequenceElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "sequence");
 		complexTypeElement.appendChild(sequenceElement);
 
-		Element subElementElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
-		subElementElement.setAttribute("name", "subElementName");
-		subElementElement.setAttribute("type", "string");
-		sequenceElement.appendChild(subElementElement);
+//		Element subElementElement = d.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, "element");
+//		subElementElement.setAttribute("name", "subElementName");
+//		subElementElement.setAttribute("type", "string");
+//		sequenceElement.appendChild(subElementElement);
 
 		Schema schema = new SchemaImpl();
 		schema.setElementType(partQN);
