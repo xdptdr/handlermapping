@@ -13,11 +13,7 @@
 			<artifactId>mbjaxrs</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.xdptdr</groupId>
-			<artifactId>mbjaxrs2</artifactId>
-			<version>1.0</version>
-		</dependency>
+
 		<dependency>
 			<groupId>com.github.xdptdr</groupId>
 			<artifactId>standalones</artifactId>
