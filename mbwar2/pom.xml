@@ -19,17 +19,5 @@
 	</build>
 	<dependencies>
 
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<version>3.0.19.Final</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.xdptdr</groupId>
-			<artifactId>mbjaxrs2</artifactId>
-			<version>1.0</version>
-		</dependency>
 	</dependencies>
 </project>

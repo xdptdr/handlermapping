@@ -16,7 +16,6 @@
 		<module>notes</module>
 		<module>mbjaxrs</module>
 		<module>mbwar2</module>
-		<module>mbjaxrs2</module>
 	</modules>
 
 	<build>
