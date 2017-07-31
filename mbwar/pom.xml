@@ -127,7 +127,11 @@
 			</exclusions>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.wildfly</groupId>
+			<artifactId>wildfly-webservices-server-integration</artifactId>
+			<version>10.1.0.Final</version>
+		</dependency>
 
 	</dependencies>
 </project>
