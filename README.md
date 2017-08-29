@@ -1,1 +1,3 @@
-# manybranches (Maven-EAR-plugin)
+# manybranches (webservices)
+
+
