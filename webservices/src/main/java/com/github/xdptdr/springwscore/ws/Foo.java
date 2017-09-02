@@ -27,7 +27,11 @@ public class Foo extends HttpServlet {
 	private void doStuff(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		WebServiceTemplate wst = new WebServiceTemplate();
 		wst.setDefaultUri("http://localhost:8080/webservices/HelloService");
-		String message = "foo";
+		String message = "<?xml version=\"1.0\"?>"
+				+ "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+				+ "<SOAP-ENV:Header/>" + "<S:Body>"
+				+ "<ns2:say xmlns:ns2=\"http://ws.webservices.xdptdr.github.com/\"/>" + "</S:Body>" + "</S:Envelope>";
+		message = "<?xml version=\"1.0\"?><say xmlns=\"http://ws.webservices.xdptdr.github.com/\"/>";
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		wst.sendSourceAndReceiveToResult(new StreamSource(new StringReader(message)), new StreamResult(baos));
 		resp.getWriter().println(baos.toString());
