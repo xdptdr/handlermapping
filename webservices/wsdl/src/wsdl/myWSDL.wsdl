@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://webservices.xdptdr.github.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://webservices.xdptdr.github.com/"
+	name="HelloService">
+	<types>
+		<xs:schema xmlns:tns="http://webservices.xdptdr.github.com/"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+			targetNamespace="http://webservices.xdptdr.github.com/">
+			<xs:element name="say" type="tns:say" />
+			<xs:element name="sayResponse" type="tns:sayResponse" />
+			<xs:complexType name="say">
+				<xs:sequence />
+			</xs:complexType>
+			<xs:complexType name="sayResponse">
+				<xs:sequence>
+					<xs:element name="return" type="xs:string" minOccurs="0" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</types>
+	<message name="say">
+		<part name="parameters" element="tns:say" />
+	</message>
+	<message name="sayResponse">
+		<part name="parameters" element="tns:sayResponse" />
+	</message>
+	<portType name="Hello">
+		<operation name="say">
+			<input wsam:Action="http://webservices.xdptdr.github.com/Hello/sayRequest"
+				message="tns:say" />
+			<output wsam:Action="http://webservices.xdptdr.github.com/Hello/sayResponse"
+				message="tns:sayResponse" />
+		</operation>
+	</portType>
+	<binding name="HelloPortBinding" type="tns:Hello">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+			style="document" />
+		<operation name="say">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="HelloService">
+		<port name="HelloPort" binding="tns:HelloPortBinding">
+			<soap:address location="http://desktop-ptsubbc:8080/war/HelloService" />
+		</port>
+	</service>
+</definitions>

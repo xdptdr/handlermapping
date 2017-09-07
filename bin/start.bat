@@ -1,1 +1,0 @@
-C:\glassfish4\glassfish\bin\asadmin start-domain
